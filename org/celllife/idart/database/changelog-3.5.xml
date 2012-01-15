@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<preConditions>
+		<or>
+			<sqlCheck expectedResult="0">
+				select count(name) from
+				simpledomain
+				where name='database_version';
+			</sqlCheck>
+			<sqlCheck expectedResult="3.5.0">
+				select value from simpledomain
+				where name='database_version';
+			</sqlCheck>
+		</or>
+	</preConditions>
+	<changeSet author="simon" id="3.5.1">
+		<delete tableName="simpledomain">
+			<where>name='database_version'</where>
+		</delete>
+	</changeSet>
+	<changeSet author="rashid" id="3.5.2">
+		<comment>Add clinic to episode</comment>
+		<addColumn tableName="episode">
+			<column name="clinic" type="BIGINT" />
+		</addColumn>
+		<sql><![CDATA[
+			update episode set clinic = currentclinic from
+			(select e.id as id, patient.clinic as currentclinic 
+			from (select patient, max(index) as maxindex 
+			from episode group by patient) as x
+			inner join episode as e	on e.patient = x.patient and e.index = x.maxindex
+			right join patient on patient.id = e.patient) as ep where episode.id = ep.id;
+
+			update episode set clinic = (select id from clinic where mainclinic = 't')
+			where episode.clinic is null;
+			]]>
+		</sql>
+		<addForeignKeyConstraint referencedTableName="clinic"
+			baseColumnNames="clinic" baseTableName="episode"
+			referencedColumnNames="id" constraintName="episode_clinic_fkey" />
+		<addNotNullConstraint tableName="episode"
+			columnName="clinic" />
+	</changeSet>
+	<changeSet author="rashid" id="3.5.3">
+		<addColumn tableName="prescription">
+			<column name="clinic" type="BIGINT" />
+		</addColumn>
+		<sql><![CDATA[
+			update prescription pres set clinic = currentclinic from
+			(select	ep.clinic as currentclinic, pre.id as pid from episode ep,
+				prescription pre where
+				ep.patient = pre.patient and pre.date BETWEEN
+				ep.startDate and ep.stopDate
+				group by pid, currentclinic
+				order by currentclinic, pid) as foo
+				where pres.id = foo.pid;
+
+			update prescription	pres set clinic = currentclinic from
+			(select ep.clinic as currentclinic, pre.id as pid
+				from episode ep, prescription pre where
+				ep.patient = pre.patient and
+				pre.date >= ep.startDate and pre.clinic	is null
+				group by pid, currentclinic
+				order by currentclinic, pid) as foo
+			where pres.id =
+			foo.pid;
+
+			update prescription pres set clinic = currentclinic from
+			(select ep.clinic as currentclinic, pre.id as pid
+				from episode ep, prescription pre where
+				ep.patient = pre.patient and
+				pre.clinic is null
+				group by pid, currentclinic
+				order by currentclinic, pid) as foo
+			where pres.id = foo.pid;
+			]]>
+		</sql>
+		<addForeignKeyConstraint referencedTableName="clinic"
+			baseColumnNames="clinic" baseTableName="prescription"
+			referencedColumnNames="id" constraintName="prescription_clinic_fkey" />
+		<addNotNullConstraint tableName="prescription"
+			columnName="clinic" />
+	</changeSet>
+	<changeSet author="rashid" id="3.5.4">
+		<addColumn tableName="package">
+			<column name="clinic" type="BIGINT" />
+		</addColumn>
+		<sql><![CDATA[
+			update package pack set clinic = currentclinic from
+			(select	pre.clinic as currentclinic, pack.id as pid from prescription pre,
+				package pack where
+				pack.prescription = pre.id
+				group by pid, currentclinic
+				order by currentclinic, pid) as foo
+				where pack.id =	foo.pid;
+
+			update package pack set	clinic =
+			(select clinic.id from clinic
+				where mainclinic = true) where
+			pack.clinic is null;
+			]]>
+		</sql>
+		<addForeignKeyConstraint referencedTableName="clinic"
+			baseColumnNames="clinic" baseTableName="package"
+			referencedColumnNames="id" constraintName="package_clinic_fkey" />
+		<dropColumn tableName="prescription" columnName="clinic" />
+		<addNotNullConstraint tableName="package"
+			columnName="clinic" />
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.5">
+		<addColumn tableName="packagedruginfotmp">
+			<column name="prescriptionduration" type="varchar(255)" />
+		</addColumn>
+		<addColumn tableName="packagedruginfotmp">
+			<column name="dateexpectedstring" type="varchar(255)" />
+		</addColumn>
+		<addColumn tableName="packagedruginfotmp">
+			<column name="senttoekapa" type="boolean" />
+		</addColumn>
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.6">
+		<dropNotNullConstraint tableName="package" columnName="clinic"/>
+	</changeSet>
+	<changeSet author="Simon" id="3.5.7">
+		<addPrimaryKey tableName="patientvisitreason" columnNames="id"/>
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.8">
+		<addColumn tableName="packagedruginfotmp">
+			<column name="packageid" type="varchar(255)"></column>
+		</addColumn>
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.9">
+		<addColumn tableName="packagedruginfotmp">
+			<column name="firstbatchinprintjob" type="boolean" defaultValueBoolean="false"></column>
+		</addColumn>
+		<addColumn tableName="packagedruginfotmp">
+			<column name="numberoflabels" type="integer" defaultValueNumeric="0"></column>
+		</addColumn>
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.10">
+		<addColumn tableName="packagedruginfotmp">
+			<column name="dispensedforlaterpickup" type="boolean" defaultValueBoolean="false"></column>
+		</addColumn>
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.11">
+		<modifyDataType tableName="stock" columnName="unitprice"
+			newDataType="numeric" />
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.12">
+		<modifyDataType tableName="stock" columnName="unitprice"
+			newDataType="numeric(12,2)" />
+	</changeSet>
+	<changeSet author="Simon" id="3.5.13">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">select count(*) from simpledomain
+				where name='activation_reason' and 
+				value='Restart at Down Referral Clinic'</sqlCheck>
+		</preConditions>
+		<sql>
+			INSERT INTO simpledomain(id, description, name, value) select
+			nextval('hibernate_sequence'),'', 'activation_reason', 
+			'Restart at Down Referral Clinic';
+		</sql>
+	</changeSet>
+	<changeSet author="Simon" id="3.5.14">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">select count(*) from simpledomain
+				where name='activation_reason' and 
+				value='Start at Down Referral Clinic'</sqlCheck>
+		</preConditions>
+		<sql>
+			INSERT INTO simpledomain(id, description, name, value) select
+			nextval('hibernate_sequence'),'', 'activation_reason',
+			'Start at Down Referral Clinic';
+		</sql>
+	</changeSet>
+	<changeSet author="Simon" id="3.5.15">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">select count(*) from simpledomain
+				where name='activation_reason' and value='Up Referred'</sqlCheck>
+		</preConditions>
+		<sql>
+			INSERT INTO simpledomain(id, description, name, value) select
+			nextval('hibernate_sequence'),'', 'activation_reason', 'Up Referred';
+		</sql>
+	</changeSet>
+	<changeSet author="Simon" id="3.5.16">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">select count(*) from simpledomain
+				where name='deactivation_reason' and value='Down Referred'</sqlCheck>
+		</preConditions>
+		<sql>
+			INSERT INTO simpledomain(id, description, name, value) select
+			nextval('hibernate_sequence'),'', 'deactivation_reason', 'Down Referred';
+		</sql>
+	</changeSet>
+	<changeSet author="Simon" id="3.5.17">
+		<delete tableName="simpledomain">
+			<where>name='activation_reason' and value='Down Referred'</where>
+		</delete>
+	</changeSet>
+	<changeSet author="rashid" id="3.5.18">
+		<comment>Fix Packages' clinic</comment>
+		<sql><![CDATA[
+			update package pack set clinic = c.ep_clinic from
+			(select packageId, id, prescription, clinic as pack_clinic, packdate  from package pack where
+			prescription is not null ) as a
+			left outer join
+			(select id as pid, patient from prescription pre ) as b
+			on a.prescription = b.pid
+			left outer join
+			(select patient as pat, startdate, stopdate, clinic as ep_clinic from episode ep) as c
+			on c.pat = b.patient
+			where a.prescription is not null
+			and a.pack_clinic  != c.ep_clinic
+			and (a.packdate between c.startdate and c.stopdate
+			or (a.packdate > c.startdate and c.stopdate is null))
+			and pack.id = a.id;
+			]]>
+		</sql>
+	</changeSet>
+	<changeSet author="Adiel" id="3.5.19">
+		<sql><![CDATA[
+			update package set dateleft = packdate where
+			packageid != 'destroyedStock' and
+			packagereturned = FALSE and
+			packdate is not null and
+			dateleft is null and
+			datereceived is null and
+			pickupdate is null; 			]]>
+		</sql>
+	</changeSet>
+	<changeSet author="Adiel" id="3.5.20">
+		<sql><![CDATA[
+			update package set datereceived = dateleft where
+			packageid != 'destroyedStock' and
+			packagereturned = FALSE and
+			packdate is not null and
+			dateleft is not null and
+			datereceived is null and
+			pickupdate is null;  			]]>
+		</sql>
+	</changeSet>
+	<changeSet author="Michael" id="3.5.21">
+		<sql><![CDATA[
+			delete from simpledomain where name = 'prescriptionDuration' and value = '7 months';  			]]>
+		</sql>
+	</changeSet>
+	<changeSet author="Adiel" id="3.5.22">
+		<sql><![CDATA[
+			update chemicalcompound set name=trim(name);  			]]>
+		</sql>
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.23" >
+		<createTable tableName="nationalclinics">
+    		<column name="id" type="int">
+       		 	<constraints primaryKey="true" nullable="false"/>
+   			</column>
+  		 	<column name="province" type="varchar(255)">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="district" type="varchar(255)">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="subdistrict" type="varchar(255)">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="facilityname" type="varchar(255)">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+     	 	<column name="facilitytype" type="varchar(255)">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		</createTable>
+  		<addUniqueConstraint tableName="nationalclinics" constraintName="unique_facilities" columnNames="facilityname, subdistrict"/>
+  	</changeSet>
+	<changeSet author="Rashid" id="3.5.24">
+		<dropColumn tableName="clinic" columnName="address1"/>
+		<dropColumn tableName="clinic" columnName="address2"/>
+		<dropColumn tableName="clinic" columnName="postalcode"/>
+		<dropColumn tableName="clinic" columnName="province"/>
+		<dropColumn tableName="clinic" columnName="city"/>
+		<dropColumn tableName="clinic" columnName="modified"/>
+		<addColumn tableName="clinic">
+			<column name="clinicdetails_id" type="int"></column>
+		</addColumn>
+		<addForeignKeyConstraint referencedTableName="nationalclinics" 
+			baseColumnNames="clinicdetails_id" baseTableName="clinic" 
+			referencedColumnNames="id" constraintName="fkey_clinic_details"/>
+	</changeSet>
+	<changeSet author="Rashid" id="3.5.25">
+		<comment>Speed up Reports</comment>
+		<addColumn tableName="package">
+			<column name="drugtypes" type="varchar(20)"></column>
+		</addColumn>
+		<addColumn tableName="prescription">
+			<column name="drugtypes" type="varchar(20)"></column>
+		</addColumn>
+		
+		<sql><![CDATA[
+			update package set drugTypes = 'ARV'
+			where id in (
+			select distinct packageddrugs.parentpackage from packageddrugs, stock, drug  
+			where packageddrugs.stock=stock.id
+			and stock.drug = drug.id
+			and drug.sidetreatment like 'F'); ]]>
+		</sql>
+		<sql><![CDATA[ 
+			update prescription set drugTypes = 'ARV'
+			where id in (
+			select distinct prescribeddrugs.prescription from prescribeddrugs, drug  
+			where prescribeddrugs.drug = drug.id
+			and drug.sidetreatment like 'F'); ]]>
+		</sql>
+	</changeSet>
+</databaseChangeLog>

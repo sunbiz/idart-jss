@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_accumulateddrugs">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="accumulateddrugs" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="accumulateddrugs" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_adherencerecordtmp">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="adherencerecordtmp" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="adherencerecordtmp"
+			columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org"
+		id="fix_primary_keys_alternatepatientidentifier">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="alternatepatientidentifier" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="alternatepatientidentifier"
+			columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_appointment">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="appointment" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="appointment" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_attributetype">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="attributetype" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="attributetype" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_chemicalcompound">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="chemicalcompound" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="chemicalcompound" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_chemicaldrugstrength">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="chemicaldrugstrength" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="chemicaldrugstrength"
+			columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_clinic">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="clinic" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="clinic" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_clinicuser">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="clinicuser" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="clinicuser" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_deleteditem">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="deleteditem" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="deleteditem" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_doctor">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="doctor" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="doctor" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_drug">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="drug" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="drug" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_episode">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="episode" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="episode" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_form">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="form" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="form" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_logging">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="logging" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="logging" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_nationalclinics">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="nationalclinics" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="nationalclinics" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_package">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="package" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="package" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_packageddrugs">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="packageddrugs" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="packageddrugs" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_packagedruginfotmp">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="packagedruginfotmp" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="packagedruginfotmp"
+			columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_patient">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="patient" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="patient" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_patientattribute">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="patientattribute" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="patientattribute" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_patientstatistic">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="patientstatistic" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="patientstatistic" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_patientstattypes">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="patientstattypes" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="patientstattypes" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_patientvisit">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="patientvisit" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="patientvisit" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_patientvisitreason">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="patientvisitreason" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="patientvisitreason"
+			columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_pillcount">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="pillcount" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="pillcount" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_pregnancy">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="pregnancy" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="pregnancy" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_prescribeddrugs">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="prescribeddrugs" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="prescribeddrugs" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_prescription">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="prescription" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="prescription" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_regimen">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="regimen" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="regimen" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_regimendrugs">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="regimendrugs" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="regimendrugs" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_simpledomain">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="simpledomain" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="simpledomain" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_stock">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="stock" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="stock" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_stockadjustment">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="stockadjustment" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="stockadjustment" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_stockcenter">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="stockcenter" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="stockcenter" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_stocklevel">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="stocklevel" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="stocklevel" columnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="fix_primary_keys_stocktake">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="stocktake" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="stocktake" columnNames="id" />
+	</changeSet>
+	<!-- for some reason this causes liquibase to get stuck -->
+	<!--<changeSet author="simon@cell-life.org" id="fix_primary_keys_users">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<primaryKeyExists tableName="users" />
+			</not>
+		</preConditions>
+		<addPrimaryKey tableName="users" columnNames="id" />
+	</changeSet>-->
+</databaseChangeLog>
+

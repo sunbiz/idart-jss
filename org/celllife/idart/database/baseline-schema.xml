@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<changeSet author="simon (generated)" id="0.0.1">
+		<createTable schemaName="public" tableName="accumulateddrugs">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="accumulateddrugs_pkey" />
+			</column>
+			<column name="withpackage" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="pillcount" type="int4">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.2">
+		<createTable schemaName="public" tableName="adherencerecordtmp">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="adherencerecordtmp_pkey" />
+			</column>
+			<column name="adherencereason" type="VARCHAR(255)" />
+			<column name="countdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="dayscarriedover" type="int4" />
+			<column name="daysinhand" type="int4" />
+			<column name="dayssincevisit" type="int4" />
+			<column name="dayssupplied" type="int4" />
+			<column name="pawcno" type="VARCHAR(255)" />
+			<column name="pillcountid" type="int4" />
+			<column name="cluser" type="VARCHAR(255)" />
+			<column name="invalid" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.3">
+		<createTable schemaName="public" tableName="alternatepatientidentifier">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="alternatepatientidentifier_pkey" />
+			</column>
+			<column name="identifier" type="VARCHAR(255)" />
+			<column name="patient" type="int4" />
+			<column name="enddate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="startdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="masterpatientid" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.4">
+		<createTable schemaName="public" tableName="appointment">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="appointment_pkey" />
+			</column>
+			<column name="appointmentdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="modified" type="char(1)" />
+			<column name="patient" type="int4" />
+			<column name="active" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.5">
+		<createTable schemaName="public" tableName="attributetype">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="attributetype_pkey" />
+			</column>
+			<column name="datatype" type="VARCHAR(255)" />
+			<column name="description" type="VARCHAR(255)" />
+			<column name="name" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.6">
+		<createTable schemaName="public" tableName="chemicalcompound">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="cl_chemicalcompound_pkey" />
+			</column>
+			<column name="name" type="VARCHAR(255)" />
+			<column name="acronym" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.7">
+		<createTable schemaName="public" tableName="chemicaldrugstrength">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="chemicaldrugstrength_pkey" />
+			</column>
+			<column name="chemicalcompound" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="strength" type="int4" />
+			<column name="drug" type="int4">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.8">
+		<createTable schemaName="public" tableName="clinic">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="clinic_pkey" />
+			</column>
+			<column name="address1" type="VARCHAR(255)" />
+			<column name="address2" type="VARCHAR(255)" />
+			<column name="notes" type="VARCHAR(255)" />
+			<column name="postalcode" type="VARCHAR(255)" />
+			<column name="province" type="VARCHAR(255)" />
+			<column name="telephone" type="VARCHAR(255)" />
+			<column name="mainclinic" type="bool" />
+			<column name="clinicname" type="VARCHAR(255)" />
+			<column name="city" type="VARCHAR(255)" />
+			<column name="modified" type="char(1)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.9">
+		<createTable schemaName="public" tableName="clinicuser">
+			<column name="clinicid" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="userid" type="int4">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.10">
+		<createTable schemaName="public" tableName="deleteditem">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="deleteditem_pkey" />
+			</column>
+			<column name="deleteditemid" type="int4" />
+			<column name="itemtype" type="VARCHAR(255)" />
+			<column name="invalid" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.11">
+		<createTable schemaName="public" tableName="doctor">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="doctor_pkey" />
+			</column>
+			<column name="emailaddress" type="VARCHAR(255)" />
+			<column name="firstname" type="VARCHAR(255)" />
+			<column name="lastname" type="VARCHAR(255)" />
+			<column name="mobileno" type="VARCHAR(255)" />
+			<column name="modified" type="char(1)" />
+			<column name="telephoneno" type="VARCHAR(255)" />
+			<column name="active" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.12">
+		<createTable schemaName="public" tableName="drug">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="drug_pkey" />
+			</column>
+			<column name="form" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="dispensinginstructions1" type="VARCHAR(255)" />
+			<column name="dispensinginstructions2" type="VARCHAR(255)" />
+			<column name="modified" type="char(1)" />
+			<column name="name" type="VARCHAR(255)" />
+			<column name="packsize" type="int4" />
+			<column name="sidetreatment" type="char(1)" />
+			<column name="defaultamnt" type="FLOAT4(8,8)" />
+			<column name="defaulttimes" type="int4" />
+			<column name="nsncode" type="VARCHAR(50)" />
+			<column name="stockcode" type="VARCHAR(50)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.13">
+		<createTable schemaName="public" tableName="episode">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="episode_pkey" />
+			</column>
+			<column name="startdate" type="TIMESTAMP WITH TIME ZONE">
+				<constraints nullable="false" />
+			</column>
+			<column name="stopdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="startreason" type="VARCHAR(255)" />
+			<column name="stopreason" type="VARCHAR(255)" />
+			<column name="startnotes" type="VARCHAR(255)" />
+			<column name="stopnotes" type="VARCHAR(255)" />
+			<column name="patient" type="int4" />
+			<column name="index" type="int4" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.14">
+		<createTable schemaName="public" tableName="form">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="form_pkey" />
+			</column>
+			<column name="form" type="VARCHAR(255)" />
+			<column name="actionlanguage1" type="VARCHAR(255)" />
+			<column name="actionlanguage2" type="VARCHAR(255)" />
+			<column name="actionlanguage3" type="VARCHAR(255)" />
+			<column name="formlanguage1" type="VARCHAR(255)" />
+			<column name="formlanguage2" type="VARCHAR(255)" />
+			<column name="formlanguage3" type="VARCHAR(255)" />
+			<column name="dispinstructions1" type="VARCHAR(255)" />
+			<column name="dispinstructions2" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.15">
+		<createTable schemaName="public" tableName="logging">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="logging_pkey" />
+			</column>
+			<column name="itemid" type="VARCHAR(255)" />
+			<column name="modified" type="char(1)" />
+			<column name="transactiondate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="transactiontype" type="VARCHAR(255)" />
+			<column name="idart_user" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="message" type="TEXT" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.16">
+		<createTable schemaName="public" tableName="package">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="package_pkey" />
+			</column>
+			<column name="dateleft" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="datereceived" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="modified" type="char(1)" />
+			<column name="packageid" type="VARCHAR(255)" />
+			<column name="packdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="pickupdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="prescription" type="int4" />
+			<column name="weekssupply" type="int4" />
+			<column name="datereturned" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="stockreturned" type="bool" />
+			<column name="packagereturned" type="bool" />
+			<column name="reasonforpackagereturn" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.17">
+		<createTable schemaName="public" tableName="packageddrugs">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="packageddrugs_pkey" />
+			</column>
+			<column name="amount" type="int4" />
+			<column name="stock" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="parentpackage" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="modified" type="char(1)" />
+			<column name="packageddrugsindex" type="int4" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.18">
+		<createTable schemaName="public" tableName="packagedruginfotmp">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="packagedruginfotmp_pkey" />
+			</column>
+			<column name="amountpertime" type="VARCHAR(255)" />
+			<column name="batchnumber" type="VARCHAR(255)" />
+			<column name="clinic" type="VARCHAR(255)" />
+			<column name="dispensedate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="dispensedqty" type="int4" />
+			<column name="drugname" type="VARCHAR(255)" />
+			<column name="expirydate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="formlanguage1" type="VARCHAR(255)" />
+			<column name="formlanguage2" type="VARCHAR(255)" />
+			<column name="formlanguage3" type="VARCHAR(255)" />
+			<column name="notes" type="VARCHAR(255)" />
+			<column name="packageindex" type="int4" />
+			<column name="patientid" type="VARCHAR(255)" />
+			<column name="patientfirstname" type="VARCHAR(255)" />
+			<column name="specialinstructions1" type="VARCHAR(255)" />
+			<column name="specialinstructions2" type="VARCHAR(255)" />
+			<column name="stockid" type="int4" />
+			<column name="timesperday" type="int4" />
+			<column name="cluser" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="weekssupply" type="int4" />
+			<column name="sidetreatment" type="bool" />
+			<column name="packageddrug" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="invalid" type="bool" />
+			<column name="qtyinhand" type="VARCHAR(255)" />
+			<column name="summaryqtyinhand" type="VARCHAR(255)" />
+			<column name="qtyinlastbatch" type="VARCHAR(255)" />
+			<column name="patientlastname" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.19">
+		<createTable schemaName="public" tableName="patient">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="patient_pkey" />
+			</column>
+			<column name="accountstatus" type="bool" />
+			<column name="cellphone" type="VARCHAR(255)" />
+			<column name="dateofbirth" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="clinic" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="firstnames" type="VARCHAR(255)" />
+			<column name="homephone" type="VARCHAR(255)" />
+			<column name="idnum" type="VARCHAR(255)" />
+			<column name="lastname" type="VARCHAR(255)" />
+			<column name="modified" type="char(1)" />
+			<column name="patientid" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="province" type="VARCHAR(255)" />
+			<column name="sex" type="char(1)" />
+			<column name="workphone" type="VARCHAR(255)" />
+			<column name="address1" type="VARCHAR(255)" />
+			<column name="address2" type="VARCHAR(255)" />
+			<column name="address3" type="VARCHAR(255)" />
+			<column name="nextofkinname" type="VARCHAR(255)" />
+			<column name="nextofkinphone" type="VARCHAR(255)" />
+			<column name="race" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.20">
+		<createTable schemaName="public" tableName="patientattribute">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="patientattribute_pkey" />
+			</column>
+			<column name="value" type="VARCHAR(255)" />
+			<column name="patient" type="int4" />
+			<column name="type_id" type="int4" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.21">
+		<createTable schemaName="public" tableName="patientstatistic">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="pk_patientstatistic" />
+			</column>
+			<column name="entry_id" type="int4" />
+			<column name="patient_id" type="int4" />
+			<column name="datetested" type="DATE" />
+			<column name="daterecorded" type="DATE" />
+			<column name="patientstattype_id" type="int4" />
+			<column name="statnumeric" type="FLOAT8(17)" />
+			<column name="stattext" type="char(255)" />
+			<column name="statdate" type="DATE" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.22">
+		<createTable schemaName="public" tableName="patientstattypes">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="pk_patientstattype" />
+			</column>
+			<column name="statname" type="VARCHAR(30)" />
+			<column name="statformat" type="VARCHAR(1)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.23">
+		<createTable schemaName="public" tableName="patientvisit">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="pk_patientvisit" />
+			</column>
+			<column name="patient_id" type="int4" />
+			<column name="dateofvisit" type="DATE" />
+			<column name="isscheduled" type="VARCHAR(1)" />
+			<column name="patientvisitreason_id" type="int4" />
+			<column name="diagnosis" type="VARCHAR(255)" />
+			<column name="notes" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.24">
+		<createTable schemaName="public" tableName="patientvisitreason">
+			<column name="id" type="int4" />
+			<column name="reasonforvisit" type="VARCHAR(50)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.25">
+		<createTable schemaName="public" tableName="pillcount">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="pillcount_pkey" />
+			</column>
+			<column name="accum" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="previouspackage" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="dateofcount" type="TIMESTAMP WITH TIME ZONE">
+				<constraints nullable="false" />
+			</column>
+			<column name="drug" type="int4">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.26">
+		<createTable schemaName="public" tableName="pregnancy">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="pregnancy_pkey" />
+			</column>
+			<column name="confirmdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="enddate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="patient" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="modified" type="char(1)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.27">
+		<createTable schemaName="public" tableName="prescribeddrugs">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="prescribeddrugs_pkey" />
+			</column>
+			<column name="amtpertime" type="FLOAT8(17)" />
+			<column name="drug" type="int4" />
+			<column name="prescription" type="int4" />
+			<column name="timesperday" type="int4" />
+			<column name="modified" type="char(1)" />
+			<column name="prescribeddrugsindex" type="int4" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.28">
+		<createTable schemaName="public" tableName="prescription">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="prescription_pkey" />
+			</column>
+			<column name="clinicalstage" type="int4" />
+			<column name="current" type="char(1)" />
+			<column name="date" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="doctor" type="int4" />
+			<column name="duration" type="int4" />
+			<column name="modified" type="char(1)" />
+			<column name="patient" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="prescriptionid" type="VARCHAR(255)" />
+			<column name="weight" type="FLOAT8(17)" />
+			<column name="reasonforupdate" type="VARCHAR(255)" />
+			<column name="notes" type="VARCHAR(255)" />
+			<column name="enddate" type="TIMESTAMP WITH TIME ZONE" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.29">
+		<createTable schemaName="public" tableName="regimen">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="regimen_fkey" />
+			</column>
+			<column name="modified" type="char(1)" />
+			<column name="notes" type="VARCHAR(255)" />
+			<column name="regimenname" type="VARCHAR(255)" />
+			<column name="druggroup" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.30">
+		<createTable schemaName="public" tableName="regimendrugs">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="regimendrugs_fkey" />
+			</column>
+			<column name="amtpertime" type="FLOAT8(17)" />
+			<column name="drug" type="int4" />
+			<column name="modified" type="char(1)" />
+			<column name="regimen" type="int4" />
+			<column name="timesperday" type="int4" />
+			<column name="notes" type="VARCHAR(255)" />
+			<column name="regimendrugsindex" type="DECIMAL" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.31">
+		<createTable schemaName="public" tableName="simpledomain">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="simpledomain_pkey" />
+			</column>
+			<column name="description" type="VARCHAR(255)" />
+			<column name="name" type="VARCHAR(255)" />
+			<column name="value" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.32">
+		<createTable schemaName="public" tableName="stock">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="stock_pkey" />
+			</column>
+			<column name="drug" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="batchnumber" type="VARCHAR(255)" />
+			<column name="datereceived" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="stockcenter" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="expirydate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="modified" type="char(1)" />
+			<column name="shelfnumber" type="VARCHAR(255)" />
+			<column name="unitsreceived" type="int4" />
+			<column name="manufacturer" type="VARCHAR(255)" />
+			<column name="hasunitsremaining" type="char(1)" />
+			<column name="unitprice" type="DECIMAL" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.33">
+		<createTable schemaName="public" tableName="stockadjustment">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="stockadjustment_pkey" />
+			</column>
+			<column name="capturedate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="stock" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="notes" type="VARCHAR(255)" />
+			<column name="stocktake" type="int4" />
+			<column name="stockcount" type="int4" />
+			<column name="adjustedvalue" type="int4" />
+			<column name="finalised" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.34">
+		<createTable schemaName="public" tableName="stockcenter">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="stockcenter_pkey" />
+			</column>
+			<column name="stockcentername" type="VARCHAR(255)" />
+			<column name="preferred" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.35">
+		<createTable schemaName="public" tableName="stocklevel">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="stocklevel_pkey" />
+			</column>
+			<column name="batch" type="int4">
+				<constraints nullable="false" />
+			</column>
+			<column name="fullcontainersremaining" type="int4" />
+			<column name="loosepillsremaining" type="int4" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.36">
+		<createTable schemaName="public" tableName="stocktake">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="stocktake_pkey" />
+			</column>
+			<column name="enddate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="startdate" type="TIMESTAMP WITH TIME ZONE" />
+			<column name="stocktakenumber" type="VARCHAR(255)" />
+			<column name="open" type="bool" />
+		</createTable>
+	</changeSet>
+	<changeSet author="simon (generated)" id="0.0.37">
+		<createTable schemaName="public" tableName="users">
+			<column name="id" type="int4">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="users_pkey" />
+			</column>
+			<column name="modified" type="char(1)" />
+			<column name="cl_password" type="VARCHAR(255)" />
+			<column name="role" type="VARCHAR(255)" />
+			<column name="cl_username" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

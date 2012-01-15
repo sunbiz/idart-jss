@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<changeSet author="simon (generated)" id="0.2.1">
+		<addPrimaryKey columnNames="userid, clinicid"
+			constraintName="clinicuser_pkey" schemaName="public" tableName="clinicuser" />
+
+
+		<addUniqueConstraint columnNames="clinicname"
+			constraintName="unique_clinicname" schemaName="public" tableName="clinic" />
+
+
+		<addUniqueConstraint columnNames="userid, clinicid"
+			constraintName="unique_clinicuser" schemaName="public" tableName="clinicuser" />
+
+
+		<addUniqueConstraint columnNames="regimenname, druggroup"
+			constraintName="unique_regimen" schemaName="public" tableName="regimen" />
+
+
+		<addUniqueConstraint columnNames="regimen, drug"
+			constraintName="unique_regimendrug" schemaName="public" tableName="regimendrugs" />
+
+
+		<addUniqueConstraint columnNames="stockcentername"
+			constraintName="unique_stockcentername" schemaName="public"
+			tableName="stockcenter" />
+
+
+		<addUniqueConstraint columnNames="batch"
+			constraintName="unique_batch" schemaName="public" tableName="stocklevel" />
+
+
+		<addForeignKeyConstraint baseColumnNames="pillcount"
+			baseTableName="accumulateddrugs" baseTableSchemaName="public"
+			constraintName="pillcount_fkey" deferrable="false" initiallyDeferred="false"
+			referencedColumnNames="id" referencedTableName="pillcount"
+			referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="chemicalcompound"
+			baseTableName="chemicaldrugstrength" baseTableSchemaName="public"
+			constraintName="chemicalcompound_fkey" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="chemicalcompound" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="form"
+			baseTableName="drug" baseTableSchemaName="public" constraintName="drug_form"
+			deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="form" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="packageddrug"
+			baseTableName="packagedruginfotmp" baseTableSchemaName="public"
+			constraintName="packageddrugtmp_packageddrug" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="packageddrugs" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="cluser"
+			baseTableName="packagedruginfotmp" baseTableSchemaName="public"
+			constraintName="packageddrugtmp_cluser" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="users" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="clinic"
+			baseTableName="patient" baseTableSchemaName="public" constraintName="patient_clinic"
+			deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="clinic" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="type_id"
+			baseTableName="patientattribute" baseTableSchemaName="public"
+			constraintName="patientattribute_attributetype" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="attributetype" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="previouspackage"
+			baseTableName="pillcount" baseTableSchemaName="public"
+			constraintName="previouspackage_fkey" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="package" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="prescription"
+			baseTableName="prescribeddrugs" baseTableSchemaName="public"
+			constraintName="prescribed_prescription" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="prescription" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="doctor"
+			baseTableName="prescription" baseTableSchemaName="public"
+			constraintName="prescription_doctor" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="doctor" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="patient"
+			baseTableName="prescription" baseTableSchemaName="public"
+			constraintName="prescription_patient" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="patient" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="regimen"
+			baseTableName="regimendrugs" baseTableSchemaName="public"
+			constraintName="regimen_fkey" deferrable="false" initiallyDeferred="false"
+			referencedColumnNames="id" referencedTableName="regimen"
+			referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="drug"
+			baseTableName="stock" baseTableSchemaName="public" constraintName="stock_drug"
+			deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="drug" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="stockcenter"
+			baseTableName="stock" baseTableSchemaName="public" constraintName="stock_stockcenter_fkey"
+			deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="stockcenter" referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="stocktake"
+			baseTableName="stockadjustment" baseTableSchemaName="public"
+			constraintName="stocktake_fkey" deferrable="false" initiallyDeferred="false"
+			referencedColumnNames="id" referencedTableName="stocktake"
+			referencedTableSchemaName="public" />
+
+
+		<addForeignKeyConstraint baseColumnNames="batch"
+			baseTableName="stocklevel" baseTableSchemaName="public"
+			constraintName="batch_fkey" deferrable="false" initiallyDeferred="false"
+			referencedColumnNames="id" referencedTableName="stock"
+			referencedTableSchemaName="public" />
+
+		<addForeignKeyConstraint referencedTableName="patient"
+			baseColumnNames="patient" baseTableName="episode"
+			referencedColumnNames="id" constraintName="fk_episode_patient" />
+
+		<addForeignKeyConstraint referencedTableName="patient"
+			baseColumnNames="patient" baseTableName="appointment"
+			referencedColumnNames="id" constraintName="appointment_fkey" />
+			
+		<addForeignKeyConstraint referencedTableName="patient"
+			baseColumnNames="patient" baseTableName="patientattribute"
+			referencedColumnNames="id" constraintName="patientattribute_patient" />
+		
+		<addForeignKeyConstraint referencedTableName="patient"
+			baseColumnNames="patient" baseTableName="pregnancy"
+			referencedColumnNames="id" constraintName="pregnancy_patient" />
+		
+		<addForeignKeyConstraint referencedTableName="patient"
+			baseColumnNames="patient" baseTableName="alternatepatientidentifier"
+			referencedColumnNames="id" constraintName="alternateid_patient" />
+		
+		<addForeignKeyConstraint referencedTableName="drug"
+			baseColumnNames="drug" baseTableName="prescribeddrugs"
+			referencedColumnNames="id" constraintName="prescribed_drug" />
+		
+		<addForeignKeyConstraint referencedTableName="drug"
+			baseColumnNames="drug" baseTableName="regimendrugs"
+			referencedColumnNames="id" constraintName="drug_fkey" />
+		
+		<addForeignKeyConstraint referencedTableName="drug"
+			baseColumnNames="drug" baseTableName="chemicaldrugstrength"
+			referencedColumnNames="id" constraintName="drug_fkey" />
+		
+		<addForeignKeyConstraint referencedTableName="drug"
+			baseColumnNames="drug" baseTableName="pillcount"
+			referencedColumnNames="id" constraintName="drug_fkey" />
+		
+		<addForeignKeyConstraint referencedTableName="package"
+			baseColumnNames="parentpackage" baseTableName="packageddrugs"
+			referencedColumnNames="id" constraintName="package_parent" />
+
+		<createSequence schemaName="public" sequenceName="hibernate_sequence"
+			startValue="100" />
+	</changeSet>
+	<changeSet author="simon" id="0.2.2">
+		<sql splitStatements="false" stripComments="false">
+			<![CDATA[
+			DROP PROCEDURAL LANGUAGE IF EXISTS plpgsql;
+			CREATE PROCEDURAL LANGUAGE plpgsql;
+			]]>
+		</sql>
+	</changeSet>
+	<changeSet author="pavas" id="0.2.3">
+		<sqlFile splitStatements="false" stripComments="false"
+			path="org/celllife/idart/database/create-functions.sql" />
+	</changeSet>
+</databaseChangeLog>

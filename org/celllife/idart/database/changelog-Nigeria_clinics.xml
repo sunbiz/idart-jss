@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+	<changeSet author="Simon" id="National_Clinics">
+		<loadData tableName="nationalclinics" file="org/celllife/idart/database/NationalARVSitesinNG.csv">
+    		<column name="id" type="NUMERIC" index="0"/>
+    		<column name="facilityname" type="STRING" index="1"/>
+    		<column name="province" type="STRING" index="2"/>
+    		<column name="facilitytype" type="STRING" index="3"/>
+    		<column name="district" type="STRING" index="4"/>
+    		<column name="subdistrict" type="STRING" index="5"/>
+    	</loadData>
+	</changeSet>
+</databaseChangeLog>

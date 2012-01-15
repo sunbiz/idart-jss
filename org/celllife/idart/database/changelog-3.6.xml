@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="Rashid" id="3.6.1">
+		<comment>Add Visit Date to Appointment</comment>
+		<addColumn tableName="appointment" >
+			<column name="visitdate" type="timestamp"></column>
+		</addColumn>
+		<sql><![CDATA[
+			update appointment set visitdate = appointmentdate 
+			where active = 'false';
+			]]>
+		</sql>
+		<dropColumn tableName="appointment" columnName="active"/>
+		<dropColumn tableName="appointment" columnName="modified"/>
+	</changeSet>
+	<changeSet author="Rashid" id="3.6.2">
+		<comment>Add Study Tables</comment>
+		<createTable tableName="study">
+    		<column name="id" type="int">
+       		 	<constraints primaryKey="true" nullable="false"/>
+   			</column>
+  		 	<column name="studyname" type="varchar(255)">
+  		 		<constraints nullable="false" unique="true"/>
+  		 	</column>
+  		 	<column name="startdate" type="timestamp">
+  		 	</column>
+  		 	<column name="enddate" type="timestamp">
+  		 	</column>
+  		 </createTable>
+  		 <createTable tableName="studyparticipant">
+    		<column name="id" type="int">
+       		 	<constraints primaryKey="true" nullable="false"/>
+   			</column>
+  		 	<column name="studygroup" type="varchar(255)">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="startdate" type="timestamp">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="enddate" type="timestamp">
+  		 	</column>
+  		 	<column name="patient" type="int">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="study" type="int">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 </createTable>
+  		 <addForeignKeyConstraint referencedTableName="patient"
+			baseColumnNames="patient" baseTableName="studyparticipant"
+			referencedColumnNames="id" constraintName="studyparticipant_patient_fkey" />
+		<addForeignKeyConstraint referencedTableName="study"
+			baseColumnNames="study" baseTableName="studyparticipant"
+			referencedColumnNames="id" constraintName="studyparticipant_study_fkey" />	
+	</changeSet>
+	<changeSet author="michael" id="3.6.3">
+		<comment>Add the Campaign Tables</comment>
+		<createTable tableName="campaign">
+			<column autoIncrement="false" name="id" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="description" type="VARCHAR(255)" />
+			<column name="duration" type="INT" />
+			<column defaultValue="" name="name" type="VARCHAR(35)">
+				<constraints nullable="false" />
+			</column>
+			<column name="startDate" type="DATETIME" />
+			<column defaultValue="" name="status" type="VARCHAR(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="timesPerDay" type="INT" />
+			<column defaultValue="" name="type" type="VARCHAR(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="org_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<createTable tableName="campaign_participant">
+			<column name="campaign_id" type="int"></column>
+			<column name="patient_id" type="int"></column>
+		</createTable>
+		<addPrimaryKey tableName="campaign" columnNames="id" />
+		<addPrimaryKey tableName="campaign_participant"
+			columnNames="campaign_id,patient_id" constraintName="campaign_participant_pk" />
+		<addForeignKeyConstraint constraintName="campaign_participant_campaign_fk"
+			referencedTableName="campaign" baseColumnNames="campaign_id"
+			baseTableName="campaign_participant" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="campaign_participant_patient_fk"
+			referencedTableName="patient" baseColumnNames="patient_id"
+			baseTableName="campaign_participant" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="Rashid" id="3.6.4">
+		<dropColumn tableName="study" columnName="startdate"/>
+		<dropColumn tableName="study" columnName="enddate"/>
+		<insert tableName="study">
+			<column name="id" valueNumeric="1"/>
+			<column name="studyname" value="CIDA"/>
+		</insert>
+	</changeSet>
+	<changeSet author="michael" id="3.6.5">
+		<renameColumn tableName="campaign" oldColumnName="startDate" newColumnName="startdate"/>
+		<renameColumn tableName="campaign" oldColumnName="timesPerDay" newColumnName="timesperday"/>
+	</changeSet>
+	<changeSet author="michael" id="3.6.6">
+		<update tableName="users">
+			<column name="role" value="Pharmacist"></column>
+			<where>role='StockCenter' or role='' or role is null</where>
+		</update>
+	</changeSet>
+	<changeSet author="michael" id="3.6.7">
+		<preConditions onFail="MARK_RAN" >
+			<primaryKeyExists tableName="campaign_participant" primaryKeyName="campaign_participant_pk"/>
+			<and>
+				<not>
+					<columnExists tableName="campaign_participant" columnName="id"/>
+				</not>
+			</and>
+		</preConditions>
+		<dropPrimaryKey tableName="campaign_participant" constraintName="campaign_participant_pk"/>
+		<addColumn tableName="campaign_participant">
+			<column name="id" type="int">
+				<constraints primaryKey="true"/>
+			</column>
+		</addColumn>
+	</changeSet>
+	<changeSet author="michael" id="3.6.8">
+		<addColumn tableName="campaign">
+			<column name="mobilisrid" type="int"/>
+		</addColumn>
+	</changeSet>
+	<changeSet author="Rashid" id="3.6.9">
+		<createTable tableName="messageschedule">
+			<column name="id" type="int">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="description" type="VARCHAR(255)"/>
+			<column name="messagetype" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="scheduledate" type="timestamp">
+				<constraints nullable="false"/>
+			</column>
+			<column name="daystoschedule" type="int"/>
+			<column name="scheduledsuccessfully" defaultValue="false" type="boolean"/>
+			
+		</createTable>
+	</changeSet>
+	<changeSet author="Rashid" id="3.6.10">
+		<addColumn tableName="messageschedule">
+			<column name="messagetext" defaultValue="Test" type="VARCHAR(255)"></column>
+		</addColumn>
+		<createTable tableName="alerts">
+			<column name="id" type="int">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="alertmessage" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="alerttype" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="alertdate" type="timestamp">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="Rashid" id="3.6.11">
+		<addColumn tableName="messageschedule">
+			<column name="senttoalerts" defaultValueBoolean="false" type="boolean"></column>
+		</addColumn>
+	</changeSet>
+	<changeSet author="michael" id="3.6.12">
+		<preConditions onFail="MARK_RAN">
+			<columnExists tableName="campaign" columnName="org_id"/>
+		</preConditions>
+		<dropColumn tableName="campaign" columnName="org_id"/>
+	</changeSet>
+	<changeSet author="simon" id="3.6.13">
+		<update tableName="users">
+			<column name="role" value="Pharmacist"></column>
+			<where>role='Pharmacy'</where>
+		</update>
+	</changeSet>
+	<changeSet author="simon" id="3.6.14">
+		<addColumn tableName="studyparticipant">
+			<column name="randomizationid" type="VARCHAR(40)"/>
+		</addColumn>
+	</changeSet>
+	<changeSet author="simon" id="3.6.15">
+		<comment>add alternatecellphone and network columns to studyparticipant</comment>
+		<addColumn tableName="studyparticipant">
+			<column name="alternatecellphone" type="VARCHAR(20)"/>
+			<column name="network" type="VARCHAR(40)"/>
+		</addColumn>
+		<sql><![CDATA[
+			update studyparticipant set alternatecellphone = '' where alternatecellphone is null;
+			update studyparticipant set network = '' where network is null;
+			]]>
+		</sql>
+		<addNotNullConstraint tableName="studyparticipant" columnName="alternatecellphone"/>
+		<addNotNullConstraint tableName="studyparticipant" columnName="network"/>
+	</changeSet>
+	<changeSet author="munaf" id="3.6.16">
+		<addColumn tableName="alerts">
+			<column name="void" type="boolean"/>
+		</addColumn>
+	</changeSet>
+	<changeSet author="simon" id="3.6.16">
+		<addColumn tableName="campaign_participant">
+			<column name="language" type="VARCHAR(50)"/>
+		</addColumn>
+		<dropColumn tableName="messageschedule" columnName="messagetext"/>
+		<addColumn tableName="messageschedule">
+			<column name="messagenumber" type="int"/>
+			<column name="language" type="VARCHAR(50)"/>
+		</addColumn>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.6.18">
+		<comment>make alternate mobile number for study participant not compulsory</comment>
+		<dropNotNullConstraint tableName="studyparticipant"
+			columnName="alternatecellphone" />
+	</changeSet>
+	<changeSet author="simon" id="3.6.19">
+		<addColumn tableName="studyparticipant">
+			<column name="language" type="VARCHAR(50)" />
+		</addColumn>
+		<sql>
+			update studyparticipant s set language = (
+			select language from
+			campaign_participant where patient_id
+			= s.patient)
+		</sql>
+		<dropColumn tableName="campaign_participant" columnName="language" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.6.20">
+		<update tableName="patient">
+			<column name="province" value="KwaZulu-Natal"/>
+			<where>province = 'KwaZulu - Natal'</where>
+		</update>
+		<update tableName="patient">
+			<column name="province" value=""/>
+			<where>province like '%select%'</where>
+		</update>
+		<delete tableName="simpledomain">
+			<where>name = 'province'</where>
+		</delete>
+	</changeSet>
+</databaseChangeLog>
+
