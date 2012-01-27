@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+<toc version="1.0">
+  <tocitem target="id2500104" text="iDART User Guide">
+    <tocitem target="id2538965" text="Welcome to the iDART Pharmacy Tool"/>
+    <tocitem target="id2538993" text="How To Get Help">
+      <tocitem target="id2539004" text="About This Manual"/>
+      <tocitem target="id2500273" text="The Cell-Life Helpdesk"/>
+    </tocitem>
+    <tocitem target="id2500314" text="Features of the iDART Pharmacy Tool">
+      <tocitem target="id2500413" text="Key benefits of the iDART system:"/>
+      <tocitem target="id2500892" text="The Technology"/>
+      <tocitem target="id2500918" text="The Reporting Tool"/>
+      <tocitem target="id2500941" text="Down Referral or Decanting to remote clinics"/>
+    </tocitem>
+    <tocitem target="id2501238" text="System Overview">
+      <tocitem target="id2501257" text="Pre-packaging ARVs for patients">
+        <tocitem target="id2499919" text="Collection at the pharmacy"/>
+        <tocitem target="id2499933" text="Collection at the local clinic"/>
+      </tocitem>
+      <tocitem target="id2499952" text="Dispensing to patients at the pharmacy immediately"/>
+      <tocitem target="id2499968" text="Remote Dispensing Feature"/>
+    </tocitem>
+    <tocitem target="id2501424" text="Getting Started: Updating Pharmacy Details And Adding Drugs, Stock, Doctors, Patients and their Prescriptions"/>
+    <tocitem target="id2501451" text="The Pharmacy">
+      <tocitem target="id2501465" text="Updating the Pharmacy's Details"/>
+    </tocitem>
+    <tocitem target="id2501533" text="ARV Drugs">
+      <tocitem target="id2501554" text="Adding Drugs"/>
+      <tocitem target="id2501678" text="Updating a Drug's Information"/>
+    </tocitem>
+    <tocitem target="id2501798" text="Stock">
+      <tocitem target="id2548390" text="Adding Stock"/>
+    </tocitem>
+    <tocitem target="id2548584" text="Doctors">
+      <tocitem target="id2548596" text="Adding Doctors"/>
+      <tocitem target="id2548670" text="Updating a Doctor's Information"/>
+    </tocitem>
+    <tocitem target="id2548747" text="Patients">
+      <tocitem target="id2548764" text="Adding Patients"/>
+      <tocitem target="id2548894" text="Updating a Patient's Information"/>
+      <tocitem target="id2549006" text="Merging Duplicate Patients"/>
+    </tocitem>
+    <tocitem target="id2549163" text="Patients' Prescriptions">
+      <tocitem target="id2549179" text="Adding Patients' Prescriptions"/>
+      <tocitem target="id2549452" text="Updating Patients' Prescriptions"/>
+    </tocitem>
+    <tocitem target="id2549747" text="Pharmacy Users">
+      <tocitem target="id2549759" text="Manage Pharmacy Users">
+        <tocitem target="id2549826" text="To add a new user:"/>
+        <tocitem target="id2549872" text="To change the password of the currently logged in user:"/>
+      </tocitem>
+    </tocitem>
+    <tocitem target="id2549911" text="Distribution Clinics">
+      <tocitem target="id2549931" text="Adding Distribution Clinics"/>
+      <tocitem target="id2550011" text="Updating a Distribution Clinic's Information"/>
+    </tocitem>
+    <tocitem target="id2550144" text="Drug Groups">
+      <tocitem target="id2550211" text="Add Drug Groups"/>
+      <tocitem target="id2550413" text="Updating Drug Groups"/>
+    </tocitem>
+    <tocitem target="id2550617" text="Packaging and Dispensing">
+      <tocitem target="id2550630" text="Creating Patient ARV Packages"/>
+      <tocitem target="id2551055" text="Pre-packaging for patients at this Pharmacy"/>
+      <tocitem target="id2551162" text="Pre-packaging for patients at Remote Clinics"/>
+    </tocitem>
+    <tocitem target="id2551293" text="Adjustments and Deletions">
+      <tocitem target="id2551299" text="Stock, Prescription and Package Deletions">
+        <tocitem target="id2551421" text="To perform a package deletion:"/>
+        <tocitem target="id2551455" text="To perform a single package item deletion:"/>
+        <tocitem target="id2551491" text="To perform a prescription deletion:"/>
+        <tocitem target="id2551532" text="To perform a stock batch deletion:"/>
+      </tocitem>
+      <tocitem target="id2551572" text="Destroying Unusable Stock"/>
+    </tocitem>
+    <tocitem target="id2551698" text="Printing Labels">
+      <tocitem target="id2551714" text="Printing a Custom Label"/>
+      <tocitem target="id2551826" text="Troubleshooting Label Printing">
+        <tocitem target="id2551847" text="Setting your label printer as the default printer:"/>
+        <tocitem target="id2551878" text="Setting the label size for your label printer:"/>
+      </tocitem>
+    </tocitem>
+    <tocitem target="id2551927" text="Generating Reports">
+      <tocitem target="id2551938" text="Patient History Report"/>
+      <tocitem target="id2552007" text="Pepfar Report"/>
+      <tocitem target="id2552114" text="Patient Defaulters"/>
+      <tocitem target="id2552198" text="Daily Dispensing Totals Report"/>
+      <tocitem target="id2552280" text="Monthly Stock Receipts"/>
+      <tocitem target="id2552361" text="Monthly Clinic Indicator Report"/>
+      <tocitem target="id2552467" text="Patients Expected On A Day"/>
+      <tocitem target="id2552559" text="ARV Drug Usage Report"/>
+      <tocitem target="id2552646" text="Monthly Report of Receipts and Issues of ARV Drugs"/>
+      <tocitem target="id2552731" text="Transaction Log Report"/>
+      <tocitem target="id2552808" text="Printing and Saving Reports">
+        <tocitem target="id2552864" text="To print the report:"/>
+        <tocitem target="id2552898" text="To save the report:"/>
+      </tocitem>
+    </tocitem>
+    <tocitem target="id2552948" text="Frequently Asked Questions">
+      <tocitem target="id2552964" text="Using the Patient Search"/>
+      <tocitem target="id2553079" text="Using the Drug Search"/>
+    </tocitem>
+  </tocitem>
+</toc>

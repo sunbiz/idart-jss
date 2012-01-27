@@ -1,0 +1,605 @@
+<!ELEMENT dataset (
+    atccode*,
+    form*,
+    drug*,
+    nationalclinics*,
+    clinic*,
+    package*,
+    pillcount*,
+    accumulateddrugs*,
+    adherencerecordtmp*,
+    alerts*,
+    patient*,
+    alternatepatientidentifier*,
+    appointment*,
+    chemicalcompound*,
+    atccode_chemicalcompound*,
+    attributetype*,
+    campaign*,
+    campaign_participant*,
+    chemicaldrugstrength*,
+    clinicuser*,
+    databasechangelog*,
+    databasechangeloglock*,
+    deleteditem*,
+    doctor*,
+    episode*,
+    identifiertype*,
+    logging*,
+    messageschedule*,
+    packageddrugs*,
+    users*,
+    packagedruginfotmp*,
+    patientattribute*,
+    patientidentifier*,
+    patientstatistic*,
+    patientstattypes*,
+    patientvisit*,
+    patientvisitreason*,
+    pregnancy*,
+    prescription*,
+    prescribeddrugs*,
+    regimen*,
+    regimendrugs*,
+    simpledomain*,
+    stockcenter*,
+    stock*,
+    stocktake*,
+    stockadjustment*,
+    stocklevel*,
+    study*,
+    studyparticipant*)>
+
+<!ELEMENT atccode EMPTY>
+<!ATTLIST atccode
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    code CDATA #REQUIRED
+    mims CDATA #IMPLIED
+>
+
+<!ELEMENT form EMPTY>
+<!ATTLIST form
+    id CDATA #REQUIRED
+    form CDATA #IMPLIED
+    actionlanguage1 CDATA #IMPLIED
+    actionlanguage2 CDATA #IMPLIED
+    actionlanguage3 CDATA #IMPLIED
+    formlanguage1 CDATA #IMPLIED
+    formlanguage2 CDATA #IMPLIED
+    formlanguage3 CDATA #IMPLIED
+    dispinstructions1 CDATA #IMPLIED
+    dispinstructions2 CDATA #IMPLIED
+>
+
+<!ELEMENT drug EMPTY>
+<!ATTLIST drug
+    id CDATA #REQUIRED
+    form CDATA #REQUIRED
+    dispensinginstructions1 CDATA #IMPLIED
+    dispensinginstructions2 CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    name CDATA #IMPLIED
+    packsize CDATA #IMPLIED
+    sidetreatment CDATA #IMPLIED
+    defaultamnt CDATA #IMPLIED
+    defaulttimes CDATA #IMPLIED
+    stockcode CDATA #IMPLIED
+    atccode_id CDATA #IMPLIED
+>
+
+<!ELEMENT nationalclinics EMPTY>
+<!ATTLIST nationalclinics
+    id CDATA #REQUIRED
+    province CDATA #REQUIRED
+    district CDATA #REQUIRED
+    subdistrict CDATA #REQUIRED
+    facilityname CDATA #REQUIRED
+    facilitytype CDATA #REQUIRED
+>
+
+<!ELEMENT clinic EMPTY>
+<!ATTLIST clinic
+    id CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    telephone CDATA #IMPLIED
+    mainclinic CDATA #IMPLIED
+    clinicname CDATA #IMPLIED
+    clinicdetails_id CDATA #IMPLIED
+>
+
+<!ELEMENT package EMPTY>
+<!ATTLIST package
+    id CDATA #REQUIRED
+    dateleft CDATA #IMPLIED
+    datereceived CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    packageid CDATA #IMPLIED
+    packdate CDATA #IMPLIED
+    pickupdate CDATA #IMPLIED
+    prescription CDATA #IMPLIED
+    weekssupply CDATA #IMPLIED
+    datereturned CDATA #IMPLIED
+    stockreturned CDATA #IMPLIED
+    packagereturned CDATA #IMPLIED
+    reasonforpackagereturn CDATA #IMPLIED
+    clinic CDATA #IMPLIED
+    drugtypes CDATA #IMPLIED
+>
+
+<!ELEMENT pillcount EMPTY>
+<!ATTLIST pillcount
+    id CDATA #REQUIRED
+    accum CDATA #REQUIRED
+    previouspackage CDATA #REQUIRED
+    dateofcount CDATA #REQUIRED
+    drug CDATA #REQUIRED
+>
+
+<!ELEMENT accumulateddrugs EMPTY>
+<!ATTLIST accumulateddrugs
+    id CDATA #REQUIRED
+    withpackage CDATA #REQUIRED
+    pillcount CDATA #REQUIRED
+>
+
+<!ELEMENT adherencerecordtmp EMPTY>
+<!ATTLIST adherencerecordtmp
+    id CDATA #REQUIRED
+    adherencereason CDATA #IMPLIED
+    countdate CDATA #IMPLIED
+    dayscarriedover CDATA #IMPLIED
+    daysinhand CDATA #IMPLIED
+    dayssincevisit CDATA #IMPLIED
+    dayssupplied CDATA #IMPLIED
+    pawcno CDATA #IMPLIED
+    pillcountid CDATA #IMPLIED
+    cluser CDATA #IMPLIED
+    invalid CDATA #IMPLIED
+>
+
+<!ELEMENT alerts EMPTY>
+<!ATTLIST alerts
+    id CDATA #REQUIRED
+    alertmessage CDATA #REQUIRED
+    alerttype CDATA #REQUIRED
+    alertdate CDATA #REQUIRED
+    void CDATA #IMPLIED
+>
+
+<!ELEMENT patient EMPTY>
+<!ATTLIST patient
+    id CDATA #REQUIRED
+    accountstatus CDATA #IMPLIED
+    cellphone CDATA #IMPLIED
+    dateofbirth CDATA #IMPLIED
+    clinic CDATA #REQUIRED
+    firstnames CDATA #IMPLIED
+    homephone CDATA #IMPLIED
+    lastname CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    patientid CDATA #REQUIRED
+    province CDATA #IMPLIED
+    sex CDATA #IMPLIED
+    workphone CDATA #IMPLIED
+    address1 CDATA #IMPLIED
+    address2 CDATA #IMPLIED
+    address3 CDATA #IMPLIED
+    nextofkinname CDATA #IMPLIED
+    nextofkinphone CDATA #IMPLIED
+    race CDATA #IMPLIED
+>
+
+<!ELEMENT alternatepatientidentifier EMPTY>
+<!ATTLIST alternatepatientidentifier
+    id CDATA #REQUIRED
+    identifier CDATA #IMPLIED
+    patient CDATA #IMPLIED
+    datechanged CDATA #IMPLIED
+    masterpatientid CDATA #IMPLIED
+    type_id CDATA #REQUIRED
+>
+
+<!ELEMENT appointment EMPTY>
+<!ATTLIST appointment
+    id CDATA #REQUIRED
+    appointmentdate CDATA #IMPLIED
+    patient CDATA #IMPLIED
+    visitdate CDATA #IMPLIED
+>
+
+<!ELEMENT chemicalcompound EMPTY>
+<!ATTLIST chemicalcompound
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    acronym CDATA #IMPLIED
+>
+
+<!ELEMENT atccode_chemicalcompound EMPTY>
+<!ATTLIST atccode_chemicalcompound
+    atccode_id CDATA #REQUIRED
+    chemicalcompound_id CDATA #REQUIRED
+>
+
+<!ELEMENT attributetype EMPTY>
+<!ATTLIST attributetype
+    id CDATA #REQUIRED
+    datatype CDATA #IMPLIED
+    description CDATA #IMPLIED
+    name CDATA #IMPLIED
+>
+
+<!ELEMENT campaign EMPTY>
+<!ATTLIST campaign
+    id CDATA #REQUIRED
+    description CDATA #IMPLIED
+    duration CDATA #IMPLIED
+    name CDATA #REQUIRED
+    startdate CDATA #IMPLIED
+    status CDATA #REQUIRED
+    timesperday CDATA #IMPLIED
+    type CDATA #REQUIRED
+    version CDATA #REQUIRED
+    mobilisrid CDATA #IMPLIED
+>
+
+<!ELEMENT campaign_participant EMPTY>
+<!ATTLIST campaign_participant
+    campaign_id CDATA #REQUIRED
+    patient_id CDATA #REQUIRED
+    id CDATA #REQUIRED
+>
+
+<!ELEMENT chemicaldrugstrength EMPTY>
+<!ATTLIST chemicaldrugstrength
+    id CDATA #REQUIRED
+    chemicalcompound CDATA #REQUIRED
+    strength CDATA #IMPLIED
+    drug CDATA #REQUIRED
+>
+
+<!ELEMENT clinicuser EMPTY>
+<!ATTLIST clinicuser
+    clinicid CDATA #REQUIRED
+    userid CDATA #REQUIRED
+>
+
+<!ELEMENT databasechangelog EMPTY>
+<!ATTLIST databasechangelog
+    id CDATA #REQUIRED
+    author CDATA #REQUIRED
+    filename CDATA #REQUIRED
+    dateexecuted CDATA #REQUIRED
+    orderexecuted CDATA #REQUIRED
+    exectype CDATA #REQUIRED
+    md5sum CDATA #IMPLIED
+    description CDATA #IMPLIED
+    comments CDATA #IMPLIED
+    tag CDATA #IMPLIED
+    liquibase CDATA #IMPLIED
+>
+
+<!ELEMENT databasechangeloglock EMPTY>
+<!ATTLIST databasechangeloglock
+    id CDATA #REQUIRED
+    locked CDATA #REQUIRED
+    lockgranted CDATA #IMPLIED
+    lockedby CDATA #IMPLIED
+>
+
+<!ELEMENT deleteditem EMPTY>
+<!ATTLIST deleteditem
+    id CDATA #REQUIRED
+    deleteditemid CDATA #IMPLIED
+    itemtype CDATA #IMPLIED
+    invalid CDATA #IMPLIED
+>
+
+<!ELEMENT doctor EMPTY>
+<!ATTLIST doctor
+    id CDATA #REQUIRED
+    emailaddress CDATA #IMPLIED
+    firstname CDATA #IMPLIED
+    lastname CDATA #IMPLIED
+    mobileno CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    telephoneno CDATA #IMPLIED
+    active CDATA #IMPLIED
+>
+
+<!ELEMENT episode EMPTY>
+<!ATTLIST episode
+    id CDATA #REQUIRED
+    startdate CDATA #REQUIRED
+    stopdate CDATA #IMPLIED
+    startreason CDATA #IMPLIED
+    stopreason CDATA #IMPLIED
+    startnotes CDATA #IMPLIED
+    stopnotes CDATA #IMPLIED
+    patient CDATA #IMPLIED
+    index CDATA #IMPLIED
+    clinic CDATA #REQUIRED
+>
+
+<!ELEMENT identifiertype EMPTY>
+<!ATTLIST identifiertype
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED
+    index CDATA #IMPLIED
+    voided CDATA #REQUIRED
+>
+
+<!ELEMENT logging EMPTY>
+<!ATTLIST logging
+    id CDATA #REQUIRED
+    itemid CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    transactiondate CDATA #IMPLIED
+    transactiontype CDATA #IMPLIED
+    idart_user CDATA #REQUIRED
+    message CDATA #IMPLIED
+>
+
+<!ELEMENT messageschedule EMPTY>
+<!ATTLIST messageschedule
+    id CDATA #REQUIRED
+    description CDATA #IMPLIED
+    messagetype CDATA #REQUIRED
+    scheduledate CDATA #REQUIRED
+    daystoschedule CDATA #IMPLIED
+    scheduledsuccessfully CDATA #IMPLIED
+    senttoalerts CDATA #IMPLIED
+    messagenumber CDATA #IMPLIED
+    language CDATA #IMPLIED
+>
+
+<!ELEMENT packageddrugs EMPTY>
+<!ATTLIST packageddrugs
+    id CDATA #REQUIRED
+    amount CDATA #IMPLIED
+    stock CDATA #REQUIRED
+    parentpackage CDATA #REQUIRED
+    modified CDATA #IMPLIED
+    packageddrugsindex CDATA #IMPLIED
+>
+
+<!ELEMENT users EMPTY>
+<!ATTLIST users
+    id CDATA #REQUIRED
+    modified CDATA #IMPLIED
+    cl_password CDATA #IMPLIED
+    role CDATA #IMPLIED
+    cl_username CDATA #IMPLIED
+>
+
+<!ELEMENT packagedruginfotmp EMPTY>
+<!ATTLIST packagedruginfotmp
+    id CDATA #REQUIRED
+    amountpertime CDATA #IMPLIED
+    batchnumber CDATA #IMPLIED
+    clinic CDATA #IMPLIED
+    dispensedate CDATA #IMPLIED
+    dispensedqty CDATA #IMPLIED
+    drugname CDATA #IMPLIED
+    expirydate CDATA #IMPLIED
+    formlanguage1 CDATA #IMPLIED
+    formlanguage2 CDATA #IMPLIED
+    formlanguage3 CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    packageindex CDATA #IMPLIED
+    patientid CDATA #IMPLIED
+    patientfirstname CDATA #IMPLIED
+    specialinstructions1 CDATA #IMPLIED
+    specialinstructions2 CDATA #IMPLIED
+    stockid CDATA #IMPLIED
+    timesperday CDATA #IMPLIED
+    cluser CDATA #REQUIRED
+    weekssupply CDATA #IMPLIED
+    sidetreatment CDATA #IMPLIED
+    packageddrug CDATA #REQUIRED
+    invalid CDATA #IMPLIED
+    qtyinhand CDATA #IMPLIED
+    summaryqtyinhand CDATA #IMPLIED
+    qtyinlastbatch CDATA #IMPLIED
+    patientlastname CDATA #IMPLIED
+    prescriptionduration CDATA #IMPLIED
+    dateexpectedstring CDATA #IMPLIED
+    senttoekapa CDATA #IMPLIED
+    packageid CDATA #IMPLIED
+    firstbatchinprintjob CDATA #IMPLIED
+    numberoflabels CDATA #IMPLIED
+    dispensedforlaterpickup CDATA #IMPLIED
+>
+
+<!ELEMENT patientattribute EMPTY>
+<!ATTLIST patientattribute
+    id CDATA #REQUIRED
+    value CDATA #IMPLIED
+    patient CDATA #IMPLIED
+    type_id CDATA #IMPLIED
+>
+
+<!ELEMENT patientidentifier EMPTY>
+<!ATTLIST patientidentifier
+    id CDATA #REQUIRED
+    value CDATA #REQUIRED
+    patient_id CDATA #REQUIRED
+    type_id CDATA #REQUIRED
+>
+
+<!ELEMENT patientstatistic EMPTY>
+<!ATTLIST patientstatistic
+    id CDATA #REQUIRED
+    entry_id CDATA #IMPLIED
+    patient_id CDATA #IMPLIED
+    datetested CDATA #IMPLIED
+    daterecorded CDATA #IMPLIED
+    patientstattype_id CDATA #IMPLIED
+    statnumeric CDATA #IMPLIED
+    stattext CDATA #IMPLIED
+    statdate CDATA #IMPLIED
+>
+
+<!ELEMENT patientstattypes EMPTY>
+<!ATTLIST patientstattypes
+    id CDATA #REQUIRED
+    statname CDATA #IMPLIED
+    statformat CDATA #IMPLIED
+>
+
+<!ELEMENT patientvisit EMPTY>
+<!ATTLIST patientvisit
+    id CDATA #REQUIRED
+    patient_id CDATA #IMPLIED
+    dateofvisit CDATA #IMPLIED
+    isscheduled CDATA #IMPLIED
+    patientvisitreason_id CDATA #IMPLIED
+    diagnosis CDATA #IMPLIED
+    notes CDATA #IMPLIED
+>
+
+<!ELEMENT patientvisitreason EMPTY>
+<!ATTLIST patientvisitreason
+    id CDATA #REQUIRED
+    reasonforvisit CDATA #IMPLIED
+>
+
+<!ELEMENT pregnancy EMPTY>
+<!ATTLIST pregnancy
+    id CDATA #REQUIRED
+    confirmdate CDATA #IMPLIED
+    enddate CDATA #IMPLIED
+    patient CDATA #REQUIRED
+    modified CDATA #IMPLIED
+>
+
+<!ELEMENT prescription EMPTY>
+<!ATTLIST prescription
+    id CDATA #REQUIRED
+    clinicalstage CDATA #IMPLIED
+    current CDATA #IMPLIED
+    date CDATA #IMPLIED
+    doctor CDATA #IMPLIED
+    duration CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    patient CDATA #REQUIRED
+    prescriptionid CDATA #IMPLIED
+    weight CDATA #IMPLIED
+    reasonforupdate CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    enddate CDATA #IMPLIED
+    drugtypes CDATA #IMPLIED
+>
+
+<!ELEMENT prescribeddrugs EMPTY>
+<!ATTLIST prescribeddrugs
+    id CDATA #REQUIRED
+    amtpertime CDATA #IMPLIED
+    drug CDATA #IMPLIED
+    prescription CDATA #IMPLIED
+    timesperday CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    prescribeddrugsindex CDATA #IMPLIED
+>
+
+<!ELEMENT regimen EMPTY>
+<!ATTLIST regimen
+    id CDATA #REQUIRED
+    modified CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    regimenname CDATA #IMPLIED
+    druggroup CDATA #IMPLIED
+>
+
+<!ELEMENT regimendrugs EMPTY>
+<!ATTLIST regimendrugs
+    id CDATA #REQUIRED
+    amtpertime CDATA #IMPLIED
+    drug CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    regimen CDATA #IMPLIED
+    timesperday CDATA #IMPLIED
+    notes CDATA #IMPLIED
+    regimendrugsindex CDATA #IMPLIED
+>
+
+<!ELEMENT simpledomain EMPTY>
+<!ATTLIST simpledomain
+    id CDATA #REQUIRED
+    description CDATA #IMPLIED
+    name CDATA #IMPLIED
+    value CDATA #IMPLIED
+>
+
+<!ELEMENT stockcenter EMPTY>
+<!ATTLIST stockcenter
+    id CDATA #REQUIRED
+    stockcentername CDATA #IMPLIED
+    preferred CDATA #IMPLIED
+>
+
+<!ELEMENT stock EMPTY>
+<!ATTLIST stock
+    id CDATA #REQUIRED
+    drug CDATA #REQUIRED
+    batchnumber CDATA #IMPLIED
+    datereceived CDATA #IMPLIED
+    stockcenter CDATA #REQUIRED
+    expirydate CDATA #IMPLIED
+    modified CDATA #IMPLIED
+    shelfnumber CDATA #IMPLIED
+    unitsreceived CDATA #IMPLIED
+    manufacturer CDATA #IMPLIED
+    hasunitsremaining CDATA #IMPLIED
+    unitprice CDATA #IMPLIED
+>
+
+<!ELEMENT stocktake EMPTY>
+<!ATTLIST stocktake
+    id CDATA #REQUIRED
+    enddate CDATA #IMPLIED
+    startdate CDATA #IMPLIED
+    stocktakenumber CDATA #IMPLIED
+    open CDATA #IMPLIED
+>
+
+<!ELEMENT stockadjustment EMPTY>
+<!ATTLIST stockadjustment
+    id CDATA #REQUIRED
+    capturedate CDATA #IMPLIED
+    stock CDATA #REQUIRED
+    notes CDATA #IMPLIED
+    stocktake CDATA #IMPLIED
+    stockcount CDATA #IMPLIED
+    adjustedvalue CDATA #IMPLIED
+    finalised CDATA #IMPLIED
+>
+
+<!ELEMENT stocklevel EMPTY>
+<!ATTLIST stocklevel
+    id CDATA #REQUIRED
+    batch CDATA #REQUIRED
+    fullcontainersremaining CDATA #IMPLIED
+    loosepillsremaining CDATA #IMPLIED
+>
+
+<!ELEMENT study EMPTY>
+<!ATTLIST study
+    id CDATA #REQUIRED
+    studyname CDATA #REQUIRED
+>
+
+<!ELEMENT studyparticipant EMPTY>
+<!ATTLIST studyparticipant
+    id CDATA #REQUIRED
+    studygroup CDATA #REQUIRED
+    startdate CDATA #REQUIRED
+    enddate CDATA #IMPLIED
+    patient CDATA #REQUIRED
+    study CDATA #REQUIRED
+    randomizationid CDATA #IMPLIED
+    alternatecellphone CDATA #IMPLIED
+    network CDATA #REQUIRED
+    language CDATA #IMPLIED
+>
+

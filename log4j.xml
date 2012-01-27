@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!--
+		Configure a console appender. Allows logs to be written to the console
+	-->
+	<appender name="CA" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{dd-MM-yyyy HH:mm:ss} [%t] %-5p (%F:%L) - %m%n" />
+		</layout>
+	</appender>
+
+	<logger name="org.celllife">
+		<level value="debug" />
+	</logger>
+
+	<logger name="org.eclipse.swtbot">
+		<level value="info" />
+	</logger>
+	
+	<logger name="com.nomsic">
+		<level value="WARN" />
+	</logger>
+
+	<logger name="org.celllife.idart.integration">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.hibernate">
+		<level value="warn" />
+	</logger>
+	
+	<logger name="liquibase">
+		<level value="info" />
+	</logger>
+
+	<logger name="model.manager">
+		<level value="info" />
+	</logger>
+	
+	<logger name="org.dbunit">
+		<level value="debug" />
+	</logger>
+	
+	<!-- Root debugger -->
+	<root>
+		<level value="warn" />
+		<appender-ref ref="CA" />
+	</root>
+
+</log4j:configuration>

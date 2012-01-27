@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockTake_batch" pageWidth="192" pageHeight="842" columnWidth="192" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="stockCenterId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(41)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="drugId" class="java.lang.Integer"/>
+	<parameter name="packSize" class="java.lang.Integer"/>
+	<parameter name="stockTakeNumber" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="path" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select sum((a.received*$P{packSize})) as totalReceived, 
+       sum((COALESCE(b.packs_dispensed, 0)*$P{packSize} + COALESCE(b.pills_dispensed, 0) + 
+            COALESCE(c.packs_destroyed, 0) * $P{packSize} + COALESCE(c.pills_destroyed, 0) + 
+            COALESCE(d.packs_adjusted, 0) * $P{packSize} + COALESCE(d.pills_adjusted, 0))) as totalIssued, 
+       sum(d.adjustedValue) as totalPillsAdjusted, 
+       sum(COALESCE(d.stockCount, 0)) as totalPillsCounted
+
+
+from (
+select s.batchNumber ,round(floor(sum(sa.adjustedValue)/$P{packSize})::numeric,0) as packs_adjusted,round((sum(sa.adjustedValue)%$P{packSize})::numeric,0) as pills_adjusted, 
+ 	sa.captureDate as captureDate, sa.adjustedValue as adjustedValue, sa.notes as notes, sa.stockCount as stockCount, s.expiryDate as expiryDate, s.id
+from stock as s, stockAdjustment as sa, stockTake st
+where s.drug = $P{drugId} 
+and s.stockCenter = $P{stockCenterId} 
+and sa.stock = s.id
+and sa.stockTake = st.id
+and st.stockTakeNumber = $P{stockTakeNumber}
+group by s.id, s.batchNumber, sa.captureDate, sa.adjustedValue, sa.notes, sa.stockCount, s.expiryDate
+) as d
+
+left outer join
+
+(select s.batchNumber ,round(floor(sum(pd.amount::real)/$P{packSize}::real)::numeric,0) as packs_dispensed,round((sum(pd.amount)%$P{packSize})::numeric,0) as pills_dispensed, s.id 
+
+from stock as s, packageddrugs as pd, package as p
+where s.drug = $P{drugId} 
+and s.stockCenter = $P{stockCenterId} 
+and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.prescription is not null
+group by s.id, s.batchNumber
+) as b
+
+on d.id = b.id
+
+left outer join
+
+(select s.batchNumber ,round(floor(sum(pd.amount::real)/$P{packSize}::real)::numeric,0) as packs_destroyed,round((sum(pd.amount)%$P{packSize})::numeric,0) as pills_destroyed, s.id 
+
+from stock as s, packageddrugs as pd, package as p
+where s.drug = $P{drugId} 
+and s.stockCenter = $P{stockCenterId}
+and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.prescription is null
+group by s.id, s.batchNumber
+) as c 
+
+on d.id = c.id 
+
+left outer join
+
+(
+select s.batchNumber , sum(s.unitsreceived) as received, s.id 
+from stock as s
+where s.drug = $P{drugId} 
+and s.stockCenter = $P{stockCenterId}
+group by s.id, s.batchNumber
+) as a
+
+on d.id = a.id]]>
+	</queryString>
+	<field name="totalReceived" class="java.lang.Integer"/>
+	<field name="totalIssued" class="java.lang.Integer"/>
+	<field name="totalPillsAdjusted" class="java.lang.Integer"/>
+	<field name="totalPillsCounted" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<line>
+				<reportElement key="line-3" x="96" y="0" width="1" height="20"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-2" mode="Opaque" x="4" y="2" width="88" height="18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[String.valueOf(($F{totalPillsCounted}.intValue()/$P{packSize}.intValue()) + "(" + ($F{totalPillsCounted}.intValue()%$P{packSize}.intValue()) + " loose)")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-3" mode="Opaque" x="102" y="2" width="88" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[String.valueOf((($F{totalPillsCounted}.intValue()+$F{totalPillsAdjusted}.intValue())/$P{packSize}.intValue()) + "(" + (($F{totalPillsCounted}.intValue()+$F{totalPillsAdjusted}.intValue())%$P{packSize}.intValue()) + " loose)")]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-5" x="0" y="0" width="1" height="20"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

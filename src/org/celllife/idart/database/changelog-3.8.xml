@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="simon@cell-life.org" id="3.8.1">
+		<comment>add atccode table</comment>
+		<createTable tableName="atccode">
+			<column name="id" type="int">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="code" type="varchar(255)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="mims" type="varchar(255)">
+				<constraints nullable="true" unique="true" />
+			</column>
+		</createTable>
+		<addColumn tableName="drug">
+			<column name="atccode_id" type="int" />
+		</addColumn>
+		<dropColumn tableName="drug" columnName="nsncode" />
+		<addColumn tableName="chemicalcompound">
+			<column name="atccode_id" type="int" />
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_drug_atccode"
+			referencedTableName="atccode" baseColumnNames="atccode_id"
+			baseTableName="drug" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="fk_chemicalcompound_atccode"
+			referencedTableName="atccode" baseColumnNames="atccode_id"
+			baseTableName="chemicalcompound" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.2">
+		<comment>improvement to add_sched_visit trigger</comment>
+		<sqlFile splitStatements="false" stripComments="false"
+			path="org/celllife/idart/database/3_8_2-add_sched_visit.sql" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.3">
+		<comment>drop unique constraint on atccode.mims</comment>
+		<dropUniqueConstraint tableName="atccode" constraintName="atccode_mims_key"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.4">
+		<comment>load atc codes</comment>
+		<loadData tableName="atccode" file="org/celllife/idart/database/3_8_4-atc_codes.csv">
+    		<column name="id" type="NUMERIC" index="0"/>
+    		<column name="code" type="STRING" index="1"/>
+    		<column name="name" type="STRING" index="2"/>
+    		<column name="mims" type="STRING" index="3"/>
+    	</loadData>
+    	<update tableName="atccode">
+    		<column name="mims" value="NULL"/>
+    		<where>mims = ''</where>
+    	</update>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.5">
+		<comment>change atccode chemicalcompound relationship to many to many</comment>
+		<dropColumn tableName="chemicalcompound" columnName="atccode_id"/>
+		<createTable tableName="atccode_chemicalcompound">
+			<column name="atccode_id" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="chemicalcompound_id" type="int">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="fk_atccode_chemicalcompound" 
+			baseTableName="atccode_chemicalcompound" 
+			baseColumnNames="atccode_id" 
+			referencedTableName="atccode" 
+			referencedColumnNames="id"/>
+		<addForeignKeyConstraint constraintName="fk_chemicalcompound_atccode" 
+			baseTableName="atccode_chemicalcompound" 
+			baseColumnNames="chemicalcompound_id" 
+			referencedTableName="chemicalcompound" 
+			referencedColumnNames="id"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.6">
+		<comment>add constraints to chemical compound</comment>
+		<addNotNullConstraint tableName="chemicalcompound" columnName="name"/>
+		<addUniqueConstraint tableName="chemicalcompound" columnNames="name"/>
+		<addUniqueConstraint tableName="chemicalcompound" columnNames="acronym"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.7">
+		<comment>link atc codes to chemical compounds</comment>
+		<sqlFile path="org/celllife/idart/database/3_8_7-atc_code_links.sql" />
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.8">
+		<comment>remove didanosine link from tenofovir</comment>
+		<delete tableName="chemicaldrugstrength">
+			<where>drug = 3 and chemicalcompound = 2</where>
+		</delete>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.9">
+		<comment>link atc codes to drugs</comment>
+		<customChange class="org.celllife.idart.database.LinkDrugsToAtcCodes_3_8_9"/>
+	</changeSet>
+</databaseChangeLog>
+

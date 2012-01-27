@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="simon@cell-life.org" id="3.7.1">
+		<comment>Add patient identifier and identifier type</comment>
+		<createTable tableName="identifiertype">
+			<column name="id" type="int">
+       		 	<constraints primaryKey="true" nullable="false"/>
+   			</column>
+  		 	<column name="name" type="varchar(255)">
+  		 		<constraints nullable="false" unique="true"/>
+  		 	</column>
+  		 	<column name="index" type="int"/>
+  		 	<column name="voided" type="boolean" defaultValueBoolean="false">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+		</createTable>
+		<createTable tableName="patientidentifier">
+			<column name="id" type="int">
+       		 	<constraints primaryKey="true" nullable="false"/>
+   			</column>
+  		 	<column name="value" type="varchar(255)">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="patient_id" type="int">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+  		 	<column name="type_id" type="int">
+  		 		<constraints nullable="false"/>
+  		 	</column>
+		</createTable>
+		<addUniqueConstraint tableName="patientidentifier" 
+			constraintName="unique_identifier_type" columnNames="type_id,value"/>
+		<addForeignKeyConstraint  constraintName="patientidentifier_identifiertype"
+			referencedTableName="identifiertype" referencedColumnNames="id" 
+			baseColumnNames="type_id" baseTableName="patientidentifier" />
+		<addForeignKeyConstraint constraintName="patientidentifier_patient" 
+			referencedTableName="patient" referencedColumnNames="id"
+			baseTableName="patientidentifier" baseColumnNames="patient_id" />
+		<insert tableName="identifiertype">
+			<column name="id" valueNumeric="0"/>
+			<column name="name" value="National Patient Identifier"/>
+			<column name="index" valueNumeric="0"/>
+		</insert>
+		<insert tableName="identifiertype">
+			<column name="id" valueNumeric="1"/>
+			<column name="name" value="Facility Number"/>
+			<column name="index" valueNumeric="1"/>
+		</insert>
+		<insert tableName="identifiertype">
+			<column name="id" valueNumeric="2"/>
+			<column name="name" value="PEPFAR Number"/>
+			<column name="index" valueNumeric="2"/>
+		</insert>
+		<insert tableName="identifiertype">
+			<column name="id" valueNumeric="3"/>
+			<column name="name" value="National ID Number"/>
+			<column name="index" valueNumeric="3"/>
+		</insert>
+		<insert tableName="identifiertype">
+			<column name="id" valueNumeric="4"/>
+			<column name="name" value="Passport Number"/>
+			<column name="index" valueNumeric="4"/>
+		</insert>
+		<insert tableName="identifiertype">
+			<column name="id" valueNumeric="5"/>
+			<column name="name" value="Work Permit Number"/>
+			<column name="index" valueNumeric="5"/>
+		</insert>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.7.2">
+		<comment>Add type to alternate identifiers table</comment>
+		<addColumn tableName="alternatepatientidentifier">
+			<column name="type_id" type="int"/>
+		</addColumn>
+		<update tableName="alternatepatientidentifier">
+			<column name="type_id" valueNumeric="1"/>
+		</update>
+		<addNotNullConstraint tableName="alternatepatientidentifier" 
+			columnName="type_id"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.7.3">
+		<comment>Copy patientid to identifier</comment>
+		<sql><![CDATA[
+			insert into patientidentifier (id, value, patient_id, type_id) 
+			select nextval('hibernate_sequence'), patientid, id, 1 from patient
+		]]></sql>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.7.4">
+		<comment>Move patient idnum to identifier</comment>
+		<sql><![CDATA[
+			insert into patientidentifier (id, value, patient_id, type_id) 
+			select nextval('hibernate_sequence'), idnum, id, 3 from patient
+			where idnum != ''
+		]]></sql>
+		<dropColumn tableName="patient" columnName="idnum"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.7.5">
+		<renameColumn tableName="alternatepatientidentifier" oldColumnName="enddate" 
+			newColumnName="datechanged"/>
+		<dropColumn tableName="alternatepatientidentifier" columnName="startdate"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.7.6">
+		<comment>upgrade Communicate API</comment>
+		<update tableName="campaign">
+			<column name="type" value="DAILY"/>
+			<where>type = 'RELATIVE'</where>
+		</update>
+		<update tableName="campaign">
+			<column name="type" value="FLEXI"/>
+			<where>type = 'GENERIC'</where>
+		</update>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.7.7">
+		<comment>changes from hibernate validation</comment>
+		<modifyDataType tableName="drug" columnName="defaultamnt" newDataType="float8"/>
+		<modifyDataType tableName="episode" columnName="clinic" newDataType="int"/>
+		<modifyDataType tableName="package" columnName="clinic" newDataType="int"/>
+		<modifyDataType tableName="campaign" columnName="id" newDataType="int"/>
+		<modifyDataType tableName="regimendrugs" columnName="regimendrugsindex" newDataType="int"/>
+		<modifyDataType tableName="studyparticipant" columnName="enddate" newDataType="date"/>
+		<modifyDataType tableName="studyparticipant" columnName="startdate" newDataType="date"/>
+		<modifyDataType tableName="campaign" columnName="mobilisrid" newDataType="bigint"/>
+		<sql><![CDATA[
+			ALTER TABLE packagedruginfotmp ALTER COLUMN prescriptionduration TYPE INT
+			USING cast(prescriptionduration as int)
+		]]></sql>
+		<modifyDataType tableName="patientstatistic" columnName="stattext" newDataType="varchar(255)"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.7.8">
+		<customChange class="org.celllife.idart.database.FixMissingIdentifiers"/>
+	</changeSet>
+</databaseChangeLog>
+

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="target-test" path="test"/>
+	<classpathentry kind="src" path="testGui"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/JavaHelp/jh.jar"/>
+	<classpathentry kind="lib" path="lib/JavaHelp/jhall.jar"/>
+	<classpathentry kind="lib" path="lib/JavaHelp/jhbasic.jar"/>
+	<classpathentry kind="lib" path="lib/JavaHelp/jhindexer.jar"/>
+	<classpathentry kind="lib" path="lib/JavaHelp/jhsearch.jar"/>
+	<classpathentry kind="lib" path="lib/JavaHelp/jsearch.jar"/>
+	<classpathentry kind="lib" path="lib/Oracle JDBC Driver/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="lib/ant-contrib/ant-contrib-1.0b2.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/swtjasperviewer-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/Velocity/velocity-dep-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/commons-digester-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/hibernate3.jar" sourcepath="C:/Users/simon/.m2/repository/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/annotations/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/annotations/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/annotations/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/ant-antlr-1.6.5.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/antlr-2.7.6.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/asm.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/cglib-2.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/ehcache-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/jdbc2_0-stdext.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/jta.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/syndiag2.jar"/>
+	<classpathentry kind="lib" path="lib/Hibernate/core/lib/versioncheck.jar"/>
+	<classpathentry kind="lib" path="lib/testng.jar"/>
+	<classpathentry kind="lib" path="lib/dbunit-2.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/JFace/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
+	<classpathentry kind="lib" path="lib/JFace/org.eclipse.jface_3.3.1.M20070910-0800b.jar" sourcepath="C:/development/Workspace/idart-trunk/lib/swt_win/src.zip"/>
+	<classpathentry kind="lib" path="lib/JFace/org.eclipse.jface.text_3.3.1.r331_v20070629.jar"/>
+	<classpathentry kind="lib" path="lib/JFace/org.eclipse.core.commands_3.3.0.I20070605-0010.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/barbecue-1.5-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io.jar"/>
+	<classpathentry kind="lib" path="lib/swtcalendar/org.vafada.swtcalendar_1.0.0.200901280916.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/osgi.jar"/>
+	<classpathentry kind="lib" path="lib/stableupdate/stableupdate-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/stableupdate/stableupdate.application-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/swt_win/swt-debug.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="lib/junit4.0/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.eclipse.swtbot.junit4_x_2.0.0.512-dev-e35.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.eclipse.swtbot.swt.finder_2.0.0.512-dev-e35.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.core.source_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.integration_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.integration.source_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.library_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.library.source_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.text_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/swtbot/org.hamcrest.text.source_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/Java Excel API 2.6.12/jxl.jar"/>
+	<classpathentry kind="lib" path="lib/Postgresql_JDBC_Driver/postgresql-8.3-605.jdbc3.jar"/>
+	<classpathentry kind="lib" path="lib/quartz-1.6.5.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-client-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-core-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/randb.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/property-binder-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/iText-2.1.7.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/jasperreports-3.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/jcommon-1.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/jfreechart-1.0.12.jar"/>
+	<classpathentry kind="lib" path="lib/JasperReports/iReport.jar"/>
+	<classpathentry kind="lib" path="lib/liquibase-2.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/liquibase-slf4j-0.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/org.celllife.mobilisr.api-2.4-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/org.celllife.mobilisr.client-2.4-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/sa-data-api-1.0-SNAPSHOT.jar" sourcepath="/org.iedea.sa-data-api/src/main/java"/>
+	<classpathentry kind="output" path="target"/>
+</classpath>

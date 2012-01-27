@@ -1,0 +1,60 @@
+ID,ATC Code,Drug Name,MIMS Reference
+0,J05AA01,Metisazone,
+1,J05AB01,Aciclovir,
+2,J05AB02,Idoxuridine,
+3,J05AB03,Vidarabine,
+4,J05AB04,Ribavirin,
+5,J05AB06,Ganciclovir,
+6,J05AB09,Famciclovir,
+7,J05AB11,Valaciclovir,
+8,J05AB12,Cidofovir,
+9,J05AB13,Penciclovir,
+10,J05AB14,Valganciclov,
+11,J05AB15,Brivudine,
+12,J05AC02,Rimantadine,
+13,J05AC03,Tromantadine,
+14,J05AD01,Foscarnet,
+15,J05AD02,Fosfonet,
+16,J05AE01,Saquinavir,
+17,J05AE02,Indinavir,
+18,J05AE03,Ritonavir,18.12
+19,J05AE04,Nelfinavir,19.12
+20,J05AE05,Amprenavir,
+21,J05AE06,Lopinavir,18.12
+22,J05AE07,Fosamprenavir,
+23,J05AE08,Atazanavir,
+24,J05AE09,Tipranavir,
+25,J05AE10,Darunavir,
+26,J05AF01,Zidovudine,18.12
+27,J05AF02,Didanosine,18.12
+28,J05AF03,Zalcitabine,
+29,J05AF04,Stavudine,18.12
+30,J05AF05,Lamivudine,18.9
+31,J05AF06,Abacavir,19.12
+32,J05AF07,Tenofovir disoproxil,18.12
+33,J05AF08,Adefovir dipivoxil,
+34,J05AF09,Emtricitabine,
+35,J05AF10,Entecavir,
+36,J05AF11,Telbivudine,
+37,J05AF12,Clevudine,
+38,J05AG01,Nevirapine,18.12
+39,J05AG02,Delavirdine,
+40,J05AG03,Efavirenz,19.12
+41,J05AG04,Etravirine,
+42,J05AH01,Zanamivir,
+43,J05AH02,Oseltamivir,
+44,J05AR01,Zidovudine and Lamivudine,
+45,J05AR02,Lamivudine and Abacavir,
+46,J05AR03,Tenofovir disoproxil and Emtricitabine,
+47,J05AR04,"Zidovudine, Lamivudine and Abacavir",
+48,J05AR05,"Zidovudine, Lamivudine and Nevirapine",
+49,J05AR06,"Emtricitabine, Tenofovir disoproxil and Efavirenz",
+50,J05AR07,"Stavudine, Lamivudine and Nevirapine",
+51,J05AX01,Moroxydine,
+52,J05AX02,Lysozyme,
+53,J05AX05,Inosine pranobex,
+54,J05AX06,Pleconaril,
+55,J05AX07,Enfuvirtide,
+56,J05AX08,Raltegravir,
+57,J05AX09,Maraviroc,
+58,J05AX10,Maribavir,

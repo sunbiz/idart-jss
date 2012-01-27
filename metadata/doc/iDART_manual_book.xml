@@ -1,0 +1,3830 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<book lang="en">
+	<bookinfo>
+		<title>iDART User Guide</title>
+		<author>
+			<firstname>v3.0,</firstname>
+			<othername>August</othername>
+			<surname>2007</surname>
+		</author>
+		<authorinitials>VA2</authorinitials>
+
+
+	</bookinfo>
+	<chapter>
+		<title>Welcome to the iDART Pharmacy Tool</title>
+		<simpara>
+			iDART (which stands for the Intelligent Dispensing of
+			Antiretroviral Treatment) is a tool designed to help
+			pharmacists and pharmacy assistants with the monthly
+			dispensing of antiretroviral drugs. iDART is designed in the
+			context of a resource constrained environment, the public
+			health sector in South Africa. iDART seeks to address many
+			of the problems typical of this type of environment. The
+			development of iDART was the result of collaboration work
+			between Cell-Life and the Desmond Tutu HIV Centre, in Cape
+			Town, South Africa. iDART is an open source project and the
+			source code can be downloaded from
+			http://idart.Cell-Life.org. It is released under GPL, so
+			please feel free to distribute this program under its
+			license agreement. Any thoughts or comments would be greatly
+			appreciated. Please send these to idart@cell-life.org.za.
+		</simpara>
+
+	</chapter>
+	<chapter>
+		<title>How To Get Help</title>
+		<simpara>
+			This section explains how the help system (online help and
+			manual) is organized, and also introduces the Cell-Life
+			Helpdesk.
+		</simpara>
+
+		<sect1>
+			<title>About This Manual</title>
+			<simpara>
+				This manual is a printed version of the online help
+				included with the iDART Pharmacy Tool. To access the
+				online help, select Launch Help from the main screen.
+				The Help Browser will open. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/help.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>help browser</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>The Cell-Life Helpdesk</title>
+			<simpara>
+				The Cell-Life Helpdesk is available between 9am and 5pm,
+				Monday to Friday. If you have a problem with the system
+				that you cannot solve using the documentation provided,
+				please feel free to call us. iDART is a chaptericipatory
+				design project. This means that all comments from our
+				users are very important, and are often used to guide
+				the design of the system. If you call the helpdesk with
+				a specific problem, try to call while sitting in front
+				of your computer with iDART loaded, as we will usually
+				want to talk you through the task you are performing. If
+				this isn't possible, have a pen and paper ready. The
+				helpdesk can be reached by:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						Calling +21 21 469 1111, Monday to Friday, 9am
+						to 5pm
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>Emailing iDART@Cell-Life.org.za</simpara>
+				</listitem>
+			</itemizedlist>
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Features of the iDART Pharmacy Tool</title>
+		<simpara>
+			iDART was developed in conjunction with the Desmond Tutu HIV
+			Centre as a result of a doctor’s requests for a solution to
+			help manage and monitor ARV stock control and patient
+			therapy dispensing. The challenges identified by the doctor
+			which Cell-Life has addressed included:
+		</simpara>
+
+		<itemizedlist>
+			<listitem>
+				<simpara>
+					A need to monitor ARV stock levels at any given time
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to be alerted whenever a specific drug level
+					was low
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to be notified when any drugs were about to
+					expire
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to be notified when patients defaulted on
+					treatment collection
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to have an electronic patient history
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to help manage large numbers of patient
+					numbers on ART simply and effectively
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to monitor a patients packaging, dispensing
+					and monitoring of drugs
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to reduce costs associated with dispensing
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					A need to save time in the process of report
+					creation
+				</simpara>
+			</listitem>
+		</itemizedlist>
+		<sect1>
+			<title>Key benefits of the iDART system:</title>
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						Accurate tracking of patient treatment
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Comprehensive patient history to treatment
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Accurate ARV stock control management
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Time saving of pharmacy dispensing through
+						faster processing
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Reduces and identifies loss of ARVs
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Operates through clearly identifiable,
+						multi-lingual bar-coded labels which are created
+						for each and every drug and patient package
+					</simpara>
+				</listitem>
+			</itemizedlist>
+		</sect1>
+		<sect1>
+			<title>The Technology</title>
+			<simpara>
+				iDART is developed using open-source technologies and
+				has been developed to run on any windows or linux based
+				platform, allowing users to access and operate the
+				system in a familiar and easy to use way. The choice for
+				using open-source software is that there are no
+				proprietary licensing costs associated with the use of
+				the software. The use of open-source also allows for
+				people to take the software for free and use it at their
+				sites should they have the necessary skills to manage
+				its operation. Each iDART installation operates with a
+				barcode label printer connected to the PC which allows
+				for each and every drug which is packaged to be clearly
+				labelled. The labels which are printed upon dispensing
+				can also be created in a range of languages depending on
+				the ART site. The labels make for easy drug information
+				and label packaging and eradicate many of the errors
+				that occur through handwritten dosage instructions.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>The Reporting Tool</title>
+			<simpara>
+				One of the more important functions of iDART is in the
+				various reports that the software makes available. The
+				reports range from basic stock control management and
+				monitoring reports to specific patient defaulter lists
+				which allow for the easy management and follow-up of
+				patients. iDART also keeps the entire patient history of
+				a patient in its database and allows for accurate
+				tracking of patients receiving treatment from ART sites.
+				It is important to note that Cell-Life believe strongly
+				in addressing the needs of each specific site and the
+				technology used is flexible enough to include numerous
+				other reports. Cell-Life believe that the technology
+				implemented needs to assist the existing processes in
+				place at sites and therefore looks to adapt the
+				technology to best suit these needs.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Down Referral or Decanting to remote clinics</title>
+			<simpara>
+				One of the great features of iDART is that it also
+				allows for the decanting of packages to remote clinics
+				and dispensaries that do not hold stock of ARVs. iDART
+				allows a central ART site or pharmacy to prepare
+				packages for a patients belonging to remote clinics and
+				will trace the entire process until the patient collects
+				their drugs. Feedback is then provided via the network
+				to the central pharmacy to signal that the package was
+				collected and the pharmacist is then allowed to package
+				drugs for the patient in the next month. For more
+				information on the decanting system please see the
+				Cell-Life website. If you have any further queries on
+				iDART please visit our website at www.Cell-Life.org or
+				call 021 469 1111.
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>System Overview</title>
+		<simpara>
+			This section provides a short description of the function of
+			iDART, and shows how the tool can be used in a pharmacy that
+			dispenses antiretroviral drugs.
+		</simpara>
+
+		<simpara>
+			iDart allows ARVs to be pre-packaged for collection by
+			patients at a later time. The packaged drugs may either be
+			collected at the pharmacy or at a remote clinic. iDART also
+			allows users to dispense ARVs immediately to patients at a
+			pharmacy.
+		</simpara>
+
+		<sect1>
+			<title>Pre-packaging ARVs for patients</title>
+			<simpara>
+				For quick dispensing, iDART allows the pharmacist to
+				pre-package a patient's ARVs. The patient may then
+				collect their pre-packaged ARVs at the pharmacy or at a
+				remote clinic. The date on which the ARVs were
+				pre-packaged is recorded by iDART to assist with the
+				tracking of the packages.
+			</simpara>
+
+			<sect2>
+				<title>Collection at the pharmacy</title>
+				<simpara>
+					If the patient collects the packaged ARVs at the
+					pharmacy, the date on which the package is collected
+					as well as the date on which the package leaves the
+					pharmacy are recorded as the current day.
+				</simpara>
+
+			</sect2>
+			<sect2>
+				<title>Collection at the local clinic</title>
+				<simpara>
+					Before a patient can collect the packaged ARVs at
+					the local clinic, the packaged ARVs need to be
+					transported from the pharmacy to the remote/local
+					clinic. The date on which the packaged ARVs leave
+					the pharmacy is recorded. The packaged drugs are
+					then transported to the clinic. The clinic
+					eventually receives the packaged ARVs and this date
+					is recorded. Finally, when the patient arrives to
+					collect his/her packaged ARVs, the date for
+					collection is recorded.
+				</simpara>
+
+			</sect2>
+		</sect1>
+		<sect1>
+			<title>
+				Dispensing to patients at the pharmacy immediately
+			</title>
+			<simpara>
+				If a patient arrives at the pharmacy to collect his/her
+				ARVs and the ARVs have not been pre-packaged, iDART
+				allows the pharmacist to package and dispense the
+				required ARVs immediately. In this case, the date the
+				package was packed, the date the package left the
+				pharmacy and the date the package was picked up will all
+				be recorded as the same day.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Remote Dispensing Feature</title>
+			<simpara>
+				This section provides a more detailed description of the
+				remote dispensing feature in iDART.
+			</simpara>
+
+			<simpara>
+				Generally, ART consists of a monthly supply of 3
+				different types of drugs. These 3 drugs need to be taken
+				together. While it is customary for a pharmacist to
+				dispense directly to a patient, iDART allows for
+				pharmacist to create packages for each individual under
+				their responsibility, at a central pharmacy. Labels are
+				printed for each of the 3 drugs in the package, and each
+				label has a reference to the individual patient. The
+				pharmacist can then use a courier service to distribute
+				the months supply to a remote rural or semi-rural
+				clinic. It is at this clinic that the patient visits on
+				a monthly basis to pick up their medications. In
+				addition to the remote packaging of ARVs, iDART also
+				allows for the direct dispensing of ARVs to a patient.
+				Since there are two separate locations in the physical
+				infrastructure, iDART consists of two separate
+				applications. The first of these resides at the central
+				pharmacy. The second application is housed at a service
+				point or ARV site, where patients collect their
+				medication from a nurse. Since both applications access
+				the same database, the responsible pharmacist can assess
+				each site that receives drugs from the central store, as
+				well as assess all patients monitored on the system.
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/Drug_Tracking_-_4_Points_in_Time.jpg"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>
+							Drug_Tracking_-_4_Points_in_Time
+						</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Since the drugs are couriered to remote areas, it is
+				very important for the responsible pharmacist to know
+				the location of drugs at all stages of the distribution.
+				For this reason, the packages are tracked at 4 specific
+				times along the supply chain. Tracking normally happens
+				by using a handheld barcode scanner. The first time we
+				store information about the packaged drugs is when the
+				package is first created. In other words, the time when
+				the pharmacist has placed the 3 different drugs into a
+				plastic package is recorded. The second time the package
+				is tracked is when it leaves the pharmacy. The
+				pharmacist scans out the package. When this happens, we
+				know that the drugs are now in transit to the destined
+				remote clinic. The third time the package is tracked is
+				when it arrives at the remote clinic. The nurse working
+				at this facility is responsible for receiving the
+				packaged drugs from the driver, and scanning in the
+				packages as a receipt of their arrival. The final time
+				the package is tracked is when the patient visits the
+				remote clinic to pick up their monthly supply of ARV.
+				The package is then scanned out. By scanning this out, a
+				feedback mechanism is created. In other words, the
+				pharmacist can obtain the location and status of the
+				packages between dispensing and patient pickup.
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/iDart_Overview_Diagram2.jpg" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>iDart_Overview_Diagram2</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>
+			Getting Started: Updating Pharmacy Details And Adding Drugs,
+			Stock, Doctors, Patients and their Prescriptions
+		</title>
+		<simpara>
+			The Basic Concepts section describes tasks you will need to
+			perform to set up the system for your pharmacy. First, the
+			pharmacy's details (such as address, telephone number etc)
+			must be entered. Then, the ARV drugs that will be dispensed
+			to patients (such as Efavirenz 200mg Capsules, Kaletra
+			Solution etc) must be added. Once the drugs have been added,
+			the stock levels for each drug must be recorded. If you
+			would like iDART to store regimen information, you will also
+			need to define the groups of ARV drugs that can be
+			prescribed as regimen 1A, 1B or 2.
+		</simpara>
+
+		<simpara>
+			Patients must be added next, followed by the doctors who
+			will prescribe drugs to the patients. Existing prescriptions
+			for the patients must then be recorded.
+		</simpara>
+	</chapter>
+	<chapter>
+		<title>The Pharmacy</title>
+		<simpara>
+			The system stores the pharmacy's name, address and phone
+			number as well as the name of the pharmacist in charge. This
+			information is printed on package and drug labels. In
+			addition, the names of the pharmacist and pharmacy assistant
+			are printed on all iDART reports.
+		</simpara>
+
+		<sect1>
+			<title>Updating the Pharmacy's Details</title>
+			<simpara>
+				To update the pharmacy's information, log into the
+				system and select General Admin from the main screen. A
+				new screen, the General Admin Screen, will appear. From
+				this screen, select Update the Pharmacy's Details in the
+				Pharmacy Admin section. The Pharmacy Info screen will
+				appear. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/UpdatePharmacyDetails.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdatePharmacyDetails.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				To change any of the details, click in the text box, and
+				edit or delete the existing text. The label preview will
+				change to reflect your changes. The name of the Head
+				Pharmacist will appear on all labels, and on all
+				reports. The name of the Pharmacy Assistant, if set,
+				will appear on all reports. When you are finished, click
+				<emphasis role="strong">Save</emphasis>
+				. To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving any of your
+				changes, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>ARV Drugs</title>
+		<simpara>
+			The system stores all the ARV drugs that will be given to
+			patients. The drug is referenced by its name, which should
+			therefore include the abbreviation and strength. For
+			example, you might have [d4t] Stavudine 30mg. You need to
+			specify the chemical compounds in the drug, fill in the pack
+			size, and select the form (tablets, solution etc) as this
+			determines the dosage instructions that will be printed on
+			the drug label. You can optionally specify a standard dosage
+			for the drug. Before the existing stock of a drug can be
+			recorded, it must be added as shown in this section. If you
+			are unsure about drug attributes, try looking at the example
+			with fields filled in, found in the Adding Drugs section.
+		</simpara>
+
+		<sect1>
+			<title>Adding Drugs</title>
+			<simpara>
+				Drugs are added using the Add Drug screen. To add a
+				drug, log into the system and select
+				<emphasis role="strong">General Admin</emphasis>
+				from the main screen. A new screen, the
+				<emphasis role="strong">General Admin Screen</emphasis>
+				, will appear. From this screen, select
+				<emphasis role="strong">Add a new Drug</emphasis>
+				. The Add a New Drug screen will appear. It looks like
+				this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddDrug.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddDrug.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				To start, fill in the drug name in the Drug Name field.
+				This should include the drug's abbreviation (for ARV
+				drugs), full name and strength. An example is [d4t]
+				Stavudine 30mg. Note that duplicate drug names are not
+				allowed in iDART Next, fill in the drug's chemical
+				composition. Select one or more chemical compounds from
+				the table on the right hand side, and fill in their
+				strength (in mg or mg/ml) by clicking in the strength
+				column and entering the value. If the chemical compound
+				you want to select is not in the list, you will need to
+				add it to the database using the Add Chemical Compound
+				button. Please be aware that this should only be done if
+				you are absolutely sure you want to add the chemical
+				compound. You will be asked to enter you password to
+				confirm. Now, fill in the other fields, making sure you
+				fill in all fields marked with * as these are
+				compulsory. Standard dosage is not compulsory, but if
+				you do fill in a standard dosage for a drug you can
+				always change this for individual prescriptions. Here is
+				an example with all the fields filled in:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddDrugFilledIn.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddDrugFilledIn.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				When you are finished, click
+				<emphasis role="strong">Save</emphasis>
+				to add the drug. To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the drug, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Updating a Drug's Information</title>
+			<simpara>
+				Drugs are updated using the Update an Existing Drug
+				screen. To update a drug, select
+				<emphasis role="strong">General Admin</emphasis>
+				from the main screen. A new screen, the General Admin
+				Screen, will appear. From this screen, select
+				<emphasis role="strong">
+					Update an Existing Drug's Information
+				</emphasis>
+				. The Update an Existing Drug screen will appear. It
+				looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/UpdateDrug.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdateDrug.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				To get the drug's current information, you should use
+				the drug search. For more information about using the
+				drug search, please see Using the Drug Search. Once the
+				information for an existing drug is displayed, you can
+				edit this information. Ensure that at least the fields
+				marked with * are filled. All other fields are optional,
+				but recommended. The text in the Drug Name field will be
+				printed on the drug label during dispensing, so be sure
+				to include the strength, form and quantity, as is shown
+				in the example above. An example is [d4t] Stavudine
+				30mg. Note that duplicate drug names are not allowed in
+				iDART. You should also make sure the drug's chemical
+				composition is correct. To change the chemical
+				composition, select one or more chemical compounds from
+				the table on the right hand side, and fill in their
+				strength (in mg or mg/ml) by clicking in the strength
+				column and entering the value. If the chemical compound
+				you want to select is not in the list, you will need to
+				add it to the database using the Add Chemical Compound
+				button. Please be aware that this should only be done if
+				you are absolutely sure you want to add the chemical
+				compound. You will be asked to enter you password to
+				confirm.
+			</simpara>
+
+			<simpara>
+				When you are finished, click
+				<emphasis role="strong">Save</emphasis>
+				to change the drug's information. To clear all the text
+				fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without changing the drug
+				information, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Stock</title>
+		<simpara>
+			When the system is first set up, all the stock batches of
+			ARV drugs at the pharmacy must be recorded. Tin is only done
+			once. After this, stock arrivals must also be recorded each
+			time they occur. Careful recording of stock allows the
+			system to maintain accurate stock levels and produce stock
+			reports.
+		</simpara>
+
+		<sect1>
+			<title>Adding Stock</title>
+			<simpara>
+				The Stock Arrives screen must be used to add the stock
+				to the database. Before adding stock of a drug, it is
+				important to add the drug itself using the Add a New
+				Drug screen, if this has not already been done. For more
+				information on this, see Adding Drugs. It is also
+				important that the distribution clinic for which the
+				stock is intended has been added. For more information
+				on this, see Adding Distribution Clinics. To add stock,
+				log into the system and select
+				<emphasis role="strong">
+					Stock &amp; Dispensing
+				</emphasis>
+				from the main screen. A new screen, the Stock Control
+				Screen, will appear. From this screen, select
+				<emphasis role="strong">Stock Arrives</emphasis>
+				. The Stock Arrives at Pharmacy screen will appear. It
+				looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/StockArrives.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>StockArrives.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				This screen displays a list of all the stock being added
+				during the current session. For each batch, the user
+				must perform the following steps:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						Click Add Stock on the Stock Arrives at Pharmacy
+						Screen (above). The Add Stock screen appears. It
+						looks like this:
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/StockArrivesAddDrug.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>StockArrivesAddDrug.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						Use the Drug Search button to select the drug
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Fill in the batch information in the lower half
+						of the screen
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				When you are finished, click
+				<emphasis role="strong">Save</emphasis>
+				to add the stock batch. To clear all the text fields,
+				press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the stock batch,
+				press
+				<emphasis role="strong">Cancel</emphasis>
+				. You will now be returned to the Stock Arrives at
+				Pharmacy screen. If you have successfully added stock,
+				it should appear in the list on this screen. If it has
+				not appeared, or to add another batch of this or another
+				drug, click Add Stock and repeat the steps above.
+			</simpara>
+
+			<simpara>
+				If you have made a mistake and wish to remove a batch
+				from the list of batches to be saved, click the batch in
+				the stock list to select it, and click the
+				<emphasis role="strong">Remove Selected Batch</emphasis>
+				button.
+			</simpara>
+
+			<simpara>
+				Once you have finished adding all the stock you wish to
+				add in this session, click
+				<emphasis role="strong">Submit</emphasis>
+				to save the stock. If you want to leave this screen
+				without saving anything (all the stock you entered will
+				be lost), click
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				When you click Submit, a Stock Receipt report can
+				generated, showing all the stock that has been entered
+				on this day. You should check the Stock Receipt Report
+				to be sure that the stock arrival has been recorded
+				correctly. You can then print or save this report. See
+				the section Printing and Saving Reports for further
+				information about this.
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Doctors</title>
+		<simpara>
+			All the doctors who will prescribe ARV drugs to the patients
+			being served by this pharmacy (and any remote clinics
+			attached to it) must be added to the system.
+		</simpara>
+
+		<sect1>
+			<title>Adding Doctors</title>
+			<simpara>
+				Doctors are added using the Add A New Doctor screen.
+				From the main screen, select
+				<emphasis role="strong">General Admin</emphasis>
+				. A new screen, the General Admin Screen, will appear.
+				From this screen, select
+				<emphasis role="strong">Add a new Doctor</emphasis>
+				. The Add a New Doctor screen will appear. It looks like
+				this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddDoctor.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddDoctor.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Fill in at least the doctor's name and surname (the
+				compulsory fields, marked with
+				<emphasis role="strong">
+					). The other fields are recommended, but not
+					required. When you are finished, click *Save
+				</emphasis>
+				to add the doctor. To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the doctor, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Updating a Doctor's Information</title>
+			<simpara>
+				A doctor's information can be updated using the Update
+				an Existing Doctor screen. From the main screen, select
+				<emphasis role="strong">General Admin</emphasis>
+				. A new screen, the General Admin Screen, will appear.
+				From this screen, select
+				<emphasis role="strong">
+					Update an Existing Doctor's Details
+				</emphasis>
+				. The Update an Existing Doctor screen will appear. It
+				looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/UpdateDoctor.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdateDoctor.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Fill in at least the doctor's name and surname (the
+				compulsory fields, marked with
+				<emphasis role="strong">
+					). The other fields are recommended, but not
+					required. When you are finished, click *Save
+				</emphasis>
+				to save your changes to the doctor. To clear all the
+				text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the doctor, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Patients</title>
+		<simpara>
+			The system stores detailed information on each patient
+			receiving ARV drugs from the pharmacy and any remote clinics
+			its supplies. This includes personal information as well as
+			information on allergies that may influence the drugs the
+			patient can take. Most of this information is not
+			compulsory. The amount of information you collect from
+			patients, and record, is left up to you. The fields marked
+			with *, however, are compulsory.
+		</simpara>
+
+		<sect1>
+			<title>Adding Patients</title>
+			<simpara>
+				Patients are added though the
+				<emphasis role="strong">Add a New Patient</emphasis>
+				screen. To add a patient, select
+				<emphasis role="strong">Patient Admin</emphasis>
+				from the main screen. The Patient Admin screen will
+				appear. From this screen, select
+				<emphasis role="strong">
+					Add a New Patient to the System
+				</emphasis>
+				. This will bring up the Add a New Patient screen. It
+				looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddPatient.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddPatient.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, you should enter the Patient ID. This is used to
+				uniquely identify the patient, so no two patients are
+				allowed to have the same Patient ID. If you do try to
+				save a patient with the same Patient ID a patient
+				already in the system, you will be asked to change the
+				Patient ID before you can save. The other restriction on
+				the Patient ID relates to its l, which determines the l
+				of the barcodes printed on labels. The maximum length of
+				a Patient ID that contains a mixture of letters and
+				numbers is 10 characters. For Patient IDs consisting
+				only of numbers, the maximum length is 18 characters.
+				Once you have chosen a Patient ID, you must enter at
+				least the patient's first name, surname, date of birth,
+				distribution clinic and account status. These fields,
+				marked with *, are compulsory; the other fields are
+				optional but recommended. Note that you cannot enter the
+				patient's age; this is calculated from the date of
+				birth.
+			</simpara>
+
+			<simpara>
+				The patient's next appointment date can also be set or
+				updated from this screen. If there is no upcoming
+				appointment for the patient, a new appointment can be
+				added. If the patient has an upcoming appointment, the
+				date of this appointment can be changed.
+			</simpara>
+
+			<simpara>
+				If you want to save the patient and be taken to the Add
+				Initial Prescription screen to capture a prescription
+				for this patient, choose
+				<emphasis role="strong">
+					Create Initial Prescription
+				</emphasis>
+				. If you want to save the patient, but do not want to
+				capture a prescription for this patient at this time,
+				choose
+				<emphasis role="strong">Save</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the patient, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Updating a Patient's Information</title>
+			<simpara>
+				To update a patient, select
+				<emphasis role="strong">Patient Admin</emphasis>
+				from the main screen. The Patient Admin screen will
+				appear. From this screen, select
+				<emphasis role="strong">
+					Update an Existing Patient's Details
+				</emphasis>
+				. This will bring up the Update an Existing Patient
+				screen. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/UpdatePatient.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdatePatient.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, you should enter the Patient ID. You can type
+				this in and press enter, scan the information label for
+				a patient using a barcode scanner, or use the patient
+				search to do this. For more information on entering
+				Patient IDs using the patient search, please see Using
+				the Patient Search.
+			</simpara>
+
+			<simpara>
+				Once you have entered a patient ID, the system will
+				bring up the information it has stored about this
+				patient. You can now edit this information. The fields
+				marked with * are compulsory; the other fields are
+				optional but recommended. The patient's next appointment
+				date can also be set or updated from this screen. If
+				there is no upcoming appointment for the patient, a new
+				appointment can be added. If the patient has an upcoming
+				appointment, the date of this appointment can be
+				changed.
+			</simpara>
+
+			<simpara>
+				If you want to save the changed patient information and
+				be taken to the Update Prescription screen to update the
+				prescription for this patient, choose
+				<emphasis role="strong">Update Prescription</emphasis>
+				. If you want to save the changed patient information,
+				but do not want to update the prescription for this
+				patient at this time, choose
+				<emphasis role="strong">Save</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the changed patient
+				information, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+
+		</sect1>
+		<sect1>
+			<title>Merging Duplicate Patients</title>
+			<simpara>
+				To merge two patient records that you have determined
+				belong to the same patient, select
+				<emphasis role="strong">Patient Admin</emphasis>
+				from the main screen. The Patient Admin screen will
+				appear. From this screen, select
+				<emphasis role="strong">Merge Patients</emphasis>
+				. This will bring up the Merge Patients screen. It looks
+				like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/MergePatient.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>MergePatient.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, you should enter the Patient ID of the primary
+				patient. This is the patient whose Patient ID you wish
+				to use for the merged patient after the merge. You can
+				type this in and press enter, scan the information label
+				for a patient using a barcode scanner, or use the
+				patient search to do this. For more information on
+				entering Patient IDs using the patient search, please
+				see Using the Patient Search.
+			</simpara>
+
+			<simpara>
+				Once you have entered a patient ID, the system will
+				bring up the information it has stored about this
+				patient in the Primary Patient area, as shown in the
+				screenshot below:
+			</simpara>
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/MergePatientLeft.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>MergePatientLeft.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				You should now load up the secondary patient by entering
+				the patient ID in the same way. The secondary patient's
+				ID will be recorded as an old ID of the primary patient.
+				All packages, prescriptions, appointments and episodes
+				from the secondary patient record will be removed from
+				this patient record, and will now belong to the merged
+				patient.
+			</simpara>
+
+			<simpara>
+				Once both the primary and secondary patients are loaded,
+				the merge patient details will be filled in. The screen
+				will look like this:
+			</simpara>
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/MergePatientFilledIn.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>MergePatientFilledIn.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				You can edit the basic information about the merge
+				patient that is shown in the text fields on this screen.
+				If both secondary and primary patients have a valid next
+				apointment, you should also choose one appoinment to
+				keep. The one you do not choose will be marked as
+				invalid, and the patient will appear on the Patients
+				Expected On A Day report for that appointment date.
+			</simpara>
+
+			<simpara>
+				Be warned that you cannot undo a patient merge! If you
+				are sure you want to save the patient merge, choose
+				<emphasis role="strong">Save</emphasis>
+				. You will be asked for your password to confirm the
+				merge, then taken to the Update Patient screen to view
+				and update all details for the merged patient.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the patient merge,
+				press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Patients' Prescriptions</title>
+		<simpara>
+			The ARV prescription for a patient must be stored in the
+			system. Information about the prescription, such as the
+			doctor who prescribed the drugs and the clinical stage of
+			the patient, as well as a list of all the drugs on the
+			prescription, is stored. When a prescription changes, for
+			example due to a renewal or the the patient displaying an
+			adverse reation to one of the drugs, this must be recorded
+			in a prescription update.
+		</simpara>
+
+		<sect1>
+			<title>Adding Patients' Prescriptions</title>
+			<simpara>
+				Before you add a prescription for a patient, you need
+				to: Add the doctor responsible for this prescription
+				(see Adding Doctors) Add the drugs that will be
+				specified by this prescription (see Adding Drugs) Add
+				the stock batches for each drug (see Adding Stock) Add
+				the patient's distribution clinic (see Adding
+				Distribution Clinics) if it is not already loaded Add
+				the patient (see Adding Patients)
+			</simpara>
+
+			<simpara>
+				To add the initial prescription, select
+				<emphasis role="strong">Patient Admin</emphasis>
+				from the main screen. The Patient Admin screen will
+				appear. From this screen, select
+				<emphasis role="strong">
+					Add/Update a Patient's Prescription
+				</emphasis>
+				. This will bring up the Patient's Prescription screen.
+				It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddPrescription.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddPrescription.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				To tell the system which patient this prescription is
+				for, enter the Patient ID. You can type this into the
+				Patient ID text box, or you can select Patient Search to
+				search for IDs. For more information about the Patient
+				Search feature, please see Using the Patient Search.
+			</simpara>
+
+			<simpara>
+				Once you have entered the ID of a patient in the system,
+				check that the patient's first name, surname and age are
+				correct. This information is in greyed-out boxes as you
+				cannot edit patient information here. See Updating
+				Patient Information if you need to change information
+				about a patient already on the system.
+			</simpara>
+
+			<simpara>
+				Select the patient's doctor from the drop-down list. Get
+				the list to drop down by clicking the arrow on the right
+				hand side of the box,and click an entry in the list to
+				select it. If you wish to add a new doctor, click the
+				button next to the drop-down list of doctors, and add
+				the doctor here. Select the prescription duration in the
+				same way, and also the clinical stage and weight if you
+				would like to record this information.
+			</simpara>
+
+			<simpara>
+				The notes field is an optional area where you can record
+				any information about the patient that you would like
+				displayed when you are dispensing to this patient. To
+				add notes, just click in the field and type your notes.
+			</simpara>
+
+			<simpara>
+				You can now add drugs to the prescription.
+			</simpara>
+
+			<simpara>
+				If you wish to add all drugs from a drug group, select
+				the drug group from the drop-down list. The drugs will
+				automatically be added to the list of drugs on this
+				patient's prescription.
+			</simpara>
+
+			<simpara>
+				To add drugs manually, do the following for each drug
+				you wish to add:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						To add a drug, select Add Drug to this
+						Prescription. The add a Drug screen will appear.
+						It looks like this:
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddDrugToScript.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddDrugToScript.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						To add a drug to the prescription, you should
+						use the drug search. For more information about
+						the drug search, please see Using the Drug
+						Search.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Check the information about the drug (such as
+						its name and strength) is correct. Enter the
+						number of units to take in each dose, and select
+						the number of doses per day from the drop-down
+						list.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						When you are finished, click
+						<emphasis role="strong">
+							Add to Prescription
+						</emphasis>
+						to add the drug to the prescription. The drug
+						will appear in the list of drugs on this
+						prescription. To clear all the text fields,
+						press
+						<emphasis role="strong">Clear</emphasis>
+						. To leave the screen without adding the drug,
+						press
+						<emphasis role="strong">Cancel</emphasis>
+						. You will be returned to the Patient's
+						Prescription screen.
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				If you need to remove a drug from the drugs list, click
+				the entry in the Drugs list to select it, and then click
+				the
+				<emphasis role="strong">Remove Selected Drug</emphasis>
+				button. The system will ask you whether you wish to
+				remove this drug - select
+				<emphasis role="strong">Yes</emphasis>
+				to remove the drug, or
+				<emphasis role="strong">No</emphasis>
+				if you do not wish to remove the drug. You can also
+				change the order in which the drugs appear on the
+				prescription (and hence the order in which the labels
+				will print when the prescription is dispensed) by
+				selecting the drug you wish to remove and clicking the
+				up or down arrow buttons found on either side of the
+				drugs list.
+			</simpara>
+
+			<simpara>
+				If you want to save the prescription and be taken to the
+				Patient Packaging screen to dispense the prescription
+				now, choose
+				<emphasis role="strong">Dispense Now</emphasis>
+				. If you want to save the prescription, but do not want
+				to dispense it at this time, choose
+				<emphasis role="strong">Save</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the prescription,
+				press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Updating Patients' Prescriptions</title>
+			<simpara>
+				To update a patient's prescription, select
+				<emphasis role="strong">Patient Admin</emphasis>
+				from the main screen. The Patient Admin screen will
+				appear. From this screen, select
+				<emphasis role="strong">
+					Add/Update a Patient's Prescription
+				</emphasis>
+				. This will bring up the Patient's Prescription screen.
+				It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddPrescription.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddPrescription.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				To tell the system which patient's prescription you wish
+				to update, enter the Patient ID. You can type this into
+				the Patient ID text box, or you can select Patient
+				Search to search for IDs. For more information about the
+				Patient Search feature, please see Using the Patient
+				Search. Once you have entered the ID of a patient in the
+				system, the fields on the Patient's Prescription screen
+				should be filled with information from the patient's
+				current prescription, as in the example below:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/UpdatePrescription.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdatePrescription.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Select the reason you are updating the prescription from
+				the drop-down list. Get the list to drop down by
+				clicking the arrow on the right hand side of the box,
+				and click an entry in the list to select it. Also check
+				that the patient's first name, surname and age are
+				correct. This information is in greyed-out boxes as you
+				cannot edit patient information here. See Updating
+				Patient Information if you need to change information
+				about a patient already on the system.
+			</simpara>
+
+			<simpara>
+				If you wish to change the patient's doctor, select a
+				different doctor from the drop-down list. Get the list
+				to drop down by clicking the arrow on the right hand
+				side of the box, and click an entry in the list to
+				select it. If you wish to add a new doctor, click the
+				button next to the drop-down list of doctors, and add
+				the doctor here. Select the prescription duration in the
+				same way, and also the clinical stage and weight if you
+				would like to record this information.
+			</simpara>
+
+			<simpara>
+				The notes field is an optional area where you can record
+				any information about the patient that you would like
+				displayed when you are dispensing to this patient. To
+				add notes, just click in the field and type your notes.
+			</simpara>
+
+			<simpara>
+				If you wish to add all drugs from a drug group, select
+				the drug group from the drop-down list. The drugs will
+				automatically be added to the list of drugs on this
+				patient's prescription.
+			</simpara>
+
+			<simpara>
+				If you wish to add drugs to the prescription manually,
+				do the following for each drug you wish to add.
+			</simpara>
+
+			<simpara>
+				To add drugs manually, do the following for each drug
+				you wish to add:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						To add a drug, select Add Drug to this
+						Prescription. The add a Drug screen will appear.
+						It looks like this:
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddDrugToScript.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddDrugToScript.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						To add a drug to the prescription, you should
+						use the drug search. For more information about
+						the drug search, please see Using the Drug
+						Search.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Check the information about the drug (such as
+						its name and strength) is correct. Enter the
+						number of units to take in each dose, and select
+						the number of doses per day from the drop-down
+						list.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						When you are finished, click
+						<emphasis role="strong">
+							Add to Prescription
+						</emphasis>
+						to add the drug to the prescription. The drug
+						will appear in the list of drugs on this
+						prescription. To clear all the text fields,
+						press
+						<emphasis role="strong">Clear</emphasis>
+						. To leave the screen without adding the drug,
+						press
+						<emphasis role="strong">Cancel</emphasis>
+						. You will be returned to the Patient's
+						Prescription screen.
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				If you need to remove a drug from the drugs list, click
+				the entry in the Drugs list to select it, and then click
+				the
+				<emphasis role="strong">Remove Selected Drug</emphasis>
+				button. The system will ask you whether you wish to
+				remove this drug - select
+				<emphasis role="strong">Yes</emphasis>
+				to remove the drug, or
+				<emphasis role="strong">No</emphasis>
+				if you do not wish to remove the drug. You can also
+				change the order in which the drugs appear on the
+				prescription (and hence the order in which the labels
+				will print when the prescription is dispensed) by
+				selecting the drug you wish to remove and clicking the
+				up or down arrow buttons found on either side of the
+				drugs list.
+			</simpara>
+
+			<simpara>
+				If you want to save the prescription and be taken to the
+				Patient Packaging screen to dispense the prescription
+				now, choose
+				<emphasis role="strong">Dispense Now</emphasis>
+				. If you want to save the prescription, but do not want
+				to dispense it at this time, choose
+				<emphasis role="strong">Save</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the prescription,
+				press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Pharmacy Users</title>
+		<simpara>
+			The system stores information on who at the pharmacy is
+			allowed to log in to the system. This information is limited
+			to a username and a password, which will be required each
+			time the user logs in to the system.
+		</simpara>
+
+		<sect1>
+			<title>Manage Pharmacy Users</title>
+			<simpara>
+				The Manage Pharmacy Users screen allows the currently
+				logged in user to
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>Change their password</simpara>
+				</listitem>
+				<listitem>
+					<simpara>Add a new iDART user</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				To access this screen, select
+				<emphasis role="strong">General Admin</emphasis>
+				from the main screen. A new screen, the General Admin
+				Screen, will appear. From this screen, select
+				<emphasis role="strong">Manage Pharmacy Users</emphasis>
+				. The Manage Pharmacy Users screen will appear. It looks
+				like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/UpdateIDartUser.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdateIDartUser.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<sect2>
+				<title>To add a new user:</title>
+				<simpara>
+					Select the
+					<emphasis role="strong">
+						Add New iDART User
+					</emphasis>
+					radio button. Enter a username for the new user in
+					the Username field, and then enter their password in
+					the password and confirm password fields. The text
+					in the two fields must be identical. Note that
+					characters in passwords appear as * symbols when
+					entered, to prevent anyone from seeing the password
+					being typed.
+				</simpara>
+
+				<simpara>
+					When you are finished, click
+					<emphasis role="strong">Save</emphasis>
+					to add the new user. To clear all the text fields,
+					press
+					<emphasis role="strong">Clear</emphasis>
+					. To leave the screen without adding a new user,
+					press
+					<emphasis role="strong">Cancel</emphasis>
+					.
+				</simpara>
+
+			</sect2>
+			<sect2>
+				<title>
+					To change the password of the currently logged in
+					user:
+				</title>
+				<simpara>
+					Select the Change Your Password radio button. Enter
+					your old password, then enter you new password in
+					the New Password and Confirm New Password fields.
+					The text in the last two fields must be identical.
+					Note that characters in passwords appear as *
+					symbols when entered, to prevent anyone from seeing
+					the password being typed. When you are finished,
+					click *Save* to add the new user. To clear all the
+					text fields, press
+					<emphasis role="strong">Clear</emphasis>
+					. To leave the screen without adding a new user,
+					press
+					<emphasis role="strong">Cancel</emphasis>
+					.
+				</simpara>
+
+			</sect2>
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Distribution Clinics</title>
+		<simpara>
+			(Please note that this section is only relevant to versions
+			of iDART using the remote dispensing feature)
+		</simpara>
+
+		<simpara>
+			The place where a patient collects their ARV medication,
+			whether this is located in the same building as the pharmacy
+			or at a remote clinic, is the patient's distribution clinic.
+			Distribution clinics are also relevant to stock, as each
+			stock batch is assigned to a distribution clinic.
+		</simpara>
+
+		<sect1>
+			<title>Adding Distribution Clinics</title>
+			<simpara>
+				(Please note that this section is only relevant to
+				versions of iDART using the remote dispensing feature)
+			</simpara>
+
+			<simpara>
+				To add a distribution clinic, log into the system and
+				select
+				<emphasis role="strong">General Admin</emphasis>
+				from the main screen. A new screen, the General Admin
+				Screen, will appear. From this screen, select
+				<emphasis role="strong">Add a New Clinic</emphasis>
+				. The Add a New Clinic screen will appear. It looks like
+				this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddClinic.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddClinic.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Fill in at least the clinic name. All other details are
+				optional, but recommended.
+			</simpara>
+
+			<simpara>
+				When you are finished, click
+				<emphasis role="strong">Save</emphasis>
+				to add the new clinic. To clear all the text fields,
+				press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without adding a new clinic, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Updating a Distribution Clinic's Information</title>
+			<simpara>
+				(Please note that this section is only relevant to
+				versions of iDART using the remote dispensing feature)
+			</simpara>
+
+			<simpara>
+				To update a clinic's information, select General Admin
+				from the main screen. A new screen, the
+				<emphasis role="strong">General Admin Screen</emphasis>
+				, will appear. From this screen, select
+				<emphasis role="strong">
+					Update an Existing Clinic's Details
+				</emphasis>
+				. The Update an Existing Clinic screen will appear. It
+				looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/UpdateClinic.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdateClinic.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Enter the clinic name, or use the clinic search to find
+				a clinic by selecting
+				<emphasis role="strong">Clinic Search</emphasis>
+				. This will bring up a list of the clinics currently on
+				the system. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/ClinicSearch.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ClinicSearch.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				You can select a clinic by clicking an entry in the
+				list. If you enter text in the text box below the list,
+				the clinics whose names do not contain the text you have
+				entered will be hidden, making it easier to find the
+				clinic you are looking for. Once you click a clinic in
+				the list, you will be returned to the Update an Existing
+				Clinic screen, and information for the clinic you chose
+				will be selected. If you do not want to select a clinic
+				from the Clinic Search screen, select
+				<emphasis role="strong">Cancel</emphasis>
+				to leave the Clinic Search screen.
+			</simpara>
+
+			<simpara>
+				Once the information for an existing clinic is
+				displayed, you can edit this information. Ensure that at
+				least the clinic name is entered. All other details are
+				optional, but recommended.
+			</simpara>
+
+			<simpara>
+				When you are finished, click
+				<emphasis role="strong">Save</emphasis>
+				to save the new information with the clinic. To clear
+				all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without changing the information
+				for a clinic, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Drug Groups</title>
+		<simpara>Drug groups serve two purposes:</simpara>
+
+		<itemizedlist>
+			<listitem>
+				<simpara>
+					When adding drugs to a new prescription for a
+					patient, you can select a drug group and all the
+					drugs in the drug group will be added to the
+					prescription, speeding the prescription capture
+					process.
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					Each drug group is associated with a regimen. This
+					means that iDART can count how many patients are on
+					each regimen by comparing the  drugs on the
+					patients' prescriptions with the drugs in the drug
+					group. For this reason, it's important that the drug
+					groups are captured accurately.
+				</simpara>
+			</listitem>
+		</itemizedlist>
+		<simpara>
+			Examples of drug groups that would be associated with
+			regimen 1A could be
+		</simpara>
+
+		<itemizedlist>
+			<listitem>
+				<simpara>
+					Stavudine 30mg BID, Lamivudine 150mg BID, Efavirenz
+					600mg QD
+				</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					Stavudine 40mg BID, Lamivudine 150mg BID, Efavirenz
+					600mg QD
+				</simpara>
+			</listitem>
+		</itemizedlist>
+		<sect1>
+			<title>Add Drug Groups</title>
+			<simpara>
+				To add a new drug group, select
+				<emphasis role="strong">General Admin</emphasis>
+				from the main screen. The General Admin screen will
+				appear. From this screen, select
+				<emphasis role="strong">Add a New Drug Group</emphasis>
+				. This will bring up the Drug Groups screen. It looks
+				like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddRegimen.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddRegimen.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Enter a name for the new drug group. Then, select the
+				regimen that this drug group comprises. Please be
+				careful when setting a regimen - a drug group only
+				belongs to a regimen when it contains all the drugs
+				required for that regimen. Once you have selected the
+				drug group, the fields on the Drug Groups screen should
+				be filled with the Drug Group's current information, as
+				in the example below:
+			</simpara>
+
+			<simpara>
+				To add drugs to the drug group, do the following for
+				each drug you wish to add:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						To add a drug, select Add Drug to this
+						Prescription. The add a Drug screen will appear.
+						It looks like this:
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddDrugToScript.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddDrugToScript.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						To add a drug to the prescription, you should
+						use the drug search. For more information about
+						the drug search, please see Using the Drug
+						Search.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Check the information about the drug (such as
+						its name and strength) is correct. Enter the
+						number of units to take in each dose, and select
+						the number of doses per day from the drop-down
+						list.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						When you are finished, click
+						<emphasis role="strong">Add to Group</emphasis>
+						to add the drug to the drug group. The drug will
+						appear in the list of drugs in the drug group.
+						To clear all the text fields, press
+						<emphasis role="strong">Clear</emphasis>
+						. To leave the screen without adding the drug,
+						press
+						<emphasis role="strong">Cancel</emphasis>
+						. You will be returned to the Drug Groups screen
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				If you need to remove a drug from the Drugs list, click
+				the entry in the Drugs list. The system will ask you
+				whether you wish to remove this drug - select
+				<emphasis role="strong">Yes</emphasis>
+				to remove the drug, or
+				<emphasis role="strong">No</emphasis>
+				if you do not wish to remove the drug.
+			</simpara>
+
+			<simpara>
+				If you want to save the drug group, choose
+				<emphasis role="strong">Save</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the drug group,
+				press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Updating Drug Groups</title>
+			<simpara>
+				To update an existing drug group, select
+				<emphasis role="strong">General Admin</emphasis>
+				from the main screen. The General Admin screen will
+				appear. From this screen, select
+				<emphasis role="strong">
+					Update an Existing Group's Details
+				</emphasis>
+				. This will bring up the Drug Groups screen. It looks
+				like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/UpdateRegimen.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>UpdateRegimen.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				To select the drug group you wish to update, click the
+				<emphasis role="strong">Drug Group Search</emphasis>
+				button. Select the drug group, then click Ok.
+			</simpara>
+
+			<simpara>
+				Once you have selected the drug group, the fields on the
+				Drug Groups screen should be filled with the Drug
+				Group's current information.
+			</simpara>
+
+			<simpara>
+				If you need to change the regimen that the drugs in this
+				drug group comprise, you can do so by selecting a
+				different regimen. Please be careful when setting a
+				regimen - a drug group only belongs to a regimen when it
+				contains all the drugs required for that regimen.
+			</simpara>
+
+			<simpara>
+				If you wish to add drugs to the drug group, do the
+				following for each drug you wish to add: * To add a
+				drug, select Add Drug to this Prescription. The add a
+				Drug screen will appear. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/AddDrugToScript.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>AddDrugToScript.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						To add a drug to the prescription, you should
+						use the drug search. For more information about
+						the drug search, please see Using the Drug
+						Search.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Check the information about the drug (such as
+						its name and strength) is correct. Enter the
+						number of units to take in each dose, and select
+						the number of doses per day from the drop-down
+						list.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						When you are finished, click
+						<emphasis role="strong">Add to Group</emphasis>
+						to add the drug to the drug group. The drug will
+						appear in the list of drugs in the drug group.
+						To clear all the text fields, press
+						<emphasis role="strong">Clear</emphasis>
+						. To leave the screen without adding the drug,
+						press
+						<emphasis role="strong">Cancel</emphasis>
+						. You will be returned to the Drug Groups screen
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				If you need to remove a drug from the Drugs list, click
+				the entry in the Drugs list. The system will ask you
+				whether you wish to remove this drug - select
+				<emphasis role="strong">Yes</emphasis>
+				to remove the drug, or
+				<emphasis role="strong">No</emphasis>
+				if you do not wish to remove the drug.
+			</simpara>
+
+			<simpara>
+				If you want to save the drug group, choose
+				<emphasis role="strong">Save</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving the drug group,
+				press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Packaging and Dispensing</title>
+		<simpara>
+			This section describes the creation of ARV packages for
+			patients, and how to dispense the package to the patient
+			either directly, by pre-packing for patients at this
+			pharmacy, or by pre-packing for patients at a remote clinic.
+		</simpara>
+
+		<sect1>
+			<title>Creating Patient ARV Packages</title>
+			<simpara>
+				This section describes how to create monthly ARV
+				packages for patients according to their prescriptions.
+				Dispensing the package to the patient, either directly
+				from the pharmacy or via a distribution clinic, is
+				covered in the two subsequent sections. From the main
+				screen, select
+				<emphasis role="strong">
+					Stock &amp; Dispensing
+				</emphasis>
+				. This will open the Stock Control screen - select
+				<emphasis role="strong">
+					Make Up Drug Packages For Patients
+				</emphasis>
+				. This will open the Make Up ARV Packages for Patients
+				screen, which is shown below:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/MakeUpARVPackages.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>MakeUpARVPackages.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, check that the correct dispensing mode is
+				selected. You can choose one of:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						<emphasis role="strong">
+							I am creating packages for later pickup
+						</emphasis>
+						if the drugs will be picked up at another time,
+						or at a distribution clinic. The date the
+						package was packed will be recorded, but not the
+						date it left the pharmacy - this will be
+						recorded when the package leaves the pharmacy to
+						a patient or to a distribution clinic. See
+						Dispensing from a Remote Clinic. You will not
+						need to record the adherence information on this
+						screen if you are doing this type of dispensing.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<emphasis role="strong">
+							I am dispensing directly to patients
+						</emphasis>
+						if the patient will take the package now, and
+						today's date should be recorded as the date the
+						package was packed, left the pharmacy and was
+						picked up by the patient. The system will not
+						record any further tracking information about
+						this package as it will be considered dispensed
+						to the patient. You will be able to record
+						adherence information for the patient on this
+						screen if you are doing this kind of dispensing.
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				Both the above options will cause labels for all the
+				drugs in the packages to be printed. If you choose
+				Create Package for Later, a package cover label will
+				also be printed.
+			</simpara>
+
+			<simpara>
+				Select a distribution clinic from the drop-down list.
+				This will bring up a list of all the patients for whom
+				ARV packages should be made up. The list includes all
+				patients at the selected clinic who have current
+				prescriptions.
+			</simpara>
+
+			<simpara>
+				Select a patient from the list to start making up a
+				package for that patient. If you are looking for a
+				specific patient, try using the search bar (the text box
+				directly below the patient list). Typing a character or
+				a few characters in this box will hide the Patient IDs
+				in the list that do not contain the character(s) you
+				have typed.
+			</simpara>
+
+			<simpara>
+				Clicking a Patient ID in the list of waiting patients
+				will cause information about the patient to come up in
+				the Patient Information area, and information about the
+				patient's current prescription to come up in the
+				Prescription Information area. The drugs that a package
+				for this patient should contain will be shown in red in
+				the drugs table. At this point, also be aware of notes
+				displayed for the patient. If the patient is a child,
+				the system will warn you by placing a small icon showing
+				a child next to the age field. This icon looks like
+				this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/Child_50x43.jpg"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>Child_50x43.jpg</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				You need to dispense at least one of the drugs in the
+				list, but you do not have to dispense them all. To
+				dispense drugs:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						You need to select how many months' or weeks'
+						supply this package represents from the
+						drop-down list. This will allow the system to
+						pre-calculate the number of pills to dispense.
+						By default, these will come from the batch that
+						will expire soonest.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						When the system records a patient as having
+						received a package, the patient's next
+						appointment date is set according to how many
+						months or weeks supply of ARV drugs the package
+						contains. If you are dispensing directly to
+						patients, the next appointment date will
+						therefore be recorded from this screen. In this
+						case, you can set the next appointment date in
+						the Patient Information section. If you are
+						creating packages for later pickup, the next
+						appointment date will be set automatically when
+						the package is scanned out as it is collected by
+						the patient.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						The table of
+						<emphasis role="strong">
+							Drugs To Dispense in This Package
+						</emphasis>
+						will automatically be populated, as will the
+						<emphasis role="strong">
+							Pill Count – Last Package
+						</emphasis>
+						table. You need to:
+					</simpara>
+					<orderedlist numeration="loweralpha">
+						<listitem>
+							<simpara>
+								Fill in accumulated units the patient
+								returns with. This information will be
+								used to calculate the patient's
+								adherence. To fill in a value, click the
+								cell in the Accum column of the
+								<emphasis role="strong">
+									Pill Count – Last Package
+								</emphasis>
+								table, and type the value. The adherence
+								percentage will be caulculated
+								immediately
+							</simpara>
+						</listitem>
+						<listitem>
+							<simpara>
+								Check the total units in hand for each
+								drug, which will appear in the In Hand
+								column of the
+								<emphasis role="strong">
+									Drugs To Dispense in This Package
+								</emphasis>
+								table. This can have two values, which
+								you can choose by clicking in the column
+								and selecting the value from the
+								dropdown list. You can either record
+								that the patient has left with the
+								number of units you dispensed as well as
+								the number of units accumulated (e.g. 1
+								pack of 60 pills + 2 pills accumulated),
+								or that you did not give the accumulated
+								units back to the patient for whatever
+								reason, and that they left with just the
+								quantity you dispensed (e.g. 1 pack of
+								60 pills).
+							</simpara>
+						</listitem>
+						<listitem>
+							<simpara>
+								If desired, change the number of labels
+								to print by clicking the cell in the
+								labels column, and changing the value to
+								the desired number of labels. You can
+								then edit the batch to dispense from, as
+								well as the quantity to dispense, by
+								clicking the row containing the drug
+								information. This will bring up the
+								screen below:
+							</simpara>
+						</listitem>
+					</orderedlist>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/BatchInfo.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>BatchInfo.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						You can change the quantity (in pills) to
+						dispense. To do this, click the row of the batch
+						you wish to dispense from, under the column Qty
+						to Dispense, and type in the number of pills.
+						The drugs are ordered by expiry date, with the
+						batch that will expire soonest listed first. You
+						can also select how many drug labels you wish to
+						print, from the drop-down list in the Labels to
+						Print column.To maintain correct stock levels,
+						it's important that the containers you put in to
+						the package do in fact come from the batch you
+						have selected.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Select
+						<emphasis role="strong">
+							Add Drug to Package
+						</emphasis>
+						to save the information you have entered. Select
+						<emphasis role="strong">Cancel</emphasis>
+						if you do not wish to add this drug to the
+						package at this time.
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				Once you have specified quantities for each drug you
+				wish to add, you should specify whether you want the
+				dosage quantities on the label to be left blank (eg. for
+				paediatric patients where you want to fill in this
+				information by hand) and also whether a script summary
+				label should be printed. Do this by selecting your
+				choices (Yes or No) below the drugs table.
+			</simpara>
+
+			<simpara>
+				To create the drug package and print the relevant
+				labels, select
+				<emphasis role="strong">Create Package</emphasis>
+				. If you do not want to create a package at this time,
+				you can choose
+				<emphasis role="strong">Close</emphasis>
+				to close the Make Up ARV Packages for Patients screen.
+				If you make a mistake with a package and want to redo
+				it, select
+				<emphasis role="strong">Redo an ARV Package</emphasis>
+				. For more information about this, please see Stock,
+				Prescription and Package Deletions in this section.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Pre-packaging for patients at this Pharmacy</title>
+			<simpara>
+				If you are pre-packaging for patients who collect their
+				drugs at the pharmacy, the system tracks packages by
+				recording two dates:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>The date the package was packed</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						The date the package was picked up by the
+						patient.
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				Packages that have been pre-packed must be scanned using
+				a barcode scanner as they leave to record the second
+				date.
+			</simpara>
+
+			<simpara>
+				To record a package leaving the pharmacy to be given to
+				a patient, select
+				<emphasis role="strong">
+					Stock &amp; Dispensing
+				</emphasis>
+				from the main screen. From the Stock Control screen,
+				select
+				<emphasis role="strong">
+					Scan Out Packages To Patients
+				</emphasis>
+				. This will cause the Distribute ARV Packages screen
+				below to open.
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/DistributeARVPackages.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>DistributeARVPackages.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, select a clinic from the drop-down list. This
+				will cause the Package IDs of all the packages waiting
+				to leave for this clinic to appear in the list on the
+				left. Use a barcode scanner to scan the package IDs of
+				the packages that will leave the pharmacy now. Note that
+				in the event of problems with scanning, you can type the
+				Package IDs in by hand.
+			</simpara>
+
+			<simpara>
+				When you have finished scanning, you can choose
+				<emphasis role="strong">
+					View Report of Packages Dispensed
+				</emphasis>
+				to see a report of the packages that have left the
+				pharmacy today. You can print or save the report -
+				please see Printing and Saving Reports for further
+				information on this. If you wish to leave this screen
+				without seeing a report, you can choose
+				<emphasis role="strong">Close</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Pre-packaging for patients at Remote Clinics</title>
+			<simpara>
+				(Please note that this section is only relevant to
+				versions of iDART using the remote dispensing feature)
+			</simpara>
+
+			<simpara>
+				If you are pre-packaging for patients who collect their
+				drugs at remote clinics, the system tracks packages by
+				recording four dates:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>The date the package was packed</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						The date the package left the pharmacy
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						The date the package arrived at the remote
+						clinic
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						The date the package was picked up by the
+						patient.
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				Packages that have been pre-packed must be scanned using
+				a barcode scanner as they leave to record the second
+				date. The third and fourth dates are recorded when the
+				package is scanned at the clinic using the iDART clinic
+				application.
+			</simpara>
+
+			<simpara>
+				To record a package leaving the pharmacy, select
+				<emphasis role="strong">
+					Stock &amp; Dispensing
+				</emphasis>
+				from the main screen. From the Stock Control screen,
+				select
+				<emphasis role="strong">
+					Scan Out Packages To Remote Clinic
+				</emphasis>
+				. This will cause the Distribute ARV Packages screen
+				below to open.
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/DistributeARVPackages.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>DistributeARVPackages.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, select a clinic from the drop-down list. This
+				will cause the Package IDs of all the packages waiting
+				to leave for this clinic to appear in the list on the
+				left. Use a barcode scanner to scan the package IDs of
+				the packages that will leave the pharmacy now. Note that
+				in the event of problems with scanning, you can type the
+				Package IDs in by hand.
+			</simpara>
+
+			<simpara>
+				When you have finished scanning, you can choose
+				<emphasis role="strong">
+					View Report of Packages Dispensed
+				</emphasis>
+				to see a report of the packages that have left the
+				pharmacy today. You can print or save the report -
+				please see Printing and Saving Reports for further
+				information on this. If you wish to leave this screen
+				without seeing a report, you can choose
+				<emphasis role="strong">Close</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Adjustments and Deletions</title>
+		<sect1>
+			<title>Stock, Prescription and Package Deletions</title>
+			<simpara>
+				You can perform 4 types of deletions in iDART. These
+				are:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						<emphasis role="strong">
+							Package Deletions
+						</emphasis>
+						: Delete the most recent package for a patient,
+						for example when the patient fails to collect
+						their drug package.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<emphasis role="strong">
+							Single Package Item Deletions
+						</emphasis>
+						: Delete an item in the most recent package for
+						a patient.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<emphasis role="strong">
+							Prescription Deletions
+						</emphasis>
+						: Delete a patient's incorrectly captured
+						prescription, if this prescription has not been
+						dispensed
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<emphasis role="strong">
+							Stock Batch Deletions
+						</emphasis>
+						: Delete an incorrectly captured stock batch, if
+						no drugs have been dispensed from this batch
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				All the above deletions require the currently logged in
+				user to provide their password before the deletion
+				occurs. A log of the deletion is also created, and a
+				report showing all logged deletions for a time period
+				can be viewed by selecting
+				<emphasis role="strong">
+					Transaction Log Report
+				</emphasis>
+				from the Reports screen.
+			</simpara>
+
+			<simpara>
+				To perform a deletion, select
+				<emphasis role="strong">
+					Stock &amp; Dispensing
+				</emphasis>
+				from the main screen. Then, select Stock,Prescription
+				And Package Deletions. You should see the following
+				screen:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/RedoARVPackage.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>RedoARVPackage.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<sect2>
+				<title>To perform a package deletion:</title>
+				<simpara>
+					Select the
+					<emphasis role="strong">
+						Return Uncollected Packages
+					</emphasis>
+					radio button. Enter a Patient ID, or use the patient
+					search to select the patient whose package you want
+					to remove. The most recent package for this patient,
+					if any, will be shown, as well as the drugs the
+					package contains. To remove the package, select
+					<emphasis role="strong">
+						Remove this Package
+					</emphasis>
+					. If you do not wish to remove a package at this
+					time, select
+					<emphasis role="strong">Cancel</emphasis>
+					.
+				</simpara>
+
+			</sect2>
+			<sect2>
+				<title>
+					To perform a single package item deletion:
+				</title>
+				<simpara>
+					Select the
+					<emphasis role="strong">
+						Red Single Item in Package
+					</emphasis>
+					radio button. Enter a Patient ID, or use the patient
+					search to select the patient whose package item you
+					want to remove. The most recent package for this
+					patient, if any, will be shown, as well as the drugs
+					the package contains. To remove an accumulated or
+					dispensed drug, select the row containing that
+					drug's information and click
+					<emphasis role="strong">Remove this Drug</emphasis>
+					. If you do not wish to remove a package item at
+					this time, select
+					<emphasis role="strong">Cancel</emphasis>
+					.
+				</simpara>
+
+			</sect2>
+			<sect2>
+				<title>To perform a prescription deletion:</title>
+				<simpara>
+					Select the
+					<emphasis role="strong">
+						Delete Incorrect Prescription
+					</emphasis>
+					radio button. Enter a Patient ID, or use the patient
+					search to select the patient whose prescription you
+					want to remove. Any prescription for this patient
+					that can be removed (i.e. has not yet been
+					dispensed) will be shown, as well as the drugs on
+					the prescription. To remove the prescription, select
+					<emphasis role="strong">
+						Remove this Prescription
+					</emphasis>
+					. If you do not wish to remove a prescription at
+					this time, select
+					<emphasis role="strong">Cancel</emphasis>
+					.
+				</simpara>
+
+				<simpara>
+					Please note that you cannot remove just one drug in
+					a prescription - the entire prescription must be
+					removed and redone.
+				</simpara>
+
+			</sect2>
+			<sect2>
+				<title>To perform a stock batch deletion:</title>
+				<simpara>
+					Select the
+					<emphasis role="strong">
+						Delete Incorrect Stock Batch
+					</emphasis>
+					radio button. Use the
+					<emphasis role="strong">Drug Search</emphasis>
+					button to select the drug for which you wish to
+					remove a batch. Any batches for this drug that can
+					be removed (i.e. has not yet been dispensed) will be
+					shown, To remove a batch, click the batch in the
+					list and select
+					<emphasis role="strong">
+						Remove Selected Batch
+					</emphasis>
+					. If you do not wish to remove a stock batch at this
+					time, select
+					<emphasis role="strong">Cancel</emphasis>
+					.
+				</simpara>
+
+			</sect2>
+		</sect1>
+		<sect1>
+			<title>Destroying Unusable Stock</title>
+			<simpara>
+				When stock expires or is thrown away for any other
+				reason, this must be recorded in iDART to ensure that
+				stock levels remain correct.
+			</simpara>
+
+			<simpara>
+				To access the Destroy Stock screen, select
+				<emphasis role="strong">
+					Stock &amp; Dispensing
+				</emphasis>
+				from the main screen. Then, select
+				<emphasis role="strong">Destroy Stock</emphasis>
+				. You should see the screen below:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/DestroyStock.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>DestroyStock.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, select the drug for which you are destroying
+				stock using the
+				<emphasis role="strong">Drug Search</emphasis>
+				button (for more information on this, see Using the Drug
+				Search). Any stock batches that are recorded as having
+				stock remaining will now be displayed in the Stock
+				Information table, ordered with the batch that will
+				expire soonest at the top.
+			</simpara>
+
+			<simpara>
+				Enter a reason for disposal, which will be displayed in
+				the transaction log. Then, click once in the row
+				displaying information about the batch from which you
+				wish to destroy stock, under the column
+				<emphasis>Packs To Destroy</emphasis>
+				or
+				<emphasis>Loose Pills To Destroy</emphasis>
+				. You should now be able to type in the number of packs
+				and / or loose pills you want to destroy. Note that the
+				number of loose pills (or ml, in the case of liquids)
+				destroyed must always be less than the number of pills
+				(or ml) in a pack. If you wanted to destroy 90 pills of
+				a drug with a packsize of 60, for example, you should
+				record this as 1 pack and 30 loose pills destroyed.
+			</simpara>
+
+			<simpara>
+				When you have finished, click
+				<emphasis role="strong">Save</emphasis>
+				to record the stock destruction. Stock destructions
+				require the currently logged in user to provide their
+				password before the destructions occurs. A log of the
+				destructions is also created, and a report showing all
+				logged transactions for a time period can be viewed by
+				selecting
+				<emphasis role="strong">
+					Transaction Log Report
+				</emphasis>
+				from the Reports screen.
+			</simpara>
+
+			<simpara>
+				To clear the screen and start over without saving
+				anything, click
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without saving anything, click
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Printing Labels</title>
+		<simpara>
+			This section describes how to print a patient information
+			label or an emergency label for a package, a drug in a
+			package or a patient. Generally, printing of package and
+			drug labels takes place during the creation of packages and
+			is not controlled by the user; however this section also
+			includes some hints for troubleshooting common problems with
+			these automatically generated package and drug labels.
+		</simpara>
+
+		<sect1>
+			<title>Printing a Custom Label</title>
+			<simpara>
+				A custom label is a label on which certain information
+				(such as the Patient ID, or the dosage of a drug) is
+				typed manually by the user, and not generated
+				automatically by the system. This type of label is not
+				associated with any other transaction in the system,
+				such as the preparation of a package - this function
+				exists only to allow the user to create custom labels in
+				special circumstances. It does not talk to the database
+				except to retreive the pharmacy details.
+			</simpara>
+
+			<simpara>
+				Printing of emergency package cover, drug or patient
+				labels takes place from the Print an Emergency Label
+				screen. From the main screen, select
+				<emphasis role="strong">Stock Control</emphasis>
+				. This will bring up the
+				<emphasis role="strong">Stock Control</emphasis>
+				screen - from this screen, select
+				<emphasis role="strong">
+					Make up ARV Packages for Patients
+				</emphasis>
+				. This will bring up the Make up ARV Packages for
+				Patients screen. From this screen, select Create
+				Emergency Label. The Create Emergency Label screen looks
+				like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/PrintEmergencyLabel.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>PrintEmergencyLabel.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				First, select the kind of label you want to print. The
+				editable areas are the areas of the label with a gray
+				background. Clicking in one of these areas allows you to
+				edit the text in this area. Note that for the package
+				label, the Package ID will be replaced by the barcode
+				representing it, and also printed in plain text below
+				the barcode.
+			</simpara>
+
+			<simpara>
+				Once you have a label that contains all the correct
+				information, you can select the number of labels you
+				wish to print for this patient from the drop-down box.
+				Then, select
+				<emphasis role="strong">Print</emphasis>
+				to print the label(s). You will be prompted to select a
+				printer; do this and press
+				<emphasis role="strong">Print</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				To clear all the text fields, press
+				<emphasis role="strong">Clear</emphasis>
+				. To leave the screen without printing any labels, press
+				<emphasis role="strong">Cancel</emphasis>
+				.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Troubleshooting Label Printing</title>
+			<simpara>
+				Please note that the system is designed to use labels of
+				size 3" by 2", and the Zebra range of label printers.
+				These instructions apply to this printer, although they
+				may still be useful if you have a different label
+				printer. Please also note that these instructions are
+				for computers running Microsoft Windows XP.
+			</simpara>
+
+			<simpara>
+				If you need to be talked through these procedures, or if
+				this does not solve your problem, please call the
+				Cell-Life iDART help desk (see How to Get Help).
+			</simpara>
+
+			<sect2>
+				<title>
+					Setting your label printer as the default printer:
+				</title>
+				<simpara>
+					Zebra printers seem to work better when set as the
+					default printer. This is usually the first thing to
+					try when you experience printing problems. To set
+					your label printer as the default printer, do the
+					following:
+				</simpara>
+
+				<simpara>
+					Go to Start Programs, then Control Panel. This will
+					bring up the Windows control panel. Click on
+					Printers and Other Hardware, then View Installed
+					Printers And Faxes. This should show all your
+					installed printers. Use the right mouse button to
+					click on the printer that prints your labels. This
+					should bring up a menu – select Set as Default to
+					set this printer as your default printer.
+				</simpara>
+
+			</sect2>
+			<sect2>
+				<title>
+					Setting the label size for your label printer:
+				</title>
+				<simpara>
+					If your labels are not printing correctly, you may
+					need to reset the paper size on your printer. To do
+					this, go to Start Programs, then Control Panel. This
+					will bring up the Windows control panel. Click on
+					Printers and Other Hardware, then View Installed
+					Printers And Faxes. This should show all your
+					installed printers. Use the right mouse button to
+					click on the printer that prints your labels. This
+					should bring up a menu - select Properties, one of
+					the last items on this menu. You should see the
+					printer properties screen. Select Printing
+					Preferences. The screen you see should look
+					something like this:
+				</simpara>
+
+				<simpara>
+					<inlinemediaobject>
+						<imageobject>
+							<imagedata
+								fileref="images/ZebraPrinting.png" align="center" />
+						</imageobject>
+						<textobject>
+							<phrase>ZebraPrinting.png</phrase>
+						</textobject>
+					</inlinemediaobject>
+				</simpara>
+
+				<simpara>
+					Click the + sign next to Paper/Output. This will
+					show you the paper settings. Click on the paper size
+					(blue, underlined text) to change this. Set the
+					paper size to 2" x 3".
+				</simpara>
+
+			</sect2>
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Generating Reports</title>
+		<simpara>
+			This section explains how to produce reports based on the
+			data in the database. The reports can then be saved or
+			printed, for your own records.
+		</simpara>
+
+		<sect1>
+			<title>Patient History Report</title>
+			<simpara>
+				The Patient History Report shows all previous
+				prescriptions for a patient, as well as information
+				about the prescription. Prescriptions are ordered by
+				date.
+			</simpara>
+
+			<simpara>
+				To see a Patient History Report, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Patient History Report
+				</emphasis>
+				. The screen below will open:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportPatientHistory.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportPatientHistory.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Select the patient's distribution point from the
+				drop-down list. Then, select the patient by Patient ID
+				from the list of patients at that clinic. If you want to
+				shorten the list, hiding those Patient IDs that do not
+				contain a certain series of characters, type the
+				characters the Patient ID must contain in the text box
+				below the list of Patient IDs. If you are unclear about
+				how this works, please see Using the Patient Search,
+				which describes a similar method of finding the correct
+				Patient ID.
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Pepfar Report</title>
+			<simpara>
+				This report shows similar indicators to those in the
+				Monthly Clinic Indicator report, but is intended
+				specifically for reporting to PEPFAR.
+			</simpara>
+
+			<simpara>
+				To see a Pepfar Report, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">Pepfar Report</emphasis>
+				. The Pepfar Report screen will open. It looks like
+				this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/ReportPepfar.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportPepfar.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>You should select:</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						The start and end date for the report, by
+						clicking a date on each calendar.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						The cutoff age for paediatric patients
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						The cutoff age for the young paediatric patients
+						subset
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				Then, select
+				<emphasis role="strong">View Report</emphasis>
+				to see the Pepfar Report for the period you have
+				specified. Select
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen.
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Patient Defaulters</title>
+			<simpara>
+				A Patient Defaulters Report is a report of all patients
+				who have not picked up their packages within a
+				user-specified number of days from their expected
+				appointment date.
+			</simpara>
+
+			<simpara>
+				To see a Patient Defaulters Report report, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Patient Defaulters Report
+				</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				The next screen to open will be the Patient Defaulters
+				screen. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportPatientDefaulters.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportPatientDefaulters.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				From this screen, you will need to select the
+				distribution point for which you wish to generate a
+				patient defaulters report. You can also edit the minimum
+				number of days a patient must be to be considered a
+				defaulter, and the maximum number of days late a patient
+				should be to be shown on this report. Then, select
+				<emphasis role="strong">View Report</emphasis>
+				to see a Patient Defaulters report for the distribution
+				point you have specified (or
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen).
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Daily Dispensing Totals Report</title>
+			<simpara>
+				A Daily Dispensing Totals Report shows the number of
+				patients seen and the number of ARV drugs (in
+				containers, rounded up) dispensed each day for a month.
+			</simpara>
+
+			<simpara>
+				To see a Daily Dispensing Totals Report, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Daily Dispensing Totals
+				</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				The next screen to open will be the Daily Dispensing
+				Totals screen. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportDailyDispensingTotals.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportDailyDispensingTotals.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				From this screen, you will need to select the
+				distribution point for which you wish to generate daily
+				dispensing totals, as well as the month and year. Then,
+				select
+				<emphasis role="strong">View Report</emphasis>
+				to see a Daily Dispensing Totals report for the
+				distribution point, month and year you have specified
+				(or
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen).
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Monthly Stock Receipts</title>
+			<simpara>
+				A Monthly Stock Receipt report is a list of all the
+				stock that has arrived at the pharmacy during a certain
+				month.
+			</simpara>
+
+			<simpara>
+				To see a Monthly Stock Receipt, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Monthly Stock Receipts
+				</emphasis>
+				.
+			</simpara>
+
+			<simpara>
+				The next screen to open will be the Monthly Stock
+				Receipts screen. It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportMonthlyStockReceipts.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportMonthlyStockReceipts.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				From this screen, you will need to select the month for
+				which you wish to generate the report. Do this by
+				selecting the month and year from the drop-down lists.
+				Then, select
+				<emphasis role="strong">View Report</emphasis>
+				to see a Monthly Stock Receipt report for the period you
+				have specified (or
+				<emphasis role="strong">Close</emphasis>
+				to return to the Reports Screen).
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Monthly Clinic Indicator Report</title>
+			<simpara>
+				The Monthly Clinic Indicator Report shows statistics for
+				each clinic, for a certain month. This is divided into
+				paediatric and adult patient statistics. The report also
+				contains regimen information, which relies on correctly
+				defined Drug Groups (see Drug Groups)
+			</simpara>
+
+			<simpara>
+				To see a Monthly Clinic Indicator Report , select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Monthly Clinic Indicator Report
+				</emphasis>
+				. The Monthly Clinic Indicator Report screen will open.
+				It looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportMonthlyClinicIndicator.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>
+							ReportMonthlyClinicIndicator.png
+						</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				You should select a distribution point from the
+				drop-down list, and also set values for the parameters:
+			</simpara>
+
+			<itemizedlist>
+				<listitem>
+					<simpara>
+						Minimum Days Late, which is the shortest length
+						of time that must elapse after a patient was
+						expected to collect a package, for them to be
+						considered a defaulter.
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						Cutoff Age For Paediatric Patients
+					</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>
+				Then, select
+				<emphasis role="strong">View Report</emphasis>
+				to see a Monthly Clinic Indicator Report for the
+				distribution point and parameters you have specified (or
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen).
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Patients Expected On A Day</title>
+			<simpara>
+				This report shows a list of patients expected on a given
+				day. The list is generated by comparing the next
+				appointment date for each patient with the date chosen
+				on the Patients Expected On A Day screen.
+			</simpara>
+
+			<simpara>
+				To see a list of patients expected on a day, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Patients Expected On A Day
+				</emphasis>
+				. The Patients Expected On A Day screen will open. It
+				looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportPatientsExpected.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportPatientsExpected.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				From this screen, you will need to select a distribution
+				point and also a date for the report. Select the
+				distribution point from the drop-down list. To specify a
+				date range, select the month and year from the drop-down
+				lists, and clicking a date on each calender. Then,
+				select
+				<emphasis role="strong">View Report</emphasis>
+				to see a Patients Expected On A Day list for the date
+				and distribution point you have specified.
+			</simpara>
+
+			<simpara>
+				Select
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen, or
+				<emphasis role="strong">Clear</emphasis>
+				to remain at this screen but clear the information
+				(distribution point and date range) you have entered.
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>ARV Drug Usage Report</title>
+			<simpara>
+				The ARV Drug Usage report shows, for a user-specified
+				set of drugs, how many units of each drug were dispensed
+				per day. This is displayed for a user-specified date
+				range.
+			</simpara>
+
+			<simpara>
+				To see an ARV Drug Usage report, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">ARV Drug Usage Report</emphasis>
+				. The ARV Drug Usage report screen will open. It looks
+				like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportARVDrugUsage.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportARVDrugUsage.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				From this screen, you will need to select the drugs to
+				include (up to a maximum of 11), and also a date range
+				for the report. To select the drugs, click the check
+				boxes in the Drugs list. To specify a date range, click
+				a date on each calender. Then, select
+				<emphasis role="strong">View Report</emphasis>
+				to see an ARV Drug Usage report for the period you have
+				specified. Select
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen, or
+				<emphasis role="strong">Clear</emphasis>
+				to remain at this screen but clear the information
+				(drugs and date range) you have entered.
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>
+				Monthly Report of Receipts and Issues of ARV Drugs
+			</title>
+			<simpara>
+				This report shows a record of stock levels, receipts and
+				issues for a certain month at a certain clinic.
+			</simpara>
+
+			<simpara>
+				To see a Monthly Report of Receipts and Issues of ARV
+				Drugs, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Monthly Report of Receipts and Issuse of ARV Drugs
+				</emphasis>
+				. The Monthly Stock Overview screen will open. It looks
+				like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportMonthlyReceipts.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportMonthlyReceipts.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				You should select the distribution point, month and year
+				from the drop-down lists. Then, select
+				<emphasis role="strong">View Report</emphasis>
+				to see a Monthly Report of Receipts and Issuse of ARV
+				Drugs for the month and distribution point you have
+				specified. Select
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen, or
+				<emphasis role="strong">Clear</emphasis>
+				to remain at this screen but clear the information (
+				distribution point and month) you have entered.
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Transaction Log Report</title>
+			<simpara>
+				The Transaction Log Report shows all logged transactions
+				(deletions and stock destructions). This is displayed
+				for a user-specified date range.
+			</simpara>
+
+			<simpara>
+				To see an Transaction Log Report, select
+				<emphasis role="strong">Reports</emphasis>
+				from the main screen. This will open the Reports screen.
+				From the Reports screen, select
+				<emphasis role="strong">
+					Transaction Log Report
+				</emphasis>
+				. The Transaction Log Report report screen will open. It
+				looks like this:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/ReportTransactionLog.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>ReportTransactionLog.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				From this screen, you will need to select a date range
+				for the report. To specify a date range, click a date on
+				each calender. Then, select
+				<emphasis role="strong">View Report</emphasis>
+				to see a Transaction Log Report for the period you have
+				specified. Select
+				<emphasis role="strong">Cancel</emphasis>
+				to return to the Reports Screen.
+			</simpara>
+
+			<simpara>
+				The report will open in a Report Viewer. You can now
+				print or save the report. For information about this,
+				please see Printing and Saving Reports.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Printing and Saving Reports</title>
+			<simpara>
+				Reports will open in a window like the one below:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/JasperViewerEG.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>JasperViewerEG.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				You can view the report in this screen, and also print
+				or save it. In the image below, the left button is the
+				save button, and the right button is the print button.
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/JasperViewerPrintSaveButtons.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>
+							JasperViewerPrintSaveButtons.png
+						</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<sect2>
+				<title>To print the report:</title>
+				<simpara>
+					Click on the printer button in the icon bar at the
+					top of the viewer. The button is second from the
+					left. This will bring up a screen that will let you
+					choose a printer and associated settings. It looks
+					like this:
+				</simpara>
+
+				<simpara>
+					<inlinemediaobject>
+						<imageobject>
+							<imagedata
+								fileref="images/JasperViewerPrint.png" align="center" />
+						</imageobject>
+						<textobject>
+							<phrase>JasperViewerPrint.png</phrase>
+						</textobject>
+					</inlinemediaobject>
+				</simpara>
+
+			</sect2>
+			<sect2>
+				<title>To save the report:</title>
+				<simpara>
+					Click on the save button in the icon bar at the top
+					of the viewer. The button is the first from the left
+					hand side. This will bring up the following screen:
+				</simpara>
+
+				<simpara>
+					<inlinemediaobject>
+						<imageobject>
+							<imagedata
+								fileref="images/JasperViewerSave.png" align="center" />
+						</imageobject>
+						<textobject>
+							<phrase>JasperViewerSave.png</phrase>
+						</textobject>
+					</inlinemediaobject>
+				</simpara>
+
+				<simpara>
+					You can select the file format in which the report
+					should be saved from the drop-down list (shown
+					dropped down in the image). The recommended format
+					is PDF, which can be read by Adobe Acrobat and a
+					number of free viewers, such as xpdf, but cannot be
+					modified. Choose a file format, and give the file a
+					name. Also navigate to the place you want to save
+					the file, and then press
+					<emphasis role="strong">Save</emphasis>
+					.
+				</simpara>
+
+			</sect2>
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>Frequently Asked Questions</title>
+		<simpara>
+			This section offers answers to some frequently asked
+			questions regarding the day-to-day use of the system. If you
+			have a problem that you cannot find a solution to in the
+			rest of the manual, you may be able to solve it by refering
+			to this section. However, if you are unsuccessful, please
+			call the Cell-Life iDART Helpdesk, where one of the system's
+			developers will assist you.
+		</simpara>
+
+		<sect1>
+			<title>Using the Patient Search</title>
+			<simpara>
+				Pressing
+				<emphasis role="strong">Patient Search</emphasis>
+				will bring up a list of the IDs and names of all the
+				patients in the system. If you enter a chapter of a
+				Patient ID or name, the system will shorten the list by
+				hiding all those patients whose names and IDs do not
+				contain the characters you have entered. You can also
+				scroll through the list of patients using the arrows on
+				the right hand side. For example, if the system has
+				patients ABC112, ABC122 and ABC123, entering ABC will
+				not hide any of the patient IDs, but entering ABC11 will
+				hide the second and third IDs as only the first (ABC112)
+				can match ABC11. Note that the search is not case
+				sensitive, ie. AB, ab and Ab are the same.
+			</simpara>
+
+			<simpara>
+				This screenshot shows the Patient Search screen
+				displaying all the patients in the system:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata
+							fileref="images/PatientSearchFull.png" align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>PatientSearchFull.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				This screenshot shows the Patient Search screen
+				displaying only patients with IDs or names containing
+				ab:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/PatientSearchAB.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>PatientSearchAB.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				Note that most patient search screens will only allow
+				you to search patients whose account status is
+				<emphasis>active</emphasis>
+				. For example, you can't add a prescription for an
+				inactive patient, so there will not be inactive patients
+				in the search on the Add/Update Prescription screen. The
+				exception is the Update Patient screen, where you can
+				search through all patients, active or inactive
+			</simpara>
+
+			<simpara>
+				When you have found the patient you are looking for,
+				click on the ID in the list. This will close the Patient
+				Search screen and bring up the relevant information
+				about the patient whose ID you selected. Clicking
+				<emphasis role="strong">Cancel</emphasis>
+				from the Patient Search screen will close the screen but
+				not bring up information about any patients.
+			</simpara>
+
+		</sect1>
+		<sect1>
+			<title>Using the Drug Search</title>
+			<simpara>
+				Pressing
+				<emphasis role="strong">Drug Search</emphasis>
+				will bring up a list of the drugs in the system, and
+				their pack sizes. If you enter a chapter of a drug name,
+				the system will shorten the list by hiding all those
+				drugs whose names do not contain the characters you have
+				entered. You can also scroll through the list of drugs
+				using the arrows on the right hand side. Note that the
+				search is not case sensitive, ie. AB, ab and Ab are the
+				same.
+			</simpara>
+
+			<simpara>
+				This screenshot shows the Drug Search screen displaying
+				all the drugs in the system:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/DrugSearchAll.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>DrugSearchAll.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				This screenshot shows the Drug Search screen displaying
+				only drugs whose name contains Nev:
+			</simpara>
+
+			<simpara>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="images/DrugSearchNev.png"
+							align="center" />
+					</imageobject>
+					<textobject>
+						<phrase>DrugSearchNev.png</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</simpara>
+
+			<simpara>
+				When you have found the drug you are looking for, click
+				on the entry in the list. This will close the Drug
+				Search screen and bring up the relevant information
+				about the drug you selected. Clicking
+				<emphasis role="strong">Cancel</emphasis>
+				from the Drug Search screen will close the screen but
+				not bring up information about any drug.
+			</simpara>
+
+		</sect1>
+	</chapter>
+</book>

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthlyStockOverview_batch" pageWidth="595" pageHeight="842" columnWidth="70" columnSpacing="5" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="stockCenterId" class="java.lang.Integer">
+		<parameterDescription><![CDATA[Clinic Identifier]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="name" class="java.lang.String">
+		<parameterDescription><![CDATA[Drug Name]]></parameterDescription>
+	</parameter>
+	<parameter name="id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dateFormat" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2006-03-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="packsize" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(60)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NSN" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="StockCode" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="monthStart" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["2007-08-01 00:00:00.000"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="monthEnd" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["2007-09-01 00:00:00.000"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select 
+
+COALESCE((a.received * $P{packsize} - COALESCE((b.issued*$P{packsize}) + b.pills, 0) - COALESCE(f.adjusted, 0) + COALESCE((h.returned*$P{packsize}) + h.pills, 0)), 0)
+
+as openingpills, 
+
+COALESCE(c.received,0) as received, 
+
+COALESCE(e.issued,0) as destroyed , COALESCE(e.pill,0) as destroyedpills, 
+
+COALESCE(d.issued,0) as dispensed , COALESCE(d.pill,0) as dispensedpills, 
+
+COALESCE(g.adjusted,0) as adjusted, 
+
+COALESCE(i.returned,0) as returned , COALESCE(i.pills,0) as returnedpills 
+
+from (
+select sum(s.unitsreceived) as received 
+from drug as d, stock as s
+where s.drug = d.id and d.id = $P{id} and s.stockCenter = $P{stockCenterId} and s.datereceived < $P{monthStart}::timestamp
+
+) as a, 
+
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued,  MOD(sum(pd.amount),$P{packsize}) as pills
+
+from drug as d, stock as s, packageddrugs as pd, package as p
+where d.id = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and s.drug = d.id and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.packdate < $P{monthStart}::timestamp
+
+) as b, 
+
+(
+select sum(s.unitsreceived) as received from drug as d, stock as s
+where d.id = $P{id} and s.stockCenter = $P{stockCenterId} and s.drug = d.id 
+
+and s.datereceived between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
+
+) as c,
+
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, MOD(sum(pd.amount),$P{packsize}) as pill
+from drug as d, stock as s, packageddrugs as pd, package as p,prescription as pre
+where d.id = $P{id} and s.stockCenter = $P{stockCenterId} 
+and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id
+and p.prescription = pre.id
+and p.packdate between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
+
+
+) as d,
+
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, MOD(sum(pd.amount),$P{packsize}) as pill
+from drug as d, stock as s, packageddrugs as pd, package as p
+where d.id = $P{id} and s.stockCenter = $P{stockCenterId} 
+and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id
+and p.prescription is null
+and p.packdate between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
+
+
+) as e,
+
+(select sum(sa.adjustedValue) as adjusted
+
+from drug as d, stock as s, stockAdjustment as sa
+where d.id = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and s.drug = d.id 
+and sa.stock = s.id 
+and sa.captureDate < $P{monthStart}::timestamp
+) as f, 
+
+(select sum(sa.adjustedValue) as adjusted
+
+from drug as d, stock as s, stockAdjustment as sa
+where d.id = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and s.drug = d.id 
+and sa.stock = s.id 
+and sa.captureDate between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
+
+
+) as g,
+
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as returned, MOD(sum(pd.amount),$P{packsize}) as pills
+
+from drug as d, stock as s, packageddrugs as pd, package as p
+where d.id = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and s.drug = d.id and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.stockReturned = true
+and p.packageReturned = true
+and p.dateReturned < $P{monthStart}::timestamp
+
+) as h,
+
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as returned, MOD(sum(pd.amount),$P{packsize}) as pills
+
+from drug as d, stock as s, packageddrugs as pd, package as p
+where d.id = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and s.drug = d.id and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.stockReturned = true
+and p.packageReturned = true
+and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
+
+) as i]]>
+	</queryString>
+	<field name="received" class="java.lang.Long"/>
+	<field name="dispensed" class="java.lang.Long"/>
+	<field name="openingpills" class="java.lang.Integer"/>
+	<field name="destroyed" class="java.lang.Integer"/>
+	<field name="destroyedpills" class="java.lang.Integer"/>
+	<field name="adjusted" class="java.lang.Integer"/>
+	<field name="dispensedpills" class="java.lang.Long"/>
+	<field name="returned" class="java.lang.Integer"/>
+	<field name="returnedpills" class="java.lang.Integer"/>
+	<variable name="totalPills" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long($F{openingpills}.longValue()  + ($F{received}.longValue()*$P{packsize}.intValue())
+- ($F{dispensed}.longValue()*$P{packsize}.intValue()) - $F{dispensedpills}.longValue() 
+- ($F{destroyed}.longValue()*$P{packsize}.intValue()) - $F{destroyedpills}.longValue() 
+- $F{adjusted}.intValue()
++ ($F{returned}.intValue()*$P{packsize}.intValue()) + $F{returnedpills}.intValue()
+)]]></variableExpression>
+	</variable>
+	<variable name="totalString" class="java.lang.String">
+		<variableExpression><![CDATA[(($V{totalPills}.longValue()%$P{packsize}.intValue())==0)? 
+(new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString() 
+:(new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString() + " ("+ (new Long($V{totalPills}.longValue()%$P{packsize}.intValue())).toString() +")"]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<line>
+				<reportElement key="line-6" mode="Opaque" x="0" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-1" mode="Transparent" x="299" y="2" width="33" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{received}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-3" mode="Transparent" x="336" y="2" width="37" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dispensedpills}.intValue()==0?$F{dispensed}.toString():
+($F{dispensed}).toString() +" (" + ($F{dispensedpills}).toString() + ")"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-4" mode="Transparent" x="490" y="2" width="40" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalString}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-6" mode="Transparent" x="3" y="2" width="145" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{name}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-8" mode="Opaque" x="150" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-9" mode="Opaque" x="297" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-10" mode="Opaque" x="334" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-11" mode="Opaque" x="450" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-12" mode="Opaque" x="412" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-7" mode="Transparent" x="254" y="2" width="41" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{openingpills}.intValue()%$P{packsize}.intValue())==0?new Integer($F{openingpills}.intValue()/$P{packsize}.intValue()).toString():
+(new Integer($F{openingpills}.intValue()/$P{packsize}.intValue()).toString() + " (" + new Integer($F{openingpills}.intValue()%$P{packsize}.intValue()).toString() + ")")]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-20" mode="Opaque" x="201" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-21" mode="Opaque" x="252" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-8" x="152" y="2" width="47" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{NSN}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-9" x="203" y="2" width="47" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{StockCode}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-27" mode="Opaque" x="375" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-10" mode="Transparent" x="377" y="2" width="33" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{destroyedpills}.intValue()==0?$F{destroyed}.toString():
+($F{destroyed}).toString() +" (" + ($F{destroyedpills}).toString() + ")"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-28" x="532" y="0" width="1" height="20"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-11" x="414" y="2" width="35" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{adjusted}.intValue()%$P{packsize}.intValue())==0?new Integer($F{adjusted}.intValue()/$P{packsize}.intValue()).toString():
+(new Integer($F{adjusted}.intValue()/$P{packsize}.intValue()).toString() + " (" + new Integer($F{adjusted}.intValue()%$P{packsize}.intValue()).toString() + ")")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-12" x="453" y="2" width="33" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{returnedpills}.intValue()==0?$F{returned}.toString():
+($F{returned}).toString() +" (" + ($F{returnedpills}).toString() + ")"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-29" x="488" y="0" width="1" height="20"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

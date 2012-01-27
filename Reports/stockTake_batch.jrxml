@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockTake_batch" pageWidth="535" pageHeight="842" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="stockCenterId" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new Integer(78)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="id" class="java.lang.Integer"/>
+	<parameter name="packsize" class="java.lang.Integer"/>
+	<parameter name="dateFormat" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="hasUnitsRemaining" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[(new Character('T')).toString()]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.batchNumber as batchNumber, (a.received*$P{packsize}) as received, 
+(COALESCE(b.packs_dispensed, 0)*$P{packsize} + COALESCE(b.pills_dispensed, 0) + COALESCE(c.packs_destroyed, 0) * $P{packsize} + 
+COALESCE(c.pills_destroyed, 0) + COALESCE(d.packs_adjusted, 0) * $P{packsize} + COALESCE(d.pills_adjusted, 0)) as issued, 
+a.expiryDate as expiryDate, a.dateReceived as dateReceived
+
+from (
+select s.batchNumber , sum(s.unitsreceived) as received, s.expiryDate, 
+	s.dateReceived, s.id
+ 
+from stock as s
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId}
+and (s.hasUnitsRemaining ='T' OR s.hasUnitsRemaining = $P{hasUnitsRemaining}::char(1))
+group by s.batchNumber, s.expiryDate, s.dateReceived, s.id
+) as a
+
+left outer join
+
+(select round(floor(sum(pd.amount::real)/$P{packsize}::real)::numeric,0) as packs_dispensed,round((sum(pd.amount)%$P{packsize})::numeric,0) as pills_dispensed, 
+ s.id
+
+from stock as s, packageddrugs as pd, package as p
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.prescription is not null
+and (s.hasUnitsRemaining ='T' OR s.hasUnitsRemaining = $P{hasUnitsRemaining}::char(1))
+group by s.batchNumber, s.id
+) as b
+
+on a.id = b.id
+
+left outer join
+
+(select round(floor(sum(pd.amount::real)/$P{packsize}::real)::numeric,0) as packs_destroyed,round((sum(pd.amount)%$P{packsize})::numeric,0) as pills_destroyed, 
+       s.id
+
+from stock as s, packageddrugs as pd, package as p
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId}
+and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.prescription is null
+and (s.hasUnitsRemaining ='T' OR s.hasUnitsRemaining = $P{hasUnitsRemaining}::char(1)) 
+group by s.batchNumber, s.id
+) as c 
+
+on a.id = c.id
+
+left outer join
+
+(select round(floor(sum(sa.adjustedValue)/$P{packsize})::numeric,0) as packs_adjusted,round((sum(sa.adjustedValue)%$P{packsize})::numeric,0) as pills_adjusted, 
+	s.id
+from stock as s, stockAdjustment as sa
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and sa.stock = s.id
+and (s.hasUnitsRemaining ='T' OR s.hasUnitsRemaining = $P{hasUnitsRemaining}::char(1)) 
+group by s.batchNumber, s.id
+) as d
+
+on a.id = d.id
+
+order by a.batchNumber ASC, a.expiryDate ASC, a.dateReceived]]>
+	</queryString>
+	<field name="received" class="java.lang.Integer"/>
+	<field name="batchNumber" class="java.lang.String"/>
+	<field name="issued" class="java.lang.Integer"/>
+	<field name="expiryDate" class="java.sql.Timestamp"/>
+	<field name="dateReceived" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<line>
+				<reportElement key="line-1" x="0" y="0" width="534" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-2" x="0" y="19" width="534" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-3" x="0" y="1" width="1" height="18"/>
+			</line>
+			<line>
+				<reportElement key="line-4" x="265" y="1" width="1" height="18"/>
+			</line>
+			<line>
+				<reportElement key="line-5" x="312" y="1" width="1" height="18"/>
+			</line>
+			<line>
+				<reportElement key="line-6" x="359" y="1" width="1" height="18"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-1" x="83" y="2" width="90" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{batchNumber}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-11" x="533" y="1" width="1" height="18"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-4" x="3" y="2" width="75" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[(new SimpleDateFormat("dd/MM/yy")).format($F{dateReceived})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-12" x="80" y="1" width="1" height="18"/>
+			</line>
+			<line>
+				<reportElement key="line-13" x="175" y="1" width="1" height="18"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-5" x="178" y="2" width="85" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[(new SimpleDateFormat("MM/yyyy")).format($F{expiryDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="60" splitType="Stretch">
+			<line>
+				<reportElement key="line-14" x="0" y="19" width="534" height="1"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-15" x="0" y="39" width="534" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-18" x="0" y="0" width="1" height="59"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-19" x="0" y="59" width="534" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-20" x="80" y="0" width="1" height="39"/>
+			</line>
+			<line>
+				<reportElement key="line-21" x="175" y="0" width="1" height="39"/>
+			</line>
+			<line>
+				<reportElement key="line-22" x="265" y="0" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement key="line-23" x="312" y="0" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement key="line-24" x="359" y="0" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement key="line-26" x="533" y="0" width="1" height="59"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-30" x="533" y="0" width="1" height="59"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-1" x="3" y="41" width="260" height="18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Totals]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockTake_batch" pageWidth="535" pageHeight="842" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="stockCenterId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(78)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="id" class="java.lang.Integer"/>
+	<parameter name="packsize" class="java.lang.Integer"/>
+	<parameter name="dateFormat" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="startDate" class="java.sql.Timestamp"/>
+	<parameter name="endDate" class="java.sql.Timestamp"/>
+	<parameter name="stockTake" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="path" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select a.batchNumber as batchNumber, (a.received*$P{packsize}) as received, 
+(COALESCE(b.packs_dispensed, 0)*$P{packsize} + COALESCE(b.pills_dispensed, 0) + COALESCE(c.packs_destroyed, 0) * $P{packsize} + 
+COALESCE(c.pills_destroyed, 0) + COALESCE(d.packs_adjusted, 0) * $P{packsize} + COALESCE(d.pills_adjusted, 0)) as issued, 
+d.captureDate as captureDate, d.adjustedValue as pillsAdjusted, d.notes as notes, COALESCE(d.stockCount, 0) as pillsCounted
+
+
+
+
+from (
+select s.batchNumber ,round(floor(sum(sa.adjustedValue)/$P{packsize})::numeric,0) as packs_adjusted,round((sum(sa.adjustedValue)%$P{packsize})::numeric,0) as pills_adjusted, 
+ 	sa.captureDate as captureDate, sa.adjustedValue as adjustedValue, sa.notes as notes, sa.stockCount as stockCount, s.expiryDate as expiryDate, s.id
+from stock as s, stockAdjustment as sa, stockTake st
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and sa.stock = s.id
+and sa.stockTake = st.id
+and st.stockTakeNumber = $P{stockTake}
+group by s.id, s.batchNumber, sa.captureDate, sa.adjustedValue, sa.notes, sa.stockCount, s.expiryDate
+) as d
+
+left outer join
+
+(select s.batchNumber ,round(floor(sum(pd.amount::real)/$P{packsize}::real)::numeric,0) as packs_dispensed,round((sum(pd.amount)%$P{packsize})::numeric,0) as pills_dispensed, s.id 
+
+from stock as s, packageddrugs as pd, package as p
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId} 
+and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.prescription is not null
+group by s.id, s.batchNumber
+) as b
+
+on d.id = b.id
+
+left outer join
+
+(select s.batchNumber ,round(floor(sum(pd.amount::real)/$P{packsize}::real)::numeric,0) as packs_destroyed,round((sum(pd.amount)%$P{packsize})::numeric,0) as pills_destroyed, s.id 
+
+from stock as s, packageddrugs as pd, package as p
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId}
+and pd.stock = s.id 
+and pd.parentpackage = p.id 
+and p.prescription is null
+group by s.id, s.batchNumber
+) as c 
+
+on d.id = c.id 
+
+left outer join
+
+(
+select s.batchNumber , sum(s.unitsreceived) as received, s.id 
+from stock as s
+where s.drug = $P{id} 
+and s.stockCenter = $P{stockCenterId}
+group by s.id, s.batchNumber
+) as a
+
+on d.id = a.id
+group by  d.id, a.batchnumber, a.received, b.packs_dispensed, b.pills_dispensed, 
+	  c.packs_destroyed, c.pills_destroyed, d.packs_adjusted, d.pills_adjusted, 
+	  d.capturedate, d.adjustedvalue, d.notes, d.stockcount, d.batchnumber, d.expirydate
+order by d.batchnumber, d.expiryDate, d.captureDate]]>
+	</queryString>
+	<field name="received" class="java.lang.Integer"/>
+	<field name="batchNumber" class="java.lang.String"/>
+	<field name="issued" class="java.lang.Integer"/>
+	<field name="captureDate" class="java.util.Date"/>
+	<field name="pillsAdjusted" class="java.lang.Integer"/>
+	<field name="notes" class="java.lang.String"/>
+	<field name="pillsCounted" class="java.lang.Integer"/>
+	<variable name="totalPacksCounted" class="java.lang.Integer" resetType="Column" incrementType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$V{packCount}]]></variableExpression>
+	</variable>
+	<variable name="packCount" class="java.lang.Integer">
+		<variableExpression><![CDATA[new Integer($F{pillsCounted}.intValue() / $P{packsize}.intValue())]]></variableExpression>
+	</variable>
+	<variable name="pillCount" class="java.lang.Integer">
+		<variableExpression><![CDATA[new Integer($F{pillsCounted}.intValue() % $P{packsize}.intValue())]]></variableExpression>
+	</variable>
+	<variable name="packAdjustments" class="java.lang.Integer">
+		<variableExpression><![CDATA[new Integer(($F{pillsAdjusted}.intValue())/$P{packsize}.intValue())]]></variableExpression>
+	</variable>
+	<variable name="pillAdjustments" class="java.lang.Integer">
+		<variableExpression><![CDATA[new Integer(($F{pillsAdjusted}.intValue())%$P{packsize}.intValue())]]></variableExpression>
+	</variable>
+	<variable name="totalPillsCounted" class="java.lang.Integer" resetType="Column" incrementType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$V{pillCount}]]></variableExpression>
+	</variable>
+	<variable name="totalPacksOnHand" class="java.lang.Integer" resetType="Column" incrementType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$V{packsOnHand}]]></variableExpression>
+	</variable>
+	<variable name="totalPillsOnHand" class="java.lang.Integer" resetType="Column" incrementType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$V{pillsOnHand}]]></variableExpression>
+	</variable>
+	<variable name="variance" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{pillsAdjusted}]]></variableExpression>
+	</variable>
+	<variable name="packsOnHand" class="java.lang.Integer">
+		<variableExpression><![CDATA[new Integer(($F{pillsCounted}.intValue() + $F{pillsAdjusted}.intValue()) / 
+$P{packsize}.intValue())]]></variableExpression>
+	</variable>
+	<variable name="pillsOnHand" class="java.lang.Integer">
+		<variableExpression><![CDATA[new Integer(($F{pillsCounted}.intValue() + $F{pillsAdjusted}.intValue()) % 
+$P{packsize}.intValue())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<line>
+				<reportElement key="line-1" x="0" y="0" width="534" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-2" mode="Transparent" x="0" y="19" width="534" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-3" x="0" y="1" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement key="line-4" x="124" y="1" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement key="line-5" x="210" y="1" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement key="line-6" x="258" y="1" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement key="line-7" x="306" y="1" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement key="line-8" x="354" y="1" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement key="line-9" x="402" y="1" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement key="line-10" x="533" y="1" width="1" height="19"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-1" x="5" y="2" width="117" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{batchNumber}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-2" x="126" y="2" width="82" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd MMM yyyy").format($F{captureDate})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-3" x="212" y="2" width="44" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{packCount}.toString()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-5" x="437" y="11" width="1" height="0"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[Static text]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-4" x="260" y="2" width="44" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{pillCount}.toString()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-5" x="308" y="2" width="44" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{packsOnHand}.toString()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-6" x="356" y="2" width="44" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{pillsOnHand}.toString()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-7" x="404" y="2" width="127" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{notes}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="41" splitType="Stretch">
+			<line>
+				<reportElement key="line-11" x="0" y="20" width="534" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-12" x="0" y="39" width="534" height="1"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-6" x="3" y="2" width="206" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Totals]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-7" x="2" y="22" width="206" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Variance for Drug]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-12" x="212" y="22" width="318" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{variance}.toString()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-13" x="0" y="0" width="1" height="39"/>
+			</line>
+			<line>
+				<reportElement key="line-14" x="533" y="0" width="1" height="40"/>
+			</line>
+			<line>
+				<reportElement key="line-15" x="210" y="0" width="1" height="40"/>
+			</line>
+			<line>
+				<reportElement key="line-19" x="402" y="0" width="1" height="20"/>
+			</line>
+			<subreport isUsingCache="true">
+				<reportElement key="subreport-1" mode="Opaque" x="210" y="0" width="192" height="20"/>
+				<subreportParameter name="stockCenterId">
+					<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="path">
+					<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="drugId">
+					<subreportParameterExpression><![CDATA[$P{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="stockTakeNumber">
+					<subreportParameterExpression><![CDATA[$P{stockTake}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="packSize">
+					<subreportParameterExpression><![CDATA[$P{packsize}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "stockTakeReport_batch_totals.jasper")]]></subreportExpression>
+			</subreport>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,1881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthlyClinicIndicatorReport" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="path" class="java.lang.String">
+		<parameterDescription><![CDATA[Path for the report files]]></parameterDescription>
+		<defaultValueExpression><![CDATA["/home/simon/dev/workspace/idart-3.4/Reports"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pharmacist" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="facilityName" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="clinic" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["JHB Gen ARV Pharmacy"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="startDate" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="endDate" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="pharmacist1" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pharmacist2" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="cutoffAge" class="java.lang.Integer" isForPrompting="false">
+		<parameterDescription><![CDATA[age in years = paeds <= this number of years old]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new Integer(12)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cutoffDate" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="minDays" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new Integer(3)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adultsOnRegimens" class="java.lang.Object" isForPrompting="false">
+		<parameterDescription><![CDATA[Map containing Adult Regimen numbers]]></parameterDescription>
+	</parameter>
+	<parameter name="paedsOnRegimens" class="java.lang.Object" isForPrompting="false">
+		<parameterDescription><![CDATA[Map containing paed regimen numbers]]></parameterDescription>
+	</parameter>
+	<queryString>
+		<![CDATA[select date_part('month', $P{startDate}::timestamp)::integer as monthindex, 
+a.patcount as adultPatientsStarting, 
+b.patcount as adultPatientsTotal,
+c.patcount as paedsPatientsTotal, 
+d.patcount as paedsPatientsStarting,
+e.patcount as adultsEverInit,
+f.patcount as paedsEverInit,
+g.epcount as adultsStartedEp,
+h.epcount as paedsStartedEp,
+i.patcount as adultsSeen,
+j.patcount as paedsSeen,
+i.distinctpatcount as uniqueAdultsSeen,
+j.distinctpatcount as uniquePaedsSeen,
+k.patcount as  adultsDied,
+l.patcount as  paedsDied,
+m.epcount  as adultsInactive,
+n.epcount  as paedsInactive,
+u.patcount as adultsDefaulting,
+v.patcount as paedsDefaulting,
+w.patcount as adultsDefaultingPreART,
+x.patcount as paedsDefaultingPreART,
+y.patcount as adultPatientsStartingNonART, 
+z.patcount as paedsPatientsStartingNonART
+
+from
+
+
+(select count(a1.patient) as patcount from (select prescription.patient, min(pickupdate) 
+from package,prescription, patient, clinic, episode ep
+where prescription.id = package.prescription
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and ep.startreason like 'New Patient'
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth < $P{cutoffDate}
+and patient.id = prescription.patient
+and package.drugTypes like 'ARV'
+group by prescription.patient
+having min(pickupdate) between $P{startDate}::timestamp and ($P{endDate}::timestamp)) as a1) as a,
+
+
+(select count(b1.patient) as patcount from 
+(select distinct patient.id as patient
+from prescription,patient,clinic, episode ep
+where patient.id=prescription.patient
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth < $P{cutoffDate}
+and prescription.drugtypes like 'ARV'
+and ((prescription.enddate is null and prescription.date < $P{endDate}) 
+or ($P{endDate} between prescription.date and prescription.enddate))) as b1) as b,
+
+(select count(c1.patient) as patcount from 
+(select distinct prescription.patient 
+from prescription,patient,clinic, episode ep
+where patient.id=prescription.patient
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth >= $P{cutoffDate}
+and prescription.drugtypes like 'ARV'
+and ((prescription.enddate is null and prescription.date < $P{endDate}) 
+or ($P{endDate} between prescription.date and prescription.enddate)))as c1) as c,
+
+(select count(d1.patient) as patcount from (select prescription.patient, min(pickupdate) 
+from package,prescription, patient, clinic, episode ep
+where prescription.id = package.prescription
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and ep.startreason like 'New Patient'
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth >= $P{cutoffDate}
+and patient.id = prescription.patient
+and package.drugTypes like 'ARV'  
+group by prescription.patient
+having min(pickupdate) between $P{startDate}::timestamp and 
+($P{endDate}::timestamp)) as d1) as d ,
+
+(select count (e1.patient) as patcount from 
+(select distinct prescription.patient
+from prescription, package, patient,clinic,episode ep
+where package.prescription = prescription.id
+and prescription.patient = patient.id
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ep.startDate < ($P{endDate}::date)
+and ep.startreason like 'New Patient'
+and package.pickupdate <= ($P{endDate}::timestamp)
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth < $P{cutoffDate})
+as e1)
+ as e  ,
+
+(select count (f1.patient) as patcount from (select distinct prescription.patient
+from prescription, package, patient,clinic,episode ep
+where package.prescription = prescription.id
+and prescription.patient = patient.id
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ep.startDate < ($P{endDate}::date)
+and ep.startreason like 'New Patient'
+and package.pickupdate <= ($P{endDate}::timestamp)
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth >= $P{cutoffDate})
+as f1
+) as f,
+
+(select count(g1.id) as epcount from (select distinct ep.id
+from patient, clinic, episode ep
+where clinic.id = ep.clinic
+and ep.patient = patient.id
+and ep.startDate::date between $P{startDate}::date and $P{endDate}::date 
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth < $P{cutoffDate})
+as g1) as g,
+
+(select count(h1.id) as epcount from (select distinct ep.id
+from patient, clinic, episode ep
+where clinic.id = ep.clinic
+and ep.patient = patient.id
+and ep.startDate::date between $P{startDate}::date and $P{endDate}::date
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth >= $P{cutoffDate})
+as h1) as h,
+
+(select count(i1.patient) as patcount,count (distinct i1.patient) as distinctpatcount 
+from (select prescription.patient 
+from package,prescription, patient, clinic, episode ep
+where prescription.id = package.prescription
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth < $P{cutoffDate}
+and patient.id = prescription.patient
+and package.drugTypes like 'ARV'  
+and pickupdate between $P{startDate}::timestamp and ($P{endDate}::timestamp))as i1) as i,
+
+(select count(j1.patient) as patcount, count (distinct j1.patient) as distinctpatcount  
+from (select prescription.patient from package,prescription, patient, clinic, episode ep
+where prescription.id = package.prescription
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth >= $P{cutoffDate}
+and patient.id = prescription.patient
+and package.drugTypes like 'ARV'  
+and pickupdate between $P{startDate}::timestamp and ($P{endDate}::timestamp))as j1) as j,
+
+(select count(k1.patID) as patcount from (select pat.id as patID
+from patient as pat, prescription as pre, clinic, episode ep, prescribeddrugs as pd, drug as d
+where pat.id = pre.patient
+and pd.prescription = pre.id
+and pd.drug = d.id
+and d.sidetreatment like 'F'
+and clinic.id = ep.clinic
+and ep.patient = pat.id
+and ep.stopdate::date <= ($P{endDate}::date)
+and pre.endDate = ep.stopDate
+and ep.stopReason like 'Deceased'
+and clinic.clinicName like $P{clinic}
+and pat.dateofbirth < $P{cutoffDate}
+group by pat.id)as k1) as k,
+
+(select count(l1.patID) as patcount from (select pat.id as patID
+from patient as pat, prescription as pre, clinic, episode ep, prescribeddrugs as pd, drug as d
+where pat.id = pre.patient
+and clinic.id = ep.clinic
+and ep.patient = pat.id
+and ep.stopReason like 'Deceased'
+and ep.stopdate <= ($P{endDate}::date)
+and pre.endDate = ep.stopDate
+and pd.prescription = pre.id
+and pd.drug = d.id
+and d.sidetreatment like 'F'
+and clinic.clinicName like $P{clinic}
+and pat.dateofbirth >= $P{cutoffDate}
+group by pat.id)as l1) as l,
+
+(select count(m1.epID) as epcount from (select ep.id as epID
+from patient, clinic, episode ep
+where clinic.id = ep.clinic
+and ep.patient = patient.id
+and ep.stopDate::date between $P{startDate}::date and $P{endDate}::date
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth < $P{cutoffDate}) as m1) as m,
+
+(select count(n1.epID) as epcount from (select ep.id as epID
+from patient, clinic, episode ep
+where clinic.id = ep.clinic
+and ep.patient = patient.id
+and ep.stopDate::date between $P{startDate}::date and $P{endDate}::date
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth >= $P{cutoffDate}) as n1) as n,
+
+
+(select count(u1.patID) as patcount from (select distinct 
+pat.id as patID
+from patient as pat, appointment as app, clinic, episode ep
+where app.patient = pat.id
+and app.appointmentDate is not null
+and app.visitDate is null
+and app.appointmentDate between $P{startDate}::timestamp  and ($P{endDate}::timestamp)
+and EXTRACT(day from (($P{endDate}::timestamp)-app.appointmentDate)) > $P{minDays} 
+and not exists 
+(select package.id from package, prescription 
+where package.prescription = prescription.id
+and prescription.patient = pat.id
+and pickupdate between app.appointmentDate and ($P{endDate}::timestamp))
+and clinic.id = ep.clinic
+and ep.patient = pat.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and pat.dateofbirth < $P{cutoffDate}) as u1) as u,
+
+
+(select count(v1.patID) as patcount from (select distinct 
+pat.id as patID
+from patient as pat, appointment as app, clinic, episode ep
+where app.patient = pat.id
+and app.appointmentDate is not null
+and app.visitDate is null
+and app.appointmentDate between $P{startDate}::timestamp  and ($P{endDate}::timestamp)
+and EXTRACT(day from (($P{endDate}::timestamp)-app.appointmentDate)) > $P{minDays} 
+and not exists 
+(select package.id from package, prescription 
+where package.prescription = prescription.id
+and prescription.patient = pat.id
+and pickupdate between app.appointmentDate and ($P{endDate}::timestamp))
+and clinic.id = ep.clinic
+and ep.patient = pat.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and pat.dateofbirth >= $P{cutoffDate}) as v1) as v,
+
+(select count(w1.patID) as patcount from (select distinct 
+pat.id as patID
+from patient as pat, appointment as app, clinic, episode ep
+where app.patient = pat.id
+and app.appointmentDate is not null
+and app.visitDate is null
+and app.appointmentDate between $P{startDate}::timestamp  and ($P{endDate}::timestamp)
+and EXTRACT(day from (($P{endDate}::timestamp)-app.appointmentDate)) > $P{minDays} 
+and not exists 
+(select package.id from package, prescription 
+where package.prescription = prescription.id
+and prescription.patient = pat.id
+and pickupdate between app.appointmentDate and ($P{endDate}::timestamp))
+and not exists (select pre.id as preID from
+prescribeddrugs as pd,prescription as pre, drug as d
+where pat.id = pre.patient
+and pd.prescription = pre.id
+and pd.drug = d.id
+and d.sidetreatment like 'F'
+and pre.patient = pat.id)
+and clinic.id = ep.clinic
+and ep.patient = pat.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and pat.dateofbirth < $P{cutoffDate}) as w1) as w,
+
+
+(select count(x1.patID) as patcount from (select distinct 
+pat.id as patID
+from patient as pat, appointment as app, clinic, episode ep
+where app.patient = pat.id
+and app.appointmentDate is not null
+and app.visitDate is null
+and app.appointmentDate between $P{startDate}::timestamp  and ($P{endDate}::timestamp)
+and EXTRACT(day from (($P{endDate}::timestamp)-app.appointmentDate)) > $P{minDays} 
+and not exists 
+(select package.id from package, prescription 
+where package.prescription = prescription.id
+and prescription.patient = pat.id
+and pickupdate between app.appointmentDate and ($P{endDate}::timestamp))
+and not exists (select pre.id as preID from
+prescribeddrugs as pd,prescription as pre, drug as d
+where pat.id = pre.patient
+and pd.prescription = pre.id
+and pd.drug = d.id
+and d.sidetreatment like 'F'
+and pre.patient = pat.id)
+and clinic.id = ep.clinic
+and ep.patient = pat.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and pat.dateofbirth >= $P{cutoffDate}) as x1) as x,
+
+(select count(y1.patient) as patcount from (select prescription.patient, min(pickupdate) 
+from package,prescription, patient, clinic, episode ep
+where prescription.id = package.prescription
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth < $P{cutoffDate}
+and patient.id = prescription.patient
+and ep.startreason like 'New Patient'
+and (package.drugTypes not like 'ARV' or package.drugTypes is NULL)   
+group by prescription.patient
+having min(pickupdate) between $P{startDate}::timestamp and ($P{endDate}::timestamp))as y1) as y,
+
+(select count(z1.patient) as patcount from (select prescription.patient, min(pickupdate) 
+from package,prescription, patient, clinic, episode ep
+where prescription.id = package.prescription
+and clinic.id = ep.clinic
+and ep.patient = patient.id
+and ((ep.startDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.stopDate::date between $P{startDate}::date and $P{endDate}::date) or
+(ep.startDate::date < $P{startDate}::date and ep.stopDate is null))
+and clinic.clinicName like $P{clinic}
+and patient.dateofbirth >= $P{cutoffDate}
+and patient.id = prescription.patient
+and ep.startreason like 'New Patient'
+and (package.drugTypes not like 'ARV' or package.drugTypes is NULL)
+group by prescription.patient
+having min(pickupdate) between $P{startDate}::timestamp and ($P{endDate}::timestamp))as z1) as z]]>
+	</queryString>
+	<field name="monthindex" class="java.lang.Integer"/>
+	<field name="adultPatientsStarting" class="java.lang.Integer"/>
+	<field name="adultPatientsTotal" class="java.lang.Integer"/>
+	<field name="paedsPatientsTotal" class="java.lang.Integer"/>
+	<field name="paedsPatientsStarting" class="java.lang.Integer"/>
+	<field name="adultsEverInit" class="java.lang.Integer"/>
+	<field name="paedsEverInit" class="java.lang.Integer"/>
+	<field name="adultsStartedEp" class="java.lang.Integer"/>
+	<field name="paedsStartedEp" class="java.lang.Integer"/>
+	<field name="adultsSeen" class="java.lang.Integer"/>
+	<field name="paedsSeen" class="java.lang.Integer"/>
+	<field name="uniqueAdultsSeen" class="java.lang.Integer"/>
+	<field name="uniquePaedsSeen" class="java.lang.Integer"/>
+	<field name="adultsDied" class="java.lang.Integer"/>
+	<field name="paedsDied" class="java.lang.Integer"/>
+	<field name="adultsInactive" class="java.lang.Integer"/>
+	<field name="paedsInactive" class="java.lang.Integer"/>
+	<field name="adultsDefaulting" class="java.lang.Integer"/>
+	<field name="paedsDefaulting" class="java.lang.Integer"/>
+	<field name="adultPatientsStartingNonART" class="java.lang.Integer"/>
+	<field name="paedsPatientsStartingNonART" class="java.lang.Integer"/>
+	<field name="adultsDefaultingPreART" class="java.lang.Integer"/>
+	<field name="paedsDefaultingPreART" class="java.lang.Integer"/>
+	<group name="definitionsGroup" isStartNewPage="true">
+		<groupExpression><![CDATA[null]]></groupExpression>
+		<groupHeader>
+			<band splitType="Stretch"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="675" splitType="Stretch">
+				<staticText>
+					<reportElement key="staticText-71" x="88" y="55" width="355" height="32"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The patient has a valid prescription at the end of the period, and this prescription contains at least one ARV drug ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-73" x="12" y="39" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patients On Treatment at End Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-74" x="12" y="91" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patients Ever Initiated On Treatment]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-75" x="87" y="111" width="355" height="38"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The patient has received at least 1 ARV drug before / on the last day of the period specified. This number includes patients no longer on treatment. Additionally, their activation reason is set to "New Patient"]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-76" x="11" y="156" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patients Initiated On Treatment]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-77" x="86" y="173" width="355" height="29"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The patient has received their first ARV drug during the period specified. Aditionally, their activation reason is set to "New Patient"]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-78" x="11" y="210" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patients With Episodes Started in Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-79" x="86" y="226" width="355" height="17"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The patient has an episode started during the period.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-80" x="11" y="248" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patient Visits In This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-81" x="88" y="268" width="355" height="79"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The number of patients that collected an ARV package during the period specified. If a patient comes twice during the period (for example, gets an initial 2 week supply, then returns to collect a 1 month supply again during the period), this patient would be counted twice. Patients that don’t collect ARV drugs in the period due to them already having a 2 month supply (for example), would not be included in this list.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-82" x="12" y="352" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Unique Patients Seen In This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-83" x="88" y="372" width="355" height="38"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The number of unique patients that collected an ARV package during the period specified. If a patient collected drugs more than once in the period, s/he would only be counted once.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-84" x="12" y="415" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patients Who Have Defaulted In This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-85" x="88" y="436" width="355" height="54"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The number of patients that were expected to collect ARV drugs during the period specified, but failed to do so. Only patients who, at the end date, are more than a user-specified minimum number of days late will be included in this total. NOTE THIS IS AN ESTIMATE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-87" x="12" y="495" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patients Who Have Died While On Treatment]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-88" x="88" y="516" width="355" height="60"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[All patients that have an episode with end reason "Deceased" that ended before / on the last day of the period specified. Additionally, the patient’s prescription at the time of death contained at least 1 ARV drug, and was a valid prescription. ]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-118" x="11" y="7" width="431" height="18"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Definitions"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-95" x="12" y="581" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Patients Who have Defaulted Pre-ART In This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-96" x="88" y="601" width="355" height="64"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font isBold="false" isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<text><![CDATA[The number of patients that were expected to collect side treatment drugs during the period specified, but failed to do so. These patients were not yet collecting ARV drugs. Only patients who, at the end date, are more than a user-specified minimum nuber of days late will be included in this total. NOTE THIS IS AN ESTIMATE]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="adultsGroup">
+		<groupExpression><![CDATA[null]]></groupExpression>
+		<groupHeader>
+			<band height="340" splitType="Stretch">
+				<staticText>
+					<reportElement key="staticText-15" x="11" y="26" width="441" height="16"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult Patients Currently On Treatment (based on current prescription)]]></text>
+				</staticText>
+				<line>
+					<reportElement key="line-14" mode="Opaque" x="8" y="43" width="524" height="1" forecolor="#000000" backcolor="#FFFFFF"/>
+					<graphicElement fill="Solid"/>
+				</line>
+				<staticText>
+					<reportElement key="staticText-17" positionType="Float" x="259" y="62" width="148" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Adult Patients on Other]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-8" x="10" y="6" width="431" height="18"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Adult Patients (Patient's age > " + $P{cutoffAge}.toString() + " years)"]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement key="line-37" mode="Opaque" x="8" y="25" width="524" height="1" forecolor="#000000" backcolor="#FFFFFF"/>
+					<graphicElement fill="Solid"/>
+				</line>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-11" positionType="Float" x="465" y="62" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[((java.util.Map)$P{adultsOnRegimens}).get("Other")]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-17" x="464" y="26" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font isBold="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultPatientsTotal}]]></textFieldExpression>
+				</textField>
+				<subreport isUsingCache="true">
+					<reportElement key="subreport-8" positionType="Float" x="8" y="44" width="524" height="16"/>
+					<subreportParameter name="adultsOnRegimens">
+						<subreportParameterExpression><![CDATA[$P{adultsOnRegimens}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "adultsOnRegimens.jasper")]]></subreportExpression>
+				</subreport>
+				<line>
+					<reportElement key="line-70" positionType="Float" x="8" y="78" width="524" height="1"/>
+				</line>
+				<staticText>
+					<reportElement key="staticText-97" positionType="Float" x="10" y="79" width="442" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult Patients Ever Initiated On Treatment (based on packages received)]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-137" positionType="Float" x="465" y="79" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultsEverInit}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement key="line-71" positionType="Float" x="8" y="95" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-72" positionType="Float" x="8" y="112" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-74" positionType="Float" x="8" y="129" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-75" positionType="Float" x="8" y="146" width="524" height="1"/>
+				</line>
+				<staticText>
+					<reportElement key="staticText-98" positionType="Float" x="10" y="96" width="444" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult Patients Initiated On ARV Treatment In This Period
+]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-138" positionType="Float" x="465" y="96" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultPatientsStarting}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-99" positionType="Float" x="10" y="113" width="444" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult Patients Initiated On non-ARV Treatment In This Period
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-100" positionType="Float" x="10" y="130" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Episodes Started During This Period]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-139" positionType="Float" x="465" y="113" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultPatientsStartingNonART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-140" positionType="Float" x="465" y="130" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultsStartedEp}]]></textFieldExpression>
+				</textField>
+				<subreport isUsingCache="true">
+					<reportElement key="subreport-9" positionType="Float" x="8" y="147" width="523" height="16"/>
+					<subreportParameter name="clinic">
+						<subreportParameterExpression><![CDATA[$P{clinic}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="cutoffDate">
+						<subreportParameterExpression><![CDATA[$P{cutoffDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="startday">
+						<subreportParameterExpression><![CDATA[$P{startDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="endday">
+						<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "ActivationReasonsAdults.jasper")]]></subreportExpression>
+				</subreport>
+				<line>
+					<reportElement key="line-76" positionType="Float" x="8" y="164" width="524" height="1"/>
+				</line>
+				<staticText>
+					<reportElement key="staticText-101" positionType="Float" x="10" y="165" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult Patient Visits During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-102" positionType="Float" x="10" y="216" width="349" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult Pre-ART Defaulters During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-103" positionType="Float" x="10" y="182" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Unique Adult Patients Seen During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-104" positionType="Float" x="10" y="199" width="349" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult ART Defaulters During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-105" positionType="Float" x="10" y="233" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Adult Patients Who Have Died While On Treatment]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-106" positionType="Float" x="9" y="250" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number of Episodes Ended During This Period]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-141" positionType="Float" x="369" y="199" width="90" height="14"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["( >"+ $P{minDays}+" days late)"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-142" positionType="Float" x="369" y="216" width="90" height="14"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["( >"+ $P{minDays}+" days late)"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-143" positionType="Float" x="465" y="165" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultsSeen}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-144" positionType="Float" x="465" y="182" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{uniqueAdultsSeen}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-145" positionType="Float" x="464" y="199" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultsDefaulting}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-146" positionType="Float" x="464" y="216" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultsDefaultingPreART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-147" positionType="Float" x="465" y="233" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultsDied}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-148" positionType="Float" x="465" y="250" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isItalic="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{adultsInactive}]]></textFieldExpression>
+				</textField>
+				<line direction="BottomUp">
+					<reportElement key="line-77" positionType="Float" x="8" y="181" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-78" positionType="Float" x="8" y="198" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-79" positionType="Float" x="8" y="215" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-80" positionType="Float" x="8" y="232" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-81" positionType="Float" x="8" y="249" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-82" positionType="Float" x="8" y="266" width="524" height="1"/>
+				</line>
+				<subreport isUsingCache="true">
+					<reportElement key="subreport-10" positionType="Float" x="8" y="267" width="524" height="18"/>
+					<subreportParameter name="clinic">
+						<subreportParameterExpression><![CDATA[$P{clinic}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="cutoffDate">
+						<subreportParameterExpression><![CDATA[$P{cutoffDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="startday">
+						<subreportParameterExpression><![CDATA[$P{startDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="endday">
+						<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "DeactivationReasonsAdults.jasper")]]></subreportExpression>
+				</subreport>
+				<line direction="BottomUp">
+					<reportElement key="line-83" positionType="Float" stretchType="RelativeToTallestObject" x="7" y="5" width="1" height="281"/>
+				</line>
+				<line>
+					<reportElement key="line-84" positionType="Float" stretchType="RelativeToTallestObject" x="462" y="5" width="1" height="281"/>
+				</line>
+				<line>
+					<reportElement key="line-85" x="7" y="5" width="524" height="1"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement key="line-86" positionType="Float" stretchType="RelativeToTallestObject" x="531" y="5" width="1" height="281"/>
+				</line>
+				<line>
+					<reportElement key="line-87" positionType="Float" x="7" y="286" width="524" height="1"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement key="line-104" positionType="Float" x="7" y="5" width="524" height="1"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<group name="paedsGroup" isStartNewPage="true">
+		<groupExpression><![CDATA[null]]></groupExpression>
+		<groupHeader>
+			<band splitType="Stretch"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="340" splitType="Stretch">
+				<staticText>
+					<reportElement key="staticText-107" x="11" y="26" width="441" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed Patients Currently On Treatment (based on current prescription)]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-149" x="10" y="6" width="431" height="18"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Paediatric Patients (Patient's age <= " + $P{cutoffAge}.toString() + " years)"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-150" x="464" y="26" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsPatientsTotal}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement key="line-88" x="8" y="25" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-89" x="8" y="43" width="524" height="1"/>
+				</line>
+				<subreport isUsingCache="true">
+					<reportElement key="subreport-11" positionType="Float" x="8" y="44" width="524" height="16"/>
+					<subreportParameter name="paedsOnRegimens">
+						<subreportParameterExpression><![CDATA[$P{paedsOnRegimens}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "paedsOnRegimens.jasper")]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement key="staticText-108" positionType="Float" x="259" y="62" width="148" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Paed Patients on Other]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-151" positionType="Float" x="465" y="62" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[((java.util.Map)$P{paedsOnRegimens}).get("Other")]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement key="line-90" positionType="Float" mode="Opaque" x="8" y="78" width="524" height="1" forecolor="#000000" backcolor="#FFFFFF"/>
+					<graphicElement fill="Solid"/>
+				</line>
+				<staticText>
+					<reportElement key="staticText-109" positionType="Float" x="10" y="79" width="442" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed Patients Ever Initiated On Treatment (based on packages received)]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-152" positionType="Float" x="465" y="79" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsEverInit}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-153" positionType="Float" x="465" y="96" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsPatientsStarting}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-154" positionType="Float" x="465" y="113" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsPatientsStartingNonART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-155" positionType="Float" x="465" y="130" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsStartedEp}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-110" positionType="Float" x="10" y="130" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Episodes Started During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-111" positionType="Float" x="10" y="113" width="444" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed Patients Initiated On non-ARV Treatment In This Period
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-112" positionType="Float" x="10" y="96" width="444" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed Patients Initiated On ARV Treatment In This Period
+]]></text>
+				</staticText>
+				<line>
+					<reportElement key="line-91" positionType="Float" x="8" y="95" width="524" height="1"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement key="line-92" positionType="Float" x="8" y="112" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-93" positionType="Float" x="8" y="129" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-94" positionType="Float" x="8" y="146" width="524" height="1"/>
+				</line>
+				<subreport isUsingCache="true">
+					<reportElement key="subreport-12" positionType="Float" x="8" y="147" width="523" height="16"/>
+					<subreportParameter name="clinic">
+						<subreportParameterExpression><![CDATA[$P{clinic}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="cutoffDate">
+						<subreportParameterExpression><![CDATA[$P{cutoffDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="startday">
+						<subreportParameterExpression><![CDATA[$P{startDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="endday">
+						<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "ActivationReasonsPaeds.jasper")]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement key="staticText-113" positionType="Float" x="10" y="165" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed Patient Visits During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-114" positionType="Float" x="10" y="182" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Unique Paed Patients Seen During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-115" positionType="Float" x="10" y="199" width="349" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed ART Defaulters During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-116" positionType="Float" x="10" y="216" width="349" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed Pre-ART Defaulters During This Period]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-117" positionType="Float" x="10" y="233" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number Of Paed Patients Who Have Died While On Treatment]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-118" positionType="Float" x="9" y="250" width="431" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<text><![CDATA[Total Number of Episodes Ended During This Period]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-156" positionType="Float" x="369" y="216" width="90" height="14"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["( >"+ $P{minDays}+" days late)"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-157" positionType="Float" x="369" y="199" width="90" height="14"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["( >"+ $P{minDays}+" days late)"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-158" positionType="Float" x="465" y="165" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsSeen}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-159" positionType="Float" x="465" y="182" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{uniquePaedsSeen}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-160" positionType="Float" x="464" y="199" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsDefaulting}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-161" positionType="Float" x="464" y="216" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsDefaultingPreART}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-162" positionType="Float" x="465" y="233" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsDied}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-163" positionType="Float" x="465" y="250" width="66" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isItalic="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{paedsInactive}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement key="line-95" positionType="Float" x="8" y="181" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-96" positionType="Float" x="8" y="198" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-97" positionType="Float" x="8" y="215" width="524" height="1"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement key="line-98" positionType="Float" x="8" y="232" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-99" positionType="Float" x="8" y="249" width="524" height="1"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement key="line-100" positionType="Float" x="8" y="266" width="524" height="1"/>
+				</line>
+				<subreport isUsingCache="true">
+					<reportElement key="subreport-13" positionType="Float" x="8" y="267" width="524" height="18"/>
+					<subreportParameter name="clinic">
+						<subreportParameterExpression><![CDATA[$P{clinic}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="cutoffDate">
+						<subreportParameterExpression><![CDATA[$P{cutoffDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="startday">
+						<subreportParameterExpression><![CDATA[$P{startDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="endday">
+						<subreportParameterExpression><![CDATA[$P{endDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "DeactivationReasonsPaeds.jasper")]]></subreportExpression>
+				</subreport>
+				<line>
+					<reportElement key="line-101" positionType="Float" stretchType="RelativeToTallestObject" x="7" y="5" width="1" height="281"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement key="line-102" positionType="Float" stretchType="RelativeToTallestObject" x="462" y="5" width="1" height="281"/>
+				</line>
+				<line>
+					<reportElement key="line-103" positionType="Float" stretchType="RelativeToTallestObject" x="531" y="5" width="1" height="281"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement key="line-105" positionType="Float" x="7" y="286" width="524" height="1"/>
+				</line>
+				<line>
+					<reportElement key="line-106" positionType="Float" x="7" y="5" width="524" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="tf_facilityName" mode="Opaque" x="105" y="28" width="300" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{facilityName} + ": " + ($P{clinic}.equals("%") ? "All Clinics" : $P{clinic})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="st_facilityName" mode="Transparent" x="1" y="28" width="70" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Facility Name:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="tf_date-2" mode="Opaque" x="0" y="1" width="408" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="18" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new String("Clinic Indicator Report")]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Top" isUsingCache="false">
+				<reportElement key="image-1" mode="Opaque" x="414" y="0" width="120" height="45" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<graphicElement fill="Solid"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{path}+ java.io.File.separator + "Logo_iDART.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement key="st_facilityName-1" mode="Transparent" x="1" y="44" width="79" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[For Period:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="tf_facilityName-1" mode="Opaque" x="105" y="44" width="299" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[(new SimpleDateFormat("dd MMMM yyyy")).format($P{startDate})+" to " + (new SimpleDateFormat("dd MMMM yyyy")).format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="1" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-89" mode="Transparent" x="30" y="7" width="158" height="13" forecolor="#000000" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist1}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[....................................
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-90" mode="Transparent" x="350" y="7" width="158" height="13" forecolor="#000000" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist2}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[....................................
+]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-63" x="30" y="22" width="157" height="18">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist1}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{pharmacist1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-64" mode="Transparent" x="2" y="50" width="100" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement key="textField-65" x="485" y="48" width="49" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-66" x="427" y="48" width="57" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-67" x="350" y="24" width="157" height="18">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist2}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{pharmacist2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-91" mode="Transparent" x="31" y="7" width="158" height="13" forecolor="#000000" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist1}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[....................................
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-92" mode="Transparent" x="351" y="7" width="158" height="13" forecolor="#000000" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist2}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[....................................
+]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-68" x="31" y="22" width="157" height="18">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist1}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{pharmacist1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-69" mode="Transparent" x="3" y="50" width="100" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement key="textField-70" x="486" y="48" width="49" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-71" x="428" y="48" width="57" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-72" x="351" y="24" width="157" height="18">
+					<printWhenExpression><![CDATA[new Boolean($P{pharmacist2}!=null)]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{pharmacist2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

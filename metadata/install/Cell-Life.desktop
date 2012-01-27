@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=iDART - Pharmacy
+Exec=$INSTALL_PATH/go.sh
+Terminal=false
+Icon=$INSTALL_PATH/cLogo.png
+Type=Application
+Name[en_ZA]=iDART - Pharmacy
+GenericName[en_ZA]=
+Categories=Application;

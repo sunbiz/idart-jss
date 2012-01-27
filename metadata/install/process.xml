@@ -1,0 +1,12 @@
+<processing>
+
+	<job name="Encrypting Configuration Data">
+        <executefile name="$JAVA_HOME/bin/java">  
+            <arg>-cp</arg> 
+            <arg>$INSTALL_PATH/bin/Pharmacy.jar</arg> 
+         <arg>org.celllife.idart.misc.PropertiesEncrypter</arg> 
+        <arg>$INSTALL_PATH/unencrypted_idart.properties</arg> 
+        <arg>$INSTALL_PATH/idart.properties</arg>
+        </executefile>
+	</job>
+</processing>

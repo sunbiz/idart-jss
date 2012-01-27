@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Configure a file appender. Allows logs to be written to a file -->
+	<appender name="FA" class="org.apache.log4j.RollingFileAppender">
+		<param name="Threshold" value="debug" />
+		<param name="File" value="idart.log" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="100KB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{dd-MM-yyyy HH:mm:ss} [%t] %-5p %30.30c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Configure a console appender. Allows logs to be written to the console -->
+	<appender name="CA" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.err" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{dd-MM-yyyy HH:mm:ss} [%t] %-5p %30.30c - %m%n" />
+		</layout>
+	</appender>
+
+	<logger name="org.celllife">
+		<level value="debug" />
+	</logger>
+
+	<logger name="org.hibernate">
+		<level value="warn" />
+	</logger>
+
+	<logger name="model.manager">
+		<level value="debug" />
+	</logger>
+	
+	<logger name="liquibase">
+		<level value="info" />
+	</logger>
+
+	<!-- Root debugger -->
+	<root>
+		<appender-ref ref="FA" />
+		<appender-ref ref="CA" />
+	</root>
+
+
+</log4j:configuration>

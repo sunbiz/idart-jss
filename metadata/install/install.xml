@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<installation version="1.0">
+	<native type="izpack" name="ShellLink.dll" />
+	<info>
+		<appname>iDART</appname>
+		<appversion>3.5.1</appversion>
+		<authors>
+			<author name="Samir Anand" email="samir@cell-life.org" />
+			<author name="Sarah Brown" email="sarah@cell-life.org" />
+			<author name="Jalal Ghiassi-Razavi" email="jalal@cell-life.org" />
+			<author name="Nico Gevers" email="nico.gevers@cell-life.org" />
+			<author name="Dirk de Jager" email="dirk@cell-life.org" />
+			<author name="Nicola Killa" email="Nicola.Killa@hiv-research.org.za" />
+			<author name="Melissa Loudon" email="melissa@cell-life.org" />
+			<author name="Rashid Limbada" email="rashid@cell-life.org" />
+			<author name="Simon Kelly" email="simon@cell-life.org" />
+			<author name="Munaf Sheikh" email="munaf@cell-life.org" />
+			<author name="Ilda Ladeira" email="ladeira.ilda@gmail.com" />
+			<author name="Kavindra Rammungal" email="kavindra.r@gmail.com" />
+			<author name="Stephen Rausch" email="stephenrausch@gmail.com" />
+			<author name="Ulrike Rivett" email="ulrike@cell-life.org" />
+			<author name="Robin Wood" email="Robin.Wood@hiv-research.org.za" />
+		</authors>
+		<url>http://www.cell-life.org/dispense-idart</url>
+		<javaversion>1.5</javaversion>
+	</info>
+	<guiprefs height="600" resizable="yes" width="800">
+		<laf name="metouia">
+			<os family="unix" />
+		</laf>
+		<laf name="looks">
+			<os family="windows" />
+			<param name="variant" value="plasticXP" />
+		</laf>
+	</guiprefs>
+	<dynamicvariables>
+		<variable name="dbUrl" value="jdbc:postgresql://$dbAddress:5432/$dbName" />
+	</dynamicvariables>
+	<variables>
+		<variable name="DesktopShortcutCheckboxEnabled" value="true" />
+	</variables>
+
+	<locale>
+		<langpack iso3="eng" />
+	</locale>
+	<resources>
+		<res src="metadata/install/install-readme.html" id="HTMLInfoPanel.info" />
+		<res src="metadata/install/Licence.html" id="HTMLLicencePanel.licence" />
+		<res src="metadata/install/clinstall.jpg" id="Installer.image" />
+		<res src="metadata/install/userInputSpec.xml" id="userInputSpec.xml" />
+		<res src="metadata/install/conditions.xml" id="conditions.xml" />
+		<res src="metadata/install/shortcutSpec.xml" id="shortcutSpec.xml" />
+		<res src="metadata/install/process.xml" id="ProcessPanel.Spec.xml" />
+	</resources>
+	<panels>
+		<panel classname="HelloPanel" />
+		<panel classname="HTMLInfoPanel" />
+		<panel classname="HTMLLicencePanel" />
+		<panel classname="PacksPanel" />
+		<panel classname="UserInputPanel" id="path.panel1" />
+		<panel classname="UserInputPanel" id="path.panel2" />
+		<panel classname="UserInputPanel" id="path.panel3" />
+		<panel classname="UserInputPanel" id="path.panel4" />
+		<panel classname="UserInputPanel" id="path.panel5" />
+		<panel classname="TargetPanel" />
+		<panel classname="ShortcutPanel" os="Windows" />
+		<panel classname="InstallPanel" />
+		<panel classname="ProcessPanel" />
+		<panel classname="FinishPanel" />
+	</panels>
+	<packs>
+		<pack name="Core" required="yes">
+			<description>iDART core files.</description>
+
+			<!-- Common files -->
+			<fileset dir="metadata/install" targetdir="$INSTALL_PATH">
+				<include name="*.jar" />
+				<include name="*.ttf" />
+				<include name="aupVersion.txt" />
+				<include name="*.html" />
+				<include name="log4j.xml" />
+				<include name="quartz.properties" />
+				<include name="sms.properties" />
+			</fileset>
+			<fileset dir="metadata/database/" targetdir="$INSTALL_PATH/scripts">
+				<include name="*diff.sql" />
+				<include name="*_schema*.sql" />
+				<include name="*training-data.sql" />
+			</fileset>
+			<fileset dir="metadata/database/database_cleanup_scripts"
+				targetdir="$INSTALL_PATH/scripts">
+				<include name="*.sql" />
+			</fileset>
+			<fileset dir="" targetdir="$INSTALL_PATH">
+				<include name="Reports/**/*" />
+				<exclude name="Reports/*.jrxml" />
+				<include name="img/**/*" />
+				<include name="unencrypted_idart.properties" />
+			</fileset>
+			<fileset dir="" targetdir="$INSTALL_PATH/bin">
+				<include name="Pharmacy.jar" />
+			</fileset>
+
+			<!-- Windows only files -->
+			<fileset dir="metadata/install" targetdir="$INSTALL_PATH" os="windows">
+				<include name="*.bat" />
+				<include name="*.dll" />
+				<include name="*.ico" />
+				<include name="*.png" />
+				<include name="*.xls"/>
+				<include name="Import_README.txt"/>
+			</fileset>
+
+			<!-- Unix only files -->
+			<fileset dir="metadata/install" targetdir="$INSTALL_PATH" os="unix">
+				<include name="*.sh" />
+				<include name="*.so" />
+				<include name="*.png" />
+				<include name="*.xls"/>
+				<include name="Cell-Life.desktop" />
+				<include name="Import_README.txt"/>
+			</fileset>
+			<parsable targetfile="$INSTALL_PATH/uninstall.bat" type="plain"
+				os="windows" />
+			<parsable targetfile="$INSTALL_PATH/go.bat" type="plain" os="windows" />
+			<parsable targetfile="$INSTALL_PATH/launcher.bat" type="plain"
+				os="windows" />
+			<parsable targetfile="$INSTALL_PATH/uninstall.sh" type="shell"
+				os="unix" />
+			<parsable targetfile="$INSTALL_PATH/go.sh" type="shell" os="unix" />
+			<parsable targetfile="$INSTALL_PATH/unixpostinstall.sh"
+				type="shell" os="unix" />
+			<parsable targetfile="$INSTALL_PATH/update.sh" type="shell"
+				os="unix" />
+			<parsable targetfile="$INSTALL_PATH/launcher.sh" type="shell"
+				os="unix" />
+			<parsable targetfile="$INSTALL_PATH/unencrypted_idart.properties"
+				type="plain" />
+			<parsable targetfile="$INSTALL_PATH/Cell-Life.desktop" type="plain"
+				os="unix" />
+			<executable targetfile="$INSTALL_PATH/go.sh" type="bin"
+				stage="never" os="unix" />
+			<executable targetfile="$INSTALL_PATH/uninstall.sh" type="bin"
+				stage="never" os="unix" />
+			<executable targetfile="$INSTALL_PATH/unixpostinstall.sh"
+				type="bin" stage="postinstall" os="unix" />
+			<executable targetfile="$INSTALL_PATH/update.sh" type="bin"
+				stage="never" os="unix" />
+			<executable targetfile="$INSTALL_PATH/backup.sh" type="bin"
+				stage="never" os="unix" />
+			<executable targetfile="$INSTALL_PATH/launcher.sh" type="bin"
+				stage="never" os="unix" />
+		</pack>
+		<pack name="Libraries" required="yes">
+			<description>3rd Party Library files.</description>
+			<fileset dir="target/lib" targetdir="$INSTALL_PATH/lib">
+				<include name="**/*.jar" />
+				<exclude name="**/swt.jar" />
+				<exclude name="**/swt-debug.jar" />
+			</fileset>
+			<file targetdir="$INSTALL_PATH/lib" os="windows" src="lib/swt_win/swt.jar" />
+			<file targetdir="$INSTALL_PATH/lib" os="unix" src="lib/swt_gtk/swt.jar" />
+		</pack>
+		<pack name="Source" required="no">
+			<description>iDART source files.</description>
+			<fileset dir="" targetdir="$INSTALL_PATH">
+				<include name="src/**/*" />
+				<exclude name=".svn"/>
+				<exclude name="_svn"/>
+			</fileset>
+		</pack>
+		<pack name="Documentation" required="yes">
+			<description>iDART User Documentation.</description>
+			<fileset dir="metadata/" targetdir="$INSTALL_PATH">
+				<include name="doc/**/*" />
+			</fileset>
+		</pack>
+	</packs>
+</installation>

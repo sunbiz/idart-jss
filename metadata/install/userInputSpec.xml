@@ -1,0 +1,152 @@
+<userInput>
+	<panel order="0" id="path.panel1">
+		<field
+			type="staticText"
+			align="left"
+			txt="Before Installation, could you please complete the following fields."/>
+		<field type="text" variable="dbAddress">
+			<spec txt="Database Server:" size="12" set="localhost" />
+		</field>
+		<space></space>
+		<field type="text" variable="dbName">
+			<spec txt="iDART Database Name:" size="12" set="pharm" />
+		</field>
+		<space></space>
+		<field type="text" variable="dbUser">
+			<spec txt="iDART Database Username:" size="12" set="postgres" />
+		</field>
+		<space></space>
+		<field type="text" variable="dbPassword">
+			<spec txt="iDART Database Password:" size="12" set="postgres" />
+		</field>
+		<space></space>
+		<field type="divider" align="center"/>
+	<space></space>
+		<field type="radio" variable="isEkapaVersion">
+			<description align="left" txt="Connecting to Ekapa?" />
+			<spec>
+				<choice txt="Yes" value="true" />
+				<choice txt="No" value="false" set="true"  />
+			</spec>
+		</field>
+		<space></space>
+	</panel>
+	<panel order="1" id="path.panel2">
+		<field
+			type="staticText"
+			align="left"
+			txt="For integration with eKapa, please complete the following fields." />
+			<space></space>
+		<field type="text" variable="dbAddressEkapa">
+			<spec txt="Database Server:" size="12" set="localhost" />
+		</field>
+		<space></space>
+		<field type="text" variable="dbNameEkapa">
+			<spec txt="eKapa Database Name:" size="12" set="" />
+		</field>
+		<space></space>
+		<field type="text" variable="dbUserEkapa">
+			<spec txt="eKapa Database Username:" size="12" set="" />
+		</field>
+		<space></space>
+		<field type="text" variable="dbPasswordEkapa">
+			<spec txt="eKapa Database Password:" size="12" set="" />
+		</field>
+		<space></space>
+		<space></space>
+		<field type="text" variable="dbPortEkapa">
+			<spec txt="eKapa Database Port:" size="12" set="1521" />
+		</field>
+	</panel>
+	<panel order="2" id="path.panel3">
+		<field
+			type="staticText"
+			align="left"
+			txt="Within iDART, there are some settings that can be configurable, and if used correctly, will ensure that the electronic dispensing process is more suited to your pharmacy. You can also set them at a later stage by editing the idart.properties file located in the installation folder. If you are unsure of these settings, please leave them as is, as the defaults here should suit most users"/>
+			<field type="space" align="center"/>
+			<field type="radio" variable="DispenseDirectlyDefault">
+			<description align="left" txt="In general, which dispensing process is more common at your pharmacy? Do you dispense directly to patients, or do you pre-package drugs for your patients (who collect them later)?" />
+			<spec>
+				<choice txt="Direct Dispensing" value="true" set="true"/>
+				<choice txt="Pre-Package" value="false"   />
+			</spec>
+		</field>
+		<field type="radio" variable="PatientNameOnDrugLabel">
+			<description align="left" txt="Do you want the patient's name displayed on the drug labels?" />
+			<spec>
+				<choice txt="Yes" value="true" set="true" />
+				<choice txt="No" value="false"   />
+			</spec>
+		</field>
+		<field type="radio" variable="PatientNameOnReports">
+			<description align="left" txt="Do you want patient names displayed on package reports?" />
+			<spec>
+				<choice txt="Yes" value="true" set="true" />
+				<choice txt="No" value="false"   />
+			</spec>
+		</field>
+	</panel>
+	<panel order="3" id="path.panel4">
+		<field type="radio" variable="SummaryLabelDefault">
+			<description align="left" txt="Do you want a prescription summary label (giving details of the dispensed items), printed after each time you dispense?" />
+			<spec>
+				<choice txt="Yes" value="true" set="true"/>
+				<choice txt="No" value="false" />
+			</spec>
+		</field>
+			
+		<field type="radio" variable="PrintSideTreatmentLabels">
+			<description align="left" txt="Do you want to be able to print drug labels for all non-ARV drugs dispensed through iDART?" />
+			<spec>
+				<choice txt="Yes" value="true" set="true" />
+				<choice txt="No" value="false"   />
+			</spec>
+
+		</field>
+		<field type="radio" variable="accumByDefault">
+			<description align="left" txt="Do you usually give accumulated pills back to patients after a pill count?" />
+			<spec>
+				<choice txt="Yes" value="true" set="true" />
+				<choice txt="No" value="false"   />
+			</spec>
+
+		</field>
+		<space></space>
+		<field type="combo" variable="labelType">
+			<description align="left" txt="What size is your drug label?" />
+			<spec>
+				<choice txt="75 mm x 50 mm" value="iDART" set="true" />
+				<choice txt="101 mm x 49 mm" value="eKapa"   />
+			</spec>
+		</field>
+				 <field type="space" align="center"/>
+
+		<field type="text" variable="patientBarcodeRegex">
+			<spec txt="Regular Expression for Patient Barcode Parsing:" size="12" set=".+" />
+		</field>
+		<field type="text" variable="intValueOfAlternativeBarcodeEndChar">
+			<spec txt="Integer Value of Alternative Barcode End Character:" size="12" set="-1" />
+		</field>
+	</panel>
+	<panel order="4" id="path.panel5">
+		<field type="radio" variable="nextAppointmentDateOnLabels">
+			<description align="left" txt="Do you want the patient's next appointment to be displayed on the labels?" />
+			<spec>
+				<choice txt="Yes" value="true" set="true" />
+				<choice txt="No" value="false"   />
+			</spec>
+		</field>
+      <field type="radio" variable="downReferralMode">
+			<description align="left" txt="Please select your Down Referral Mode ?" />
+			<spec>
+				<choice txt="Offline" value="offline" set="true"  />
+				<choice txt="Online" value="online"   />
+			</spec>
+
+		</field>
+		<field type="text" variable="logoutTime">
+		<description align="left" txt="To prevent unauthorised access to iDART, the current user will automatically be logged off if there has been no activity for a set amount of time." />
+			<spec txt="Time for automatic logout (in seconds):" size="10" set="600" />
+		</field>
+      </panel>
+</userInput>

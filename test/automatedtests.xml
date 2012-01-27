@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="iDART_Tests" verbose="1">
+	<test name="complete_test_suite">
+		<groups>
+			<run>
+				<exclude name="brokenTests" />
+				<exclude name="manualTests" />
+			</run>
+		</groups>
+		<packages>
+			<package name="org.celllife.*"/>
+			<package name="model.manager.*" />
+		</packages>
+	</test>
+</suite>

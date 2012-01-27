@@ -1,0 +1,5 @@
+##Automatically generated Template
+Patient ID$!{fn.getSeparator()}First Name$!{fn.getSeparator()}Surname$!{fn.getSeparator()}Date of Birth$!{fn.getSeparator()}
+#foreach($value in $values)
+$!{fn.getFieldValue("PatientID", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("FirstName", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("Surname", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("DateofBirth", $velocityCount)}
+#end

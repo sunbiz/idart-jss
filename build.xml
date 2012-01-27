@@ -1,0 +1,581 @@
+<?xml version="1.0"?>
+<!-- *********************************************************** -->
+<!-- ** iDART                                                 ** -->
+<!-- **                                                       ** -->
+<!-- ** Intelligent Dispensing of Antiretroviral Treatment    ** -->
+<!-- **                                                       ** -->
+<!-- *********************************************************** -->
+<project name="iDART" basedir="." default="build">
+	<property file="${basedir}/local.properties" />
+	<property file="${basedir}/build.properties" />
+
+	<tstamp>
+		<format property="timestamp" pattern="MM/dd/yyyy hh:mm aa" />
+	</tstamp>
+
+	<!-- *****************************************************************-->
+	<!-- **                  DEFINE TASK TYPES		                    **-->
+	<!-- *****************************************************************-->
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<fileset dir="${lib.dir}/ant-contrib" includes="*.jar" />
+		</classpath>
+	</taskdef>
+
+	<!-- *****************************************************************-->
+	<!-- **                  DECLARE THE CLASS PATHS                    **-->
+	<!-- *****************************************************************-->
+	<path id="Large.ClassPath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<if>
+		<equals arg1="${os.name}" arg2="Windows" />
+		<then>
+			<property name="os" value="win" />
+		</then>
+		<else>
+			<property name="os" value="gtk" />
+		</else>
+	</if>
+	<path id="Run.ClassPath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+			<exclude name="swt_*/*" />
+		</fileset>
+		<fileset dir="${lib.dir}">
+			<include name="swt_${os}/swt.jar" />
+		</fileset>
+		<pathelement location="${build.dir}" />
+	</path>
+
+	<!-- *****************************************************************-->
+	<!-- **                         INITIALISE                          **-->
+	<!-- *****************************************************************-->
+	<!-- Use Hibernate for persistance from Model to database -->
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+
+		<!--  temp dir for jasperreports compilation and linux printing files-->
+		<mkdir dir="${tmp.dir}" />
+		<mkdir dir="${stats.dir}" />
+
+		<!-- Discover code and database versions via regular expressions -->
+		<loadfile srcfile="${idart.version.revision.filename}" property="repositoryFileInput" />
+		<if>
+			<contains string="${repositoryFileInput}" substring="&lt;?xml" casesensitive="false" />
+			<then>
+				<!-- SVN pre-1.4 uses XML format -->
+				<propertyregex property="idart.version.build" input="${repositoryFileInput}" regexp="${idart.version.revision.regexp}" select="\1" defaultValue="? (error with pre-1.4 revision regexp)" />
+			</then>
+			<else>
+				<!-- SVN 1.4+ does not use XML format, just grab 4th line -->
+				<propertyregex property="idart.version.build" input="${repositoryFileInput}" regexp="(\d{2,4}-.*)\n(\d*)" select="\2" defaultValue="? (error in post-1.4 revision regexp)" />
+			</else>
+		</if>
+		<property name="idart.version.long" value="${idart.version.major}.${idart.version.minor}.${idart.version.revision} Build ${idart.version.build}" />
+		<property name="idart.version.short" value="${idart.version.major}.${idart.version.minor}.${idart.version.revision}.${idart.version.build}" />
+
+		<echo message="Code Version: ${idart.version.long}" />
+
+		<property name="installer.name" value="idart-install-${idart.version.short}.jar" />
+		<property name="release.installer.name" value="idart-install-${idart.version.major}.${idart.version.minor}.${idart.version.revision}.jar" />
+
+		<!-- These variables are replaced in the code prior to compilation
+				to include them in the code use the following format:
+					@VARIABLE.NAME@ -->
+		<filterset id="variables.to.replace">
+			<filter token="IDART.VERSION.LONG" value="${idart.version.long}" />
+			<filter token="IDART.VERSION.SHORT" value="${idart.version.short}" />
+		</filterset>
+	</target>
+
+
+	<!-- *****************************************************************-->
+	<!-- **                  GENERATE idart.properties                   **-->
+	<!-- *****************************************************************-->
+	<!-- Replace unencrypted connection settings in clean_idart.properties with -->
+	<!-- values from build.properties, then encrypt the file -->
+	<target name="generateProperties" depends="init" description="Generates idart.properties file with encrypted properties">
+		<copy file="clean_idart.properties" tofile="unencrypted_idart.properties" overwrite="true">
+			<filterset refid="variables.to.replace" />
+		</copy>
+		<delete file="idart.properties" />
+		<if>
+			<isset property="useTestDatabase" />
+			<then>
+				<property name="database.username.build" value="${database.username.test}" />
+				<property name="database.password.build" value="${database.password.test}" />
+				<property name="database.url.build" value="${database.url.test}" />
+			</then>
+			<else>
+				<property name="database.username.build" value="${database.username}" />
+				<property name="database.password.build" value="${database.password}" />
+				<property name="database.url.build" value="${database.url}" />
+			</else>
+		</if>
+		<echo message="${database.url.build}" />
+		<replaceregexp file="unencrypted_idart.properties" match="\$hibernate_username" replace="${database.username.build}" byline="false" />
+		<replaceregexp file="unencrypted_idart.properties" match="\$hibernate_password" replace="${database.password.build}" byline="false" />
+		<replaceregexp file="unencrypted_idart.properties" match="\$hibernate_url" replace="${database.url.build}" byline="false" />
+		<replaceregexp file="unencrypted_idart.properties" match="\$update_script_dir" replace="${update.script.dir}" byline="false" />
+		<javac destdir="${build.dir}" classpathref="Large.ClassPath" debug="off" deprecation="on" optimize="off" target="1.5">
+			<src path="src" />
+			<include name="**/PropertiesEncrypter.java" />
+		</javac>
+
+		<java classname="org.celllife.idart.misc.PropertiesEncrypter">
+			<classpath>
+				<pathelement location="${build.dir}" />
+			</classpath>
+			<arg value="unencrypted_idart.properties" />
+			<arg value="idart.properties" />
+		</java>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                  COMPILE THE SOURCE                         **-->
+	<!-- *****************************************************************-->
+	<target name="compile" depends="init" description="Compile the source code">
+		<!-- Copy source files -->
+		<copy todir="${tmp.dir}/src">
+			<fileset dir="src">
+				<include name="**/*.java" />
+			</fileset>
+			<filterset refid="variables.to.replace" />
+		</copy>
+		<copy todir="${build.dir}">
+			<fileset dir="src">
+				<include name="**/*" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<javac destdir="${build.dir}" classpathref="Large.ClassPath" debug="on" deprecation="on" source="1.5" target="1.5">
+			<src path="${tmp.dir}/src" />
+		</javac>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **            COMPILE JASPER REPORTS                **-->
+	<!-- *****************************************************************-->
+	<target name="compileReports" depends="init, compile" description="Compile Jasper reports from XML to Java objects">
+		<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<!-- <fileset dir="${build.dir}">
+					<includesfile name="**/ReportUtils.class" />
+				</fileset> -->
+				<pathelement location="${build.dir}" />
+			</classpath>
+		</taskdef>
+		<jrc srcdir="Reports/" destdir="Reports/" tempdir="${tmp.dir}" keepjava="false" xmlvalidation="true">
+			<include name="**/*.jrxml" />
+		</jrc>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **           	BUILD iDART						                **-->
+	<!-- *****************************************************************-->
+	<target name="build" depends="init, compile, generateProperties, compileReports">
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **           	CLEAN - BUILD iDART						                **-->
+	<!-- *****************************************************************-->
+	<target name="clean_build" depends="clean, init, compile, generateProperties, compileReports">
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                   CREATE JAR                                **-->
+	<!-- *****************************************************************-->
+	<target name="jar" depends="compile">
+		<delete>
+			<fileset dir="${build.dir}" includes="**/*.java" />
+		</delete>
+		<jar destfile="Pharmacy.jar">
+			<fileset dir="${build.dir}">
+				<include name="**/*.*" />
+				<exclude name="lib/*.*" />
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Main-Class" value="org.celllife.idart.start.PharmacyApplication" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **              CREATE FLAT LIB DIRECTORY                      **-->
+	<!-- *****************************************************************-->
+	<target name="prepareLibs">
+		<copy todir="${build.dir}/lib">
+			<flattenmapper />
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+				<exclude name="IzPack/**/*" />
+				<exclude name="ant-contrib/**/*" />
+				<exclude name="swtbot/**/*" />
+				<exclude name="JasperReportsNonDistrib/**/*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                  CREATE INSTALLER                           **-->
+	<!-- *****************************************************************-->
+	<target name="generateInstaller" depends="clean,init,compile,prepareLibs,compileReports,jar" description="Generate Installer using izPack">
+		<taskdef name="izpack" classpath="${build.tools.dir}/izpack/standalone-compiler.jar" classname="com.izforge.izpack.ant.IzPackTask" />
+
+		<copy file="${install.dir}/unencrypted_idart.properties" tofile="unencrypted_idart.properties" overwrite="true" />
+		<replaceregexp file="unencrypted_idart.properties" match="\$idartVersion" replace="${idart.version.short}" byline="false" />
+		<replaceregexp file="${install.dir}/aupVersion.txt" match="^\d.*" replace="${idart.version.major}.${idart.version.minor}.${idart.version.revision}" byline="true" />
+		<replaceregexp file="${install.dir}/install.xml" match="appversion&gt;(\d.{0,3}\d)&lt;/appversion" replace="appversion&gt;${idart.version.major}.${idart.version.minor}.${idart.version.revision}&lt;/appversion" byline="true" />
+
+		<izpack input="${install.dir}/install.xml" output="${installer.name}" installerType="standard" basedir="." izPackDir="${izpack.dir}/" compression="deflate" compressionlevel="7">
+		</izpack>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                  CREATE INSTALLER       (SKIP CLEAN)        **-->
+	<!-- *****************************************************************-->
+	<target name="quickGenerateInstaller" depends="init,compile,prepareLibs,compileReports, jar" description="Generate Installer without prior cleaning">
+		<taskdef name="izpack" classpath="${build.tools.dir}/izpack/standalone-compiler.jar" classname="com.izforge.izpack.ant.IzPackTask" />
+
+		<copy file="${install.dir}/unencrypted_idart.properties" tofile="unencrypted_idart.properties" overwrite="true" />
+		<replaceregexp file="${install.dir}/aupVersion.txt" match="^\d.*" replace="${idart.version.major}.${idart.version.minor}.${idart.version.revision}" byline="true" />
+		<replaceregexp file="${install.dir}/install.xml" match="appversion&gt;(\d.{0,3}\d)&lt;/appversion" replace="appversion&gt;${idart.version.major}.${idart.version.minor}.${idart.version.revision}&lt;/appversion" byline="true" />
+
+		<izpack input="${install.dir}/install.xml" output="idart-install-${idart.version.short}.jar" installerType="standard" basedir="." izPackDir="${izpack.dir}/" compression="deflate" compressionlevel="7">
+		</izpack>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                        Generate release	                    **-->
+	<!-- *****************************************************************-->
+	<target name="prepareRelease" depends="init">
+		<mkdir dir="${release.dir}" />
+
+		<get dest="${release.dir}/iDART_Quick_Reference_Guide.pdf" src="http://svn.cell-life.org/svn/docs/iDART/iDART%20Support%20Documents/User%20Manuals/iDART%203.7%20Quick%20Reference%20Guide.pdf" username="build" password="clbuild" />
+
+		<get dest="${release.dir}/iDART_User_Guide.pdf" src="http://svn.cell-life.org/svn/docs/iDART/iDART%20Support%20Documents/User%20Manuals/iDART%203%207%20User%20Guide.pdf" username="build" password="clbuild" />
+
+		<copy file="${installer.name}" tofile="${release.dir}/${release.installer.name}" />
+		<copy todir="${release.dir}">
+			<fileset dir="${meta.dir}/distrib">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<replaceregexp file="${release.dir}/readme.md" match="\$idartVersion" replace="${idart.version.major}.${idart.version.minor}.${idart.version.revision}" byline="true" />
+	</target>
+
+	<target name="zipRelease">
+		<loadfile srcfile="${release.dir}/readme.md" property="readme" />
+		<if>
+			<or>
+				<contains string="${readme}" substring="INSERT CHANGELOG HERE" casesensitive="false" />
+				<contains string="${readme}" substring="INSERT UPGRADE NOTES HERE" casesensitive="false" />
+			</or>
+			<then>
+				<fail>Add the changelog and update notes to the readme.md file before continuing.</fail>
+			</then>
+		</if>
+
+		<zip destfile="${release.dir}.zip">
+			<zipfileset dir="${release.dir}" prefix="${release.dir}">
+				<exclude name="readme.md" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                        Create and deploy updates            **-->
+	<!-- *****************************************************************-->
+	<target name="generate_and_deploy_updates" depends="init">
+		<ant antfile="${meta.dir}/update/update-build.xml" target="generateupdate" inheritall="true" />
+		<ant antfile="${meta.dir}/update/update-build.xml" target="deploy-update" inheritall="true" />
+	</target>
+
+	<target name="DORELEASE" description="performs all release tasks">
+		<antcall target="generateInstaller" />
+		<antcall target="prepareRelease" />
+		<antcall target="zipRelease" />
+		<!-- 
+		<antcall target="generate_and_deploy_updates" />
+		<antcall target="clean" />
+		-->
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                        Compile and run the unit tests       **-->
+	<!-- *****************************************************************-->
+	<taskdef resource="testngtasks" classpath="${lib.dir}/testng.jar" />
+	<target name="compile-tests" depends="compile">
+		<mkdir dir="${build.testng.dir}" />
+		<javac destdir="${build.testng.dir}" classpathref="Run.ClassPath" debug="on" deprecation="on" optimize="off" target="1.5">
+			<src path="test" />
+		</javac>
+		<mkdir dir="${build.junit.dir}" />
+		<javac destdir="${build.junit.dir}" classpathref="Run.ClassPath" debug="on" deprecation="on" optimize="off" target="1.5">
+			<src path="testGui" />
+		</javac>
+	</target>
+	
+	<target name="generate-test-properties">
+			<property name="useTestDatabase" value="true" />
+			<antcall target="generateProperties" />
+	</target>
+
+	<target name="test" depends="generate-test-properties, compile-tests" description="Runs the unit tests">
+		<testng outputDir="${testng.report.dir}" haltOnfailure="true" listeners="org.celllife.idart.test.LoggingTestListener">
+			<classpath>
+				<path refid="Run.ClassPath" />
+				<pathelement location="${build.testng.dir}" />
+			</classpath>
+
+			<xmlfileset dir="test" includes="automatedtests.xml" />
+			<jvmarg value="-ea" />
+		</testng>
+
+		<junitreport todir="${testng.report.dir}">
+			<fileset dir="${testng.report.dir}">
+				<include name="**/*.xml" />
+			</fileset>
+
+			<report format="noframes" todir="${testng.report.dir}" />
+		</junitreport>
+	</target>
+
+	<target name="test-gui" description="Execute gui unit tests" depends="compile-tests">
+		<property name="useTestDatabase" value="true" />
+		<antcall target="generateProperties" />
+		<mkdir dir="${junit.report.dir}" />
+		<junit printsummary="true" failureproperty="junit.failure">
+			<classpath>
+				<path refid="Run.ClassPath" />
+				<pathelement location="${build.junit.dir}" />
+			</classpath>
+
+			<batchtest todir="${junit.report.dir}">
+				<fileset dir="${build.junit.dir}">
+					<include name="**/*Test*" />
+					<exclude name="org/celllife/idart/test/gui/**" />
+				</fileset>
+				<formatter type="xml" />
+			</batchtest>
+		</junit>
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="**/*.xml" />
+			</fileset>
+
+			<report format="noframes" todir="${junit.report.dir}" />
+		</junitreport>
+		<fail if="junit.failure" message="Unit test(s) failed.  See reports!" />
+	</target>
+
+
+	<!-- *****************************************************************-->
+	<!-- **                        GENERATE ALL DOCS                    **-->
+	<!-- *****************************************************************-->
+	<!-- Generates all documentation including JavaDoc, user docs and code anaylsis reports. -->
+	<target name="docAll" depends="init">
+		<propertyregex property="branchOrTrunk" input="${repositoryFileInput}" regexp="http://.*(trunk)" select="\1" defaultValue="branch" />
+		<if>
+			<equals arg1="${branchOrTrunk}" arg2="trunk" />
+			<then>
+				<antcall target="javadoc" />
+				<antcall target="findbugs" />
+				<antcall target="pmd" />
+				<antcall target="cpd" />
+			</then>
+		</if>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                        CLEAN                                **-->
+	<!-- *****************************************************************-->
+	<target name="clean" description="Cleans the build enviromnet">
+		<delete dir="${build.dir}" />
+		<delete dir="${tmp.dir}" />
+		<delete dir="${doc.dir}" />
+		<delete dir="dataExports" />
+		<delete dir="${release.dir}" />
+		<delete dir="${testng.report.dir}" />
+		<delete dir="${junit.report.dir}" />
+		<delete dir="${build.junit.dir}" />
+		<delete dir="${build.testng.dir}" />
+		<delete dir="randb" />
+		<delete dir="test-output" />
+		<delete dir="screenshots" />
+		<delete dir="update" />
+		<delete>
+			<fileset dir="Reports/" includes="**/*.jasper" />
+			<fileset dir="Reports/" includes="**/*.java" />
+			<fileset dir="Reports/" includes="**/*.bak" />
+			<fileset dir="Reports/" includes="**/*.csv" />
+			<fileset dir=".">
+				<include name="idart-*.jar" />
+				<include name="Pharmacy.jar" />
+				<include name="pgpass" />
+				<include name="idart.properties" />
+				<include name="unencrypted_idart.properties" />
+				<include name="error.*" />
+				<include name="temp*" />
+				<include name="test*" />
+				<include name="*.log*" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="upgrade_report_files" description="updgrade jrxml files">
+		<javac destdir="${build.dir}" classpathref="Large.ClassPath" debug="off" deprecation="on" optimize="off" target="1.5">
+			<src path="src" />
+			<include name="**/MigrateJRXML.java" />
+		</javac>
+
+		<java classname="org.celllife.idart.misc.MigrateJRXML" classpathref="Large.ClassPath">
+			<classpath>
+				<pathelement location="${build.dir}" />
+			</classpath>
+			<arg value="Reports/" />
+		</java>
+	</target>
+
+	<!-- *****************************************************************-->
+	<!-- **                        DOCUMENTATION                        **-->
+	<!-- *****************************************************************-->
+
+
+
+	<!-- **                        FINDBUGS		                        **-->
+	<target name="findbugs" depends="jar">
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="${findbugs.home}/lib/findbugs-ant.jar" />
+		<findbugs home="${findbugs.home}" jvmargs="-Xmx128m" output="xml" outputFile="${stats.dir}/idart-findbugs.xml">
+			<auxClasspath refid="Large.ClassPath" />
+			<sourcePath path="${basedir}/src" />
+			<class location="${basedir}/Pharmacy.jar" />
+		</findbugs>
+	</target>
+
+	<!-- **                        PMD-CopyPasteDetector		                        **-->
+	<target name="cpd" depends="init">
+		<property name="cpd.base" value="${build.tools.dir}/pmd" />
+		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpath="${cpd.base}/pmd-4.1.jar" />
+		<delete quiet="true">
+			<fileset dir="${stats.dir}" includes="**/cpd.*" />
+		</delete>
+		<cpd minimumTokenCount="100" format="xml" language="java" ignoreIdentifiers="true" ignoreLiterals="true" outputFile="${stats.dir}/cpd-report.xml" encoding="UTF-8">
+			<fileset dir="src">
+				<include name="**/*.java" />
+				<exclude name="**/*Test*.java" />
+			</fileset>
+		</cpd>
+		<xslt in="${stats.dir}/cpd-report.xml" out="${stats.dir}/cpd-report.html" style="${cpd.base}/cpdhtml.xslt" />
+	</target>
+
+	<!-- **                        PMD			                     **-->
+
+	<target name="pmd" depends="init">
+		<property name="pmd.base" value="${build.tools.dir}/pmd" />
+		<path id="pmd.classpath">
+			<fileset dir="${pmd.base}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
+
+		<delete quiet="true">
+			<fileset dir="${stats.dir}" includes="**/pmd.*" />
+		</delete>
+
+		<pmd shortFilenames="true" encoding="UTF-8">
+			<ruleset>rulesets/favorites.xml</ruleset>
+			<ruleset>basic</ruleset>
+			<ruleset>unusedcode</ruleset>
+			<formatter type="xml" toFile="${stats.dir}/pmd-report.xml" />
+			<fileset dir="src/">
+				<include name="**/*.java" />
+			</fileset>
+		</pmd>
+
+		<xslt in="${stats.dir}/pmd-report.xml" style="${pmd.base}/pmd-report-per-class.xslt" out="${stats.dir}/pmd-report-per-class.html" />
+		<xslt in="${stats.dir}/pmd-report.xml" style="${pmd.base}/wz-pmd-report.xslt" out="${stats.dir}/pmd-report.html" />
+	</target>
+
+	<!-- **                        CHECKSTYLE                        **-->
+	<target name="checkstyle" depends="init">
+
+		<property name="checkstyle.base" value="${build.tools.dir}/checkstyle/checkstyle" />
+
+		<taskdef resource="checkstyletask.properties" classpath="${checkstyle.base}-all-4.4.jar" />
+
+		<delete file="${stats.dir}/checkstyle-report.xml" quiet="true" />
+		<delete file="${stats.dir}/checkstyle-report.html" quiet="true" />
+
+		<checkstyle config="${checkstyle.base}_checks.xml" failOnViolation="false">
+			<fileset dir="src">
+				<include name="**/*.java" />
+				<exclude name="**/test/*Test.java" />
+			</fileset>
+			<property key="basedir" value="${basedir}/src" />
+			<!-- Choice of 'plain' text or 'xml' formatter -->
+			<formatter type="xml" tofile="${stats.dir}/checkstyle-report.xml" />
+		</checkstyle>
+
+		<xslt in="${stats.dir}/checkstyle-report.xml" out="${stats.dir}/checkstyle-report.html" style="${checkstyle.base}-noframes-sorted.xsl" />
+	</target>
+
+	<target name="schemadoc">
+		<available file="${graphvis.dir}" property="graphvis.exists" />
+		<fail unless="graphvis.exists" message="GraphVis can not be found at ${graphvis.dir}" />
+		<java jar="${build.tools.dir}/schemaspy/schemaspy.jar" fork="true">
+			<env key="PATH" value="${graphvis.dir}" />
+			<arg line="-t pgsql" />
+			<arg line="-db ${database.name}" />
+			<arg line="-dp ${lib.dir}/Postgresql_JDBC_Driver/postgresql-8.3-605.jdbc3.jar" />
+			<arg line="-s public" />
+			<arg line="-u ${database.username}" />
+			<arg line="-p ${database.password}" />
+			<arg line="-o ${schemadoc.dir}" />
+			<arg line="-host ${database.host}" />
+			<arg line="-port 5432" />
+			<arg value="-norows" />
+		</java>
+
+		<zip destfile="${schemadoc.dir}.zip">
+			<zipfileset dir="${schemadoc.dir}" />
+		</zip>
+	</target>
+
+	<!-- **                        JAVADOC                        **-->
+	<target name="javadoc">
+		<javadoc destdir="${javadoc.dir}" author="true" version="true" use="true" windowtitle="iDART API" classpathref="Large.ClassPath">
+
+			<packageset dir="src" defaultexcludes="yes">
+				<include name="**" />
+			</packageset>
+
+			<doctitle>
+				<![CDATA[<h1>iDART API Specification</h1>
+			<p>This document is the API specification for iDART.</p>]]></doctitle>
+		<header>
+			<![CDATA[<a href="http://www.cell-life.org/iDART" target="_blank">iDART</a>]]></header>
+	<footer>
+		<![CDATA[See <a href="http://trac.cell-life.org/iDART" target="_blank">iDART Trac environment</a>]]></footer>
+<bottom>
+	<![CDATA[<i>Copyright &#169; 2008 Cell-Life. All Rights Reserved.</i>]]></bottom>
+<group title="Data Model" packages="org.celllife.idart.database.hibernate*,model.nonPersistent*" />
+<group title="Managers" packages="model.manager*" />
+<group title="GUI" packages="org.celllife.idart.gui*" />
+<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+</javadoc>
+</target>
+
+</project>

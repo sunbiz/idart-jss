@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<project name="iDART update generator script" basedir="." default="deploy-update">
+
+	<property file="${meta.dir}/update/update-build.properties" />
+
+	<target name="init-props">
+		<available file="${update.local.dir}/updates.xml" property="update.deploy.dir" value="${update.local.dir}" />
+		<available file="${update.www.dir}/updates.xml" property="update.deploy.dir" value="${update.www.dir}" />
+		<if>
+			<not>
+				<isset property="" />
+			</not>
+			<then>
+				<mkdir dir="${update.local.dir}" />
+				<copy file="${meta.dir}/update/updates.xml" todir="${update.local.dir}" />
+			</then>
+		</if>
+	</target>
+
+	<target name="init" depends="init-props">
+		<delete dir="${update.dir}" />
+		<mkdir dir="${update.dir}" />
+
+		<copy todir="${update.dir}" file="${update.properties}">
+			<filterset>
+				<filter token="update.old.dir" value="${update.old.dir}" />
+				<filter token="update.new.dir" value="${update.new.dir}" />
+				<filter token="update.xml.file" value="${update.xml.file}" />
+			</filterset>
+		</copy>
+		<replace file="${update.dir}/update.properties" token="\" value="/"/>
+		
+		<copy tofile="${update.dir}/auto-install-old.xml" file="${update.auto-install.xml}">
+			<filterset>
+				<filter token="install.path" value="${update.old.dir}" />
+			</filterset>
+		</copy>
+		<copy tofile="${update.dir}/auto-install-new.xml" file="${update.auto-install.xml}">
+			<filterset>
+				<filter token="install.path" value="${update.new.dir}" />
+			</filterset>
+		</copy>
+
+		<copy todir="${update.dir}" file="${update.deploy.dir}/updates.xml" />
+	</target>
+
+	<target name="install_idart_versions" depends="init,fetch-previous-version">
+		<available type="file" file="${release.dir}/${release.installer.name}" property="installer.exists" />
+		<fail message="${release.dir}/${release.installer.name} does not exist. Run generateRelease" unless="installer.exists" />
+
+		<java jar="${update.latest-installer.file}" args="'${update.dir}/auto-install-old.xml'" fork="true" />
+		<java jar="${release.dir}/${release.installer.name}" args="'${update.dir}/auto-install-new.xml'" fork="true" />
+	</target>
+
+	<target name="generateupdate" depends="install_idart_versions">
+		<java classname="org.gnu.amSpacks.HeadlessGenerator" fork="true">
+			<arg value="${update.dir}/update.properties" />
+			<classpath>
+				<pathelement location="metadata/update/stableupdate.demo-1.0.jar" />
+				<pathelement location="lib/stableupdate/stableupdate-2.0.jar" />
+				<pathelement location="lib/stableupdate/jregex-1.2_01.jar" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="deploy-update" depends="init-props">
+		<copy todir="${update.deploy.dir}">
+			<fileset dir="${update.dir}">
+				<include name="*.jar" />
+				<include name="updates.xml" />
+				<exclude name="**/idart-install-latest.jar" />
+			</fileset>
+			<fileset file="${release.dir}/${release.installer.name}" />
+			<fileset file="${basedir}/${release.dir}.zip" />
+		</copy>
+	</target>
+
+	<target name="fetch-previous-version">
+		<javac destdir="${build.dir}" classpathref="Large.ClassPath" debug="off" deprecation="on" optimize="off" target="1.5">
+			<src path="src" />
+			<include name="**/UpdateUtil.java" />
+		</javac>
+
+		<java classname="org.celllife.idart.misc.UpdateUtil" failonerror="true">
+			<classpath>
+				<pathelement location="${build.dir}" />
+				<path>
+					<fileset dir="${lib.dir}">
+						<include name="**/*.jar" />
+					</fileset>
+				</path>
+			</classpath>
+			<arg value="${update.deploy.dir}" />
+			<arg value="${update.latest-installer.file}" />
+		</java>
+	</target>
+</project>

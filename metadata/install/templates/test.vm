@@ -1,0 +1,5 @@
+##Automatically generated Template
+Patient ID$!{fn.getSeparator()}First Name$!{fn.getSeparator()}Surname$!{fn.getSeparator()}Date of Birth$!{fn.getSeparator()}Sex$!{fn.getSeparator()}Patient Address$!{fn.getSeparator()}Treatment Supporter$!{fn.getSeparator()}Treatment Supporter Phone Number$!{fn.getSeparator()}Clinic$!{fn.getSeparator()}
+#foreach($value in $values)
+$!{fn.getFieldValue("PatientID", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("FirstName", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("Surname", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("DateofBirth", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("Sex", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("PatientAddress", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("TreatmentSupporter", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("TreatmentSupporterPhoneNumber", $velocityCount)}$!{fn.getSeparator()}$!{fn.getFieldValue("Clinic", $velocityCount)}$!{fn.getSeparator()}
+#end

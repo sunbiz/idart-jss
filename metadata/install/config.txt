@@ -1,0 +1,5 @@
+;!@Install@!UTF-8!
+Title="Cell-Life Pharmacy System"
+BeginPrompt="Do you want to install the Cell-Life Pharmacy Stock Control Management System ?"
+RunProgram="launcher-Win32.exe"
+;!@InstallEnd@!
