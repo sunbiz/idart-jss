@@ -85,7 +85,7 @@
 	</changeSet>
 	<changeSet author="simon@cell-life.org" id="3.8.7">
 		<comment>link atc codes to chemical compounds</comment>
-		<sqlFile path="org/celllife/idart/database/3_8_7-atc_code_links.sql" />
+		<customChange class="org.celllife.idart.database.LinkChemcialCompundsToAtcCodes_3_8_7"/>
 	</changeSet>
 	<changeSet author="simon@cell-life.org" id="3.8.8">
 		<comment>remove didanosine link from tenofovir</comment>
@@ -96,6 +96,17 @@
 	<changeSet author="simon@cell-life.org" id="3.8.9">
 		<comment>link atc codes to drugs</comment>
 		<customChange class="org.celllife.idart.database.LinkDrugsToAtcCodes_3_8_9"/>
+	</changeSet>
+	<changeSet author="simon@cell-life.org" id="3.8.10">
+		<comment>add pickupdate to packagedruginfotmp</comment>
+		<addColumn tableName="packagedruginfotmp">
+			<column name="pickupdate" type="TIMESTAMP WITH TIME ZONE"/>
+		</addColumn>
+	</changeSet>
+		<changeSet author="simon@cell-life.org" id="3.8.11">
+		<comment>remove invalid columns from adherencerecordtmp and deleteditem</comment>
+		<dropColumn tableName="adherencerecordtmp" columnName="invalid"/>
+		<dropColumn tableName="deleteditem" columnName="invalid"/>
 	</changeSet>
 </databaseChangeLog>
 

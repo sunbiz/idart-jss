@@ -51,5 +51,4 @@ public class ArtDto {
 	public void setStartdate(Date startdate) {
 		this.startdate = startdate;
 	}
-
 }

@@ -139,7 +139,6 @@ public class ConnectionPage extends WizardPage implements PropertiesPage {
 			JDBCUtil.rebuild();
 			JDBCUtil.currentSession();
 			JDBCUtil.closeJDBCConnection();
-			HibernateUtil.rebuildUtil();
 			return true;
 		} catch (Throwable e) {
 			setPageComplete(false);

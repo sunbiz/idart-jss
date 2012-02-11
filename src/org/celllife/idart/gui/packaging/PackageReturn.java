@@ -77,7 +77,6 @@ public class PackageReturn extends GenericFormGui {
 
 	// Fields which can be manipulated
 	private Text txtPatientId;
-	private Text txtAdditionalNotes;
 	private Button btnSearchPatient;
 	private Button rbtnReturnToStock;
 	private Button rbtnDestroyStock;
@@ -393,18 +392,6 @@ public class PackageReturn extends GenericFormGui {
 		btnCaptureDate.setText("Date Button");
 		btnCaptureDate.setBounds(120, 55, 250, 25);
 
-		Label lblAdditionalNotes = new Label(grpPatientPackage, SWT.NONE);
-		lblAdditionalNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblAdditionalNotes.setBounds(new Rectangle(400, 10, 120, 15));
-		lblAdditionalNotes.setText("Additional Notes");
-
-		txtAdditionalNotes = new Text(grpPatientPackage, SWT.BORDER | SWT.MULTI
-				| SWT.V_SCROLL | SWT.WRAP);
-		txtAdditionalNotes
-		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
-		txtAdditionalNotes.setBounds(400, 25, 340, 65);
-		txtAdditionalNotes.setText("This feature is not yet available.");
-
 		Label lblDrugAction = new Label(grpPatientPackage, SWT.NONE);
 		lblDrugAction.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblDrugAction.setText("What do you want to do with these drugs? ");
@@ -428,24 +415,20 @@ public class PackageReturn extends GenericFormGui {
 		rbtnReturnToStock.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		rbtnReturnToStock.setEnabled(false);
 
-		Label lblCmpEpisode = new Label(grpPatientPackage, SWT.NONE);
-		lblCmpEpisode.setText(" Episode");
-		lblCmpEpisode.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCmpEpisode.setBounds(new Rectangle(400, 100, 120, 15));
-
-		Composite cmpEpisode = new Composite(grpPatientPackage, SWT.NONE);
+		Group cmpEpisode = new Group(grpPatientPackage, SWT.NONE);
 		cmpEpisode.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		cmpEpisode.setBounds(400, 112, 340, 110);
+		cmpEpisode.setBounds(400, 10, 340, 115);
+		cmpEpisode.setText(" Episode");
 
 		Label lblStopEpisode = new Label(cmpEpisode, SWT.NORMAL);
 		lblStopEpisode.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblStopEpisode.setText("Stop : ");
-		lblStopEpisode.setBounds(5, 13, 40, 15);
+		lblStopEpisode.setBounds(5, 20, 40, 15);
 
 		cmbStopEpisode = new CCombo(cmpEpisode, SWT.BORDER);
 		cmbStopEpisode.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		cmbStopEpisode.setText("");
-		cmbStopEpisode.setBounds(80, 10, 130, 20);
+		cmbStopEpisode.setBounds(80, 15, 130, 20);
 		CommonObjects
 		.populateDeactivationReasons(getHSession(), cmbStopEpisode);
 		cmbStopEpisode.addSelectionListener(new SelectionAdapter() {
@@ -465,7 +448,7 @@ public class PackageReturn extends GenericFormGui {
 		Label lblOn = new Label(cmpEpisode, SWT.NONE);
 		lblOn.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblOn.setText(" on");
-		lblOn.setBounds(212, 13, 20, 15);
+		lblOn.setBounds(212, 20, 20, 15);
 
 		btnStopDate = new DateButton(
 				cmpEpisode,
@@ -473,7 +456,7 @@ public class PackageReturn extends GenericFormGui {
 				new DateInputValidator(DateRuleFactory.beforeNowInclusive(true)));
 		btnStopDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnStopDate.setText("Stop Date");
-		btnStopDate.setBounds(234, 07, 100, 25);
+		btnStopDate.setBounds(234, 12, 100, 25);
 		btnStopDate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -485,16 +468,16 @@ public class PackageReturn extends GenericFormGui {
 		Label lblStopNotes = new Label(cmpEpisode, SWT.NONE);
 		lblStopNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblStopNotes.setText("Stop Notes : ");
-		lblStopNotes.setBounds(5, 44, 70, 15);
+		lblStopNotes.setBounds(5, 50, 70, 15);
 
 		txtStopNotes = new Text(cmpEpisode, SWT.BORDER);
 		txtStopNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		txtStopNotes.setBounds(80, 38, 255, 20);
+		txtStopNotes.setBounds(80, 45, 255, 20);
 
 		btnPreviousEpisodes = new Button(cmpEpisode, SWT.NONE);
 		btnPreviousEpisodes
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnPreviousEpisodes.setBounds(5, 70, 329, 32);
+		btnPreviousEpisodes.setBounds(5, 75, 329, 32);
 		btnPreviousEpisodes.setText("View All Previous Episodes");
 		btnPreviousEpisodes.addSelectionListener(new SelectionAdapter() {
 
@@ -526,8 +509,6 @@ public class PackageReturn extends GenericFormGui {
 		txtPatientId.setText("");
 		cmbReturnReason.setText("");
 		cmbStopEpisode.setText("");
-		// TODO: temporarily disables
-		// txtAdditionalNotes.setText("");
 		txtStopNotes.setText("");
 		btnCaptureDate.setText("Date of Return");
 		btnStopDate.setText("Stop Date");
@@ -672,26 +653,14 @@ public class PackageReturn extends GenericFormGui {
 		btnStopDate.setEnabled(enable);
 		cmbStopEpisode.setEnabled(enable);
 
-		// TODO: This field is permanently disabled until requirements have been
-		// clarified
-		txtAdditionalNotes.setEnabled(false);
-		txtAdditionalNotes.setBackground(ResourceUtils
-				.getColor(iDartColor.WIDGET_BACKGROUND));
-		txtAdditionalNotes.setForeground(ResourceUtils
-				.getColor(iDartColor.WIDGET_NORMAL_SHADOW_BACKGROUND));
-
 		btnPreviousEpisodes.setEnabled(enable);
 		btnSave.setEnabled(enable);
 		rbtnDestroyStock.setEnabled(enable);
 		rbtnReturnToStock.setEnabled(enable);
 		if (enable) {
-			// txtAdditionalNotes.setBackground(ResourceUtils
-			// .getColor(iDartColor.WHITE));
 			cmbReturnReason.setBackground(ResourceUtils
 					.getColor(iDartColor.WHITE));
 		} else {
-			// txtAdditionalNotes.setBackground(ResourceUtils
-			// .getColor(iDartColor.WIDGET_BACKGROUND));
 			txtPatientId.setFocus();
 			cmbStopEpisode.setBackground(ResourceUtils
 					.getColor(iDartColor.WIDGET_BACKGROUND));

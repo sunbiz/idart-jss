@@ -74,7 +74,7 @@ public class Regimen {
 	 * Method getId.
 	 * @return int
 	 */
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 

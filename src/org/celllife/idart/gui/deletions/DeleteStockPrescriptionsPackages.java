@@ -1286,7 +1286,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		try {
 			tx = getHSession().beginTransaction();
 
-			DeletionsManager.removeThisPackage(getHSession(), packageToRemove);
+			DeletionsManager.removePackage(getHSession(), packageToRemove);
 
 			boolean shouldRemoveARVStartDate = DeletionsManager
 			.isFirstPackageOnNewPatientEpisode(packageToRemove);
@@ -1362,7 +1362,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			try {
 				tx = getHSession().beginTransaction();
 				if (type.equals("Dispensed")) {
-					DeletionsManager.removeThisDrug(getHSession(),
+					DeletionsManager.removePackagedDrug(getHSession(),
 							(PackagedDrugs) selectedDrug, packageToRemove);
 
 				} else if (type.equals("Accumulated")) {

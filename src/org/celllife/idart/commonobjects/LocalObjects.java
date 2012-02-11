@@ -23,12 +23,15 @@ import model.manager.AdministrationManager;
 import model.nonPersistent.PharmacyDetails;
 
 import org.celllife.idart.database.hibernate.Clinic;
+import org.celllife.idart.database.hibernate.IdentifierType;
 import org.celllife.idart.database.hibernate.User;
 import org.hibernate.Session;
 
 /**
  */
 public class LocalObjects {
+
+	public static IdentifierType nationalIdentifierType;
 
 	public static Clinic mainClinic;
 

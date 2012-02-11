@@ -11,9 +11,11 @@ import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.Patient;
+import org.celllife.idart.database.hibernate.PatientIdentifier;
 import org.celllife.idart.gui.utils.LayoutUtils;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
@@ -845,7 +847,8 @@ public class SearchPatientGui {
 			ti.setText(3, df.format(p.getDateOfBirth()));
 			ti.setText(4, (Character.toLowerCase(p.getSex()) == 'm') ? "Male"
 					: "Female");
-			ti.setText(5, ""); // FIXME (simon - multi ids) add national id
+			PatientIdentifier natId = p.getIdentifier(LocalObjects.nationalIdentifierType);
+			ti.setText(5, natId == null ? "" : natId.getValue());
 			ti.setData(p);
 		}
 	}

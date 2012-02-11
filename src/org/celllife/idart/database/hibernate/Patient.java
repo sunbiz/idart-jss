@@ -49,6 +49,10 @@ import org.hibernate.annotations.IndexColumn;
 
 /**
  */
+/**
+ * @author Simon
+ *
+ */
 @Entity
 public class Patient {
 
@@ -959,6 +963,23 @@ public class Patient {
 			}
 		});
 		return identifiers.get(0);
+	}
+	
+	/**
+	 * Returns the identifier of a particular type or null if the patient does not
+	 * have an identifier of that type.
+	 * @param type
+	 * @return
+	 */
+	public PatientIdentifier getIdentifier(IdentifierType type){
+		if (type == null){
+			return null;
+		}
+		for (PatientIdentifier pid : getPatientIdentifiers()) {
+			if (pid.getType().getId() == type.getId())
+				return pid;
+		}
+		return null;
 	}
 	
 	@Override

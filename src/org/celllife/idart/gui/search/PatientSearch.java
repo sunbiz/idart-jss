@@ -102,7 +102,7 @@ public class PatientSearch extends GenericOthersGui {
 	}
 	
 	public PatientIdentifier search(String patientId){
-		this.searchString = patientId;
+		this.searchString = patientId == null ? "" : patientId;
 		loadPatientIdentifiers();
 		if (patientids.size() == 1){
 			return identifiers.get(0);

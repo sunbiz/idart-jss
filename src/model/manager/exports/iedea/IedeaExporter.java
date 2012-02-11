@@ -1,6 +1,9 @@
 package model.manager.exports.iedea;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import model.manager.PatientManager;
@@ -12,6 +15,8 @@ import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.hibernate.Session;
+import org.iedea.ARKEKapaExport;
+import org.iedea.util.IedeaJaxbUtil;
 
 public class IedeaExporter {
 
@@ -30,6 +35,9 @@ public class IedeaExporter {
 		if (!file.isDirectory()) {
 			throw new ReportException("Please select a directory");
 		}
+		
+		ARKEKapaExport arkExport = new ARKEKapaExport();
+		IedeaExport export = new IedeaExport(arkExport);
 
 		session = HibernateUtil.getNewSession();
 
@@ -55,7 +63,7 @@ public class IedeaExporter {
 						+ " patients of " + total);
 
 				try {
-					exportPage(pagedEntitySet, file);
+					exportPage(pagedEntitySet, export);
 				} catch (Exception e) {
 					throw new ReportException("Error running data export.", e);
 				} finally {
@@ -76,17 +84,21 @@ public class IedeaExporter {
 				}
 			}
 
-		} catch (ReportException e) {
-			throw e;
+			IedeaJaxbUtil.instance().write(
+					arkExport,
+					new FileOutputStream(new File(file.getAbsolutePath(),
+							"idart_tier-net_export_"
+									+ new SimpleDateFormat("yyyy-MM-dd")
+											.format(new Date())+ ".xml")));
+		} catch (Exception e) {
+			throw new ReportException(e);
 		} finally {
 			entitySet = null;
 			session.close();
 		}
 	}
 
-	private void exportPage(EntitySet pagedEntitySet,
-			File exportPath) {
-		IedeaExport export = new IedeaExport(exportPath);
+	private void exportPage(EntitySet pagedEntitySet, IedeaExport export) {
 		for (Integer patientId : pagedEntitySet.getEntityIds()) {
 			Patient patient = PatientManager.getPatient(session, patientId);
 			try {

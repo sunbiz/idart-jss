@@ -90,6 +90,7 @@ public class DatabaseWizard extends Wizard {
 					InterruptedException {
 						monitor.beginTask("Initialising database.",
 								IProgressMonitor.UNKNOWN);
+						monitor.subTask("This will take a few minutes.");
 						if (!DatabaseTools._().createDatabase(
 										dbPage.shouldIncludeTest(), true))
 							throw new InvocationTargetException(

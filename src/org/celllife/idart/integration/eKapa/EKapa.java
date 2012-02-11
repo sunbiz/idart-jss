@@ -10,8 +10,10 @@ import java.util.List;
 import model.manager.PatientManager;
 
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.Patient;
+import org.celllife.idart.database.hibernate.PatientIdentifier;
 import org.celllife.idart.misc.PatientBarcodeParser;
 import org.hibernate.Session;
 
@@ -215,8 +217,11 @@ public class EKapa {
 				p.setDateOfBirth(date);
 				p.setSex(rs.getString("SEX").charAt(0));
 				p.setPatientId(rs.getString("PAWC_PATIENT_ID"));
-//				p.setIdNum(rs.getString("ID_NUMBER"));
-				// FIXME: (simon - multi ids) cater for national id number
+				if (LocalObjects.nationalIdentifierType != null){
+					p.getPatientIdentifiers().add(
+							new PatientIdentifier(p, rs.getString("ID_NUMBER"),
+									LocalObjects.nationalIdentifierType));
+				}
 				p.setHomePhone(rs.getString("HOME_NUMBER"));
 				p.setWorkPhone(rs.getString("WORK_NUMBER"));
 				p.setCellphone(rs.getString("CELL_NUMBER"));
@@ -233,5 +238,4 @@ public class EKapa {
 		}
 		return patients;
 	}
-
 }

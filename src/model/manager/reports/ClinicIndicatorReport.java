@@ -88,9 +88,6 @@ public class ClinicIndicatorReport extends AbstractJasperReport {
 	}
 
 	/**
-	 * TODO Need to write method that gets number of Paeds/Adults on a given
-	 * regimen
-	 * 
 	 * @param session
 	 * @param clinicId
 	 * @param isPaeds

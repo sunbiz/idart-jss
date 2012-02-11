@@ -96,6 +96,8 @@ public class PackageDrugInfo {
 	private User cluser;
 
 	private Date dispenseDate;
+	
+	private Date pickupDate;
 
 	private int packageIndex; // eg. 2 if this is package 2 of 4
 
@@ -907,6 +909,14 @@ public class PackageDrugInfo {
 	 */
 	public void setDispensedForLaterPickup(boolean dispensedForLaterPickup) {
 		this.dispensedForLaterPickup = dispensedForLaterPickup;
+	}
+
+	public void setPickupDate(Date pickupDate) {
+		this.pickupDate = pickupDate;
+	}
+
+	public Date getPickupDate() {
+		return pickupDate;
 	}
 
 }

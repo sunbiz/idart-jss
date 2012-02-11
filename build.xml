@@ -64,16 +64,16 @@
 		<mkdir dir="${stats.dir}" />
 
 		<!-- Discover code and database versions via regular expressions -->
-		<loadfile srcfile="${idart.version.revision.filename}" property="repositoryFileInput" />
+		<loadfile srcfile="${idart.version.revision.filename}" property="repositoryFileInput" failonerror="false" />
 		<if>
 			<contains string="${repositoryFileInput}" substring="&lt;?xml" casesensitive="false" />
 			<then>
 				<!-- SVN pre-1.4 uses XML format -->
-				<propertyregex property="idart.version.build" input="${repositoryFileInput}" regexp="${idart.version.revision.regexp}" select="\1" defaultValue="? (error with pre-1.4 revision regexp)" />
+				<propertyregex property="idart.version.build" input="${repositoryFileInput}" regexp="${idart.version.revision.regexp}" select="\1" defaultValue="unknown" />
 			</then>
 			<else>
 				<!-- SVN 1.4+ does not use XML format, just grab 4th line -->
-				<propertyregex property="idart.version.build" input="${repositoryFileInput}" regexp="(\d{2,4}-.*)\n(\d*)" select="\2" defaultValue="? (error in post-1.4 revision regexp)" />
+				<propertyregex property="idart.version.build" input="${repositoryFileInput}" regexp="(\d{2,4}-.*)\n(\d*)" select="\2" defaultValue="unknown" />
 			</else>
 		</if>
 		<property name="idart.version.long" value="${idart.version.major}.${idart.version.minor}.${idart.version.revision} Build ${idart.version.build}" />

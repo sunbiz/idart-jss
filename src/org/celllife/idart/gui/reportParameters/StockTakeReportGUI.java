@@ -221,9 +221,6 @@ public class StockTakeReportGUI extends GenericReportGui {
 	private void cmdStockTakeSearchWidgetSelected() {
 
 		StockManager.deleteInvalidStockTakes(getHSession());
-
-		// TODO stock take search should show only stock takes for a specific
-		// pharmacy?
 		Search stockTakeSearch = new Search(getHSession(), getShell(),
 				CommonObjects.STOCK_TAKE);
 

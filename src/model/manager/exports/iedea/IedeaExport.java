@@ -1,8 +1,5 @@
 package model.manager.exports.iedea;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -10,8 +7,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.JAXBException;
 
 import model.manager.AdministrationManager;
 import model.manager.PackageManager;
@@ -34,32 +29,26 @@ import org.iedea.ARKEKapaExport.ART;
 import org.iedea.ARKEKapaExport.DEM;
 import org.iedea.ARKEKapaExport.PAT;
 import org.iedea.ARKEKapaExport.VIS;
-import org.iedea.util.IedeaJaxbUtil;
 
 public class IedeaExport {
 
-	private final File exportPath;
 	private Session session;
+	private ARKEKapaExport export;
 
-	public IedeaExport(File exportPath) {
-		this.exportPath = exportPath;
+	public IedeaExport(ARKEKapaExport export) {
+		this.export = export;
 	}
 
-	public void writeDataExport(Session sess, Patient patient) throws FileNotFoundException, JAXBException {
+	public void writeDataExport(Session sess, Patient patient) {
 		this.session = sess;
-		
-		File file = new File(exportPath, patient.getId() + ".xml");
-		
-		ARKEKapaExport export = new ARKEKapaExport();
-		populatePAT(patient, export);
-		populateDEM(patient, export);
-		populateVIS(patient, export);
-		populateART(patient, export);
-		
-		IedeaJaxbUtil.instance().write(export, new FileOutputStream(file));
+
+		populatePAT(patient);
+		populateDEM(patient);
+		populateVIS(patient);
+		populateART(patient);
 	}
 
-	private void populatePAT(Patient patient, ARKEKapaExport export) {
+	private void populatePAT(Patient patient) {
 		PAT pat = new PAT();
 		pat.setPATIENT(String.valueOf(patient.getId()));
 		pat.setFACILITY(patient.getCurrentClinic().getClinicName());
@@ -166,7 +155,7 @@ public class IedeaExport {
 		export.getTables().add(pat);
 	}
 	
-	private void populateDEM(Patient patient, ARKEKapaExport export) {
+	private void populateDEM(Patient patient) {
 		DEM dem = new DEM();
 		dem.setPATIENT(String.valueOf(patient.getId()));
 		
@@ -194,7 +183,7 @@ public class IedeaExport {
 		export.getTables().add(dem);
 	}
 	
-	private void populateVIS(Patient patient, ARKEKapaExport export) {
+	private void populateVIS(Patient patient) {
 		List<Packages> packages = PackageManager.getAllCollectedPackagesForPatient(session, patient);
 		for (Packages pack : packages) {
 			VIS vis = new VIS();
@@ -244,11 +233,33 @@ public class IedeaExport {
 			vis.setSCHOOLY((age < 5 || age > 16) ? 88 : 95);
 			
 			export.getTables().add(vis);
+			
+			// add fake visits if the patient receives more than a one months supply
+			int weeksover = pack.getWeekssupply() - 4;
+			while (weeksover > 0){
+				weeksover -= 4;
+				VIS extraVis = new VIS();
+				extraVis.setPATIENT(vis.getPATIENT());
+				extraVis.setVISITDMY(iDARTUtil.add(vis.getVISITDMY(),30));
+				extraVis.setVISITFAC(vis.getVISITFAC());
+				extraVis.setTBSTATUS(vis.getTBSTATUS());
+				extraVis.setWHOSTAGE(vis.getWHOSTAGE());
+				extraVis.setCTX(vis.getCTX());
+				extraVis.setINH(vis.getINH());
+				extraVis.setFLU(vis.getFLU());
+				extraVis.setSCHOOLY(vis.getSCHOOLY());
+				
+				export.getTables().add(extraVis);
+			}
 		}
 	}
 	
-	private void populateART(Patient patient, ARKEKapaExport export) {
+	private void populateART(Patient patient) {
 		List<ArtDto> arts = PatientManager.getIedeaArtData(session, patient);
+		Prescription mostRecentScript = patient.getMostRecentPrescription();
+		boolean mostRecentScriptValid = mostRecentScript == null ? false : iDARTUtil.getDaysBetween(mostRecentScript.getDate(), new Date()) < 180;
+		boolean patientIsActive = patient.getMostRecentEpisode().isOpen();
+		
 		for (ArtDto dto : arts) {
 			ART art = new ART();
 			art.setPATIENT(String.valueOf(patient.getId()));
@@ -257,6 +268,7 @@ public class IedeaExport {
 			} else {
 				art.setARTID(dto.getCode());
 			}
+			
 			art.setARTSDDMY(dto.getStartdate());
 			art.setARTSDY(getYear(dto.getStartdate()));
 			art.setARTSDM(getMonth(dto.getStartdate()));
@@ -273,18 +285,17 @@ public class IedeaExport {
 			
 			art.setARTCOMB(95);
 			
-			Prescription script = patient.getMostRecentPrescription();
-			boolean scriptValid = iDARTUtil.getDaysBetween(script.getDate(), new Date()) < 180;
-			// TODO: how to handle case when ATC code is missing
-			if (!patient.getMostRecentEpisode().isOpen() || !scriptValid || !containsCompound(script, dto.getCode())
-					|| dto.getCode() == null || dto.getCode().isEmpty()){
-				// if patient is not active any longer or
-				// if most recent script is valid but doesn't contain drug with this ATC code then assume patient is no longer on it
-				art.setARTEDDMY(dto.getEnddate());
-				art.setARTEDY(getYear(dto.getEnddate()));
-				art.setARTEDM(getMonth(dto.getEnddate()));
-				art.setNODOSES(888);
-				art.setNOWEEKS(888);
+			if (dto.getCode() != null && !dto.getCode().isEmpty()){
+				if (!patientIsActive || !mostRecentScriptValid || 
+						!containsCompound(mostRecentScript, dto.getCode())){
+					// if patient is not active any longer or
+					// if most recent script is valid but doesn't contain drug with this ATC code then assume patient is no longer on it
+					art.setARTEDDMY(dto.getEnddate());
+					art.setARTEDY(getYear(dto.getEnddate()));
+					art.setARTEDM(getMonth(dto.getEnddate()));
+					art.setNODOSES(888);
+					art.setNOWEEKS(888);
+				}
 			}
 			
 			art.setARTENDRS(99.5);
@@ -307,7 +318,7 @@ public class IedeaExport {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * adult: first visit at your facility was after their 16th birthday
 	 * pead: first visit at your facility is before their 16th birthday 

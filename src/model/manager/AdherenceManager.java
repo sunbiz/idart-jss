@@ -19,10 +19,8 @@
 
 package model.manager;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -65,34 +63,6 @@ public class AdherenceManager {
 		for (PillCount pc : pcList) {
 			session.save(pc);
 		}
-
-	}
-
-	/**
-	 * Get adherence record objects for this pack (for submission to eKapa)
-	 * 
-	 * @param sess
-	 * @param pack
-	 * @return List<AdherenceRecord>
-	 * @throws HibernateException
-	 */
-	public static List<AdherenceRecord> getAdherenceRecords(Session sess,
-			Packages pack) throws HibernateException {
-		List<AdherenceRecord> adList = new ArrayList<AdherenceRecord>();
-
-		// all pillcounts for this package
-		Set<PillCount> pillcounts = pack.getPillCounts();
-
-		Iterator<PillCount> pillcountsIt = pillcounts.iterator();
-
-		while (pillcountsIt.hasNext()) {
-			AdherenceRecord ar = getAdherenceRecordForPillCount(sess,
-					pillcountsIt.next());
-
-			adList.add(ar);
-		}
-
-		return adList;
 
 	}
 
@@ -287,24 +257,20 @@ public class AdherenceManager {
 	public static int getDaysAccumulatedForDrugInPackage(Session session,
 			Drug d, Packages p) throws HibernateException {
 
-		Long unitsAccum;
-
-		try {
-			unitsAccum = (Long) session
-			.createQuery(
-					"select sum(ad.pillCount.accum) from AccumulatedDrugs as ad where ad.withPackage = :thePackageId"
-					+ " and ad.pillCount.drug.id = :theDrugId")
-					.setInteger("thePackageId", p.getId()).setInteger(
-							"theDrugId", d.getId()).uniqueResult();
-		} catch (NullPointerException e) {
-			unitsAccum = new Long(0);
-		}
+		 Long unitsAccum = (Long) session.createQuery(
+				"select sum(ad.pillCount.accum) from AccumulatedDrugs as ad where ad.withPackage = :thePackageId"
+				+ " and ad.pillCount.drug.id = :theDrugId")
+				.setInteger("thePackageId", p.getId()).setInteger(
+						"theDrugId", d.getId()).uniqueResult();
 
 		int unitsPerDay = getUnitsPerDayForDrugInPackage(session, d, p);
 
 		if (unitsPerDay == 0)
 			return 0;
 
+		if (unitsAccum == null)
+			return 0;
+		
 		return unitsAccum.intValue() / unitsPerDay;
 	}
 

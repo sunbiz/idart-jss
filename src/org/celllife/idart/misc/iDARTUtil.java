@@ -143,8 +143,6 @@ public class iDARTUtil {
 			return validBirthDate(theDate);
 
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -579,6 +577,13 @@ public class iDARTUtil {
 			illegalText = matcher.group();
 		}
 		return illegalText;
+	}
+
+	public static Date add(Date date, int days) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, days);
+		return cal.getTime();
 	}
 	
 

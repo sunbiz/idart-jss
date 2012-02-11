@@ -479,7 +479,7 @@ public class DrugManager {
 
 		while (it.hasNext()) {
 			Regimen theReg = it.next();
-			if (theReg.getId() != theRegToSave.getId()) {
+			if (theRegToSave.getId() == null || theReg.getId() != theRegToSave.getId()) {
 				Iterator<RegimenDrugs> it3 = theReg.getRegimenDrugs()
 						.iterator();
 				Set<Integer> theExistingDrugSet = new HashSet<Integer>();

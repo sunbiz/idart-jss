@@ -37,6 +37,7 @@ import org.celllife.idart.database.DatabaseException;
 import org.celllife.idart.database.DatabaseTools;
 import org.celllife.idart.database.DatabaseWizard;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.events.EventManager;
 import org.celllife.idart.gui.login.Login;
 import org.celllife.idart.gui.login.LoginErr;
 import org.celllife.idart.gui.welcome.ClinicWelcome;
@@ -125,6 +126,7 @@ public class PharmacyApplication {
 			showStartupErrorDialog(msg + e.getMessage());
 			System.exit(1);
 		}
+		
 		loginLoad.updateProgress(30);
 		
 		try {
@@ -140,6 +142,16 @@ public class PharmacyApplication {
 			showStartupErrorDialog(msg);
 			System.exit(1);
 		}
+		
+		try {
+			HibernateUtil.setValidation(true);
+		} catch (Exception e) {
+			String msg = "Error while checking database consistency: ";
+			log.error(msg, e);
+			showStartupErrorDialog(msg + e.getMessage());
+			System.exit(1);
+		}
+		
 		loginLoad.updateProgress(50);
 	}
 
@@ -152,6 +164,8 @@ public class PharmacyApplication {
 		boolean userExited;
 		GenericWelcome welcome = null;
 		JobScheduler scheduler = new JobScheduler();
+		EventManager events = new EventManager();
+		events.register();
 		do {
 			Login loginScreen = new Login();
 
@@ -196,6 +210,7 @@ public class PharmacyApplication {
 		} while (!userExited && welcome != null && welcome.isTimedOut());
 
 		scheduler.shutdown();
+		events.deRegister();
 		log.info("");
 		log.info("*********************");
 		log.info("iDART " + iDartProperties.idartVersionNumber + " exited");
@@ -318,6 +333,8 @@ public class PharmacyApplication {
 			// set default clinic
 			LocalObjects.mainClinic = AdministrationManager
 			.getMainClinic(hSession);
+			LocalObjects.nationalIdentifierType = AdministrationManager
+					.getNationalIdentifierType(hSession);
 			
 			loginLoad.updateProgress(5);
 

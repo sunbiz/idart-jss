@@ -578,7 +578,7 @@ public class NewReports extends GenericAdminGui {
 				}
 			});
 			MessageDialog
-			.openInformation(null, "Completed", "IeDEA export successfully");
+			.openInformation(null, "Completed", "Tier.net export successful");
 		} catch (InvocationTargetException e) {
 			MessageUtil.showError(e, "Error running export", 
 					e.getMessage());

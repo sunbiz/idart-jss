@@ -86,13 +86,16 @@ public class HibernateUtil {
 
 	private final SessionFactory sessionFactory;
 
+	private static boolean validate = false;
+
 	private HibernateUtil(String hibernateConnectionUrl,
 			String hibernatePassword, String hibernateUsername,
 			String hibernateDriver, String hibernateDialect) {
 		// Create the session factory
 		AnnotationConfiguration ac = new AnnotationConfiguration();
 
-		ac.setProperty("hibernate.hbm2ddl.auto", "validate");
+		if (validate)
+			ac.setProperty("hibernate.hbm2ddl.auto", "validate");
 		ac.setProperty("hibernate.show_sql", "false");
 		ac.setProperty("hibernate.use_outer_join", "false");
 		ac.setProperty("hibernate.cache.provider_class",
@@ -199,5 +202,10 @@ public class HibernateUtil {
 				iDartProperties.hibernateDialect);
 
 		return hUtil;
+	}
+	
+	public static void setValidation(boolean validation){
+		validate = validation;
+		rebuildUtil();
 	}
 }

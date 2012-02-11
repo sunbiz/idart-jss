@@ -21,21 +21,20 @@ package org.celllife.idart.gui.pillCount;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 import model.manager.AdherenceManager;
 import model.manager.PackageManager;
-import model.manager.TemporaryRecordsManager;
 
 import org.apache.log4j.Logger;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
+import org.celllife.idart.database.hibernate.PillCount;
 import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.events.AdherenceEvent;
 import org.celllife.idart.gui.composite.PillCountTable;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.search.PatientSearch;
@@ -58,6 +57,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import com.adamtaft.eb.EventBusService;
 
 /**
  */
@@ -276,18 +277,14 @@ public class RecordPillCount extends GenericFormGui {
 		Transaction tx = null;
 		try {
 			tx = getHSession().beginTransaction();
-			AdherenceManager.save(getHSession(), compTable.getPillCounts());
-			if (iDartProperties.isEkapaVersion) {
-				java.util.List<AdherenceRecord> adhList = new ArrayList<AdherenceRecord>();
+			
+			Set<PillCount> pillCounts = compTable.getPillCounts();
+			AdherenceManager.save(getHSession(), pillCounts);
 
-				adhList = AdherenceManager.getAdherenceRecords(getHSession(),
-						previousPack);
-				TemporaryRecordsManager.saveAdherenceRecordsToDB(getHSession(),
-						adhList);
-
-			}
 			getHSession().flush();
 			tx.commit();
+			
+			EventBusService.publish(new AdherenceEvent(pillCounts));
 
 			getLog().info("Pillcount saved");
 			MessageBox save = new MessageBox(getShell(), SWT.ICON_INFORMATION
@@ -360,8 +357,7 @@ public class RecordPillCount extends GenericFormGui {
 				try {
 					compTable.populateLastPackageDetails(previousPack, sdf.parse(txtDateOfLastPickup.getText()) );
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					getLog().error(e);
 				}
 			} else {
 				MessageBox noPackage = new MessageBox(getShell().getParent()

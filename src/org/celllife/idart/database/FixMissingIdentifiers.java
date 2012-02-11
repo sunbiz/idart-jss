@@ -21,6 +21,7 @@ import liquibase.statement.core.RawSqlStatement;
 import liquibase.statement.core.UpdateStatement;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 /**
  * This class fixes this bug: http://jira.cell-life.org/browse/IDART-290
@@ -32,6 +33,8 @@ import org.apache.commons.lang.StringUtils;
  * patientidentifiers for them.
  */
 public class FixMissingIdentifiers implements CustomSqlChange {
+	
+	private static Logger log = Logger.getLogger(FixMissingIdentifiers.class);
 
 	@Override
 	public String getConfirmationMessage() {
@@ -116,6 +119,7 @@ public class FixMissingIdentifiers implements CustomSqlChange {
 
 	private void insertNewPatientIdentifier(List<SqlStatement> statements,
 			String patientid, int p_id) {
+		log.info("Creating new patient identifier for patient: id=" + p_id + " identifier= " + patientid);
 		RawSqlStatement is = new RawSqlStatement("insert into patientidentifier (id, patient_id, value, type_id)" +
 				" values (nextval('hibernate_sequence'), "+p_id+", '"
 				+ patientid+"', 1)");
@@ -129,6 +133,7 @@ public class FixMissingIdentifiers implements CustomSqlChange {
 			return;
 		}
 		
+		log.info("Marking patient identifier as duplicate: " + patientid);
 		UpdateStatement us = new UpdateStatement(null, "patientidentifier");
 		us.addNewColumnValue("value", patientid + StringUtils.repeat("-duplicate", count));
 		us.setWhereClause("id = ?");
@@ -141,6 +146,7 @@ public class FixMissingIdentifiers implements CustomSqlChange {
 		if (count == 0){
 			return;
 		}
+		log.info("Marking patientid as duplicate: " + patientid);
 		UpdateStatement us = new UpdateStatement(null, "patient");
 		us.addNewColumnValue("patientid", patientid + StringUtils.repeat("-duplicate", count));
 		us.setWhereClause("id = ?");

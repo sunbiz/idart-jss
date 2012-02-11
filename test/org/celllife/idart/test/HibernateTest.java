@@ -49,8 +49,8 @@ public abstract class HibernateTest extends IDARTtest {
 			throw new DatabaseException(e);
 		}
 
-		safeEmptyDatabase();
 		updateDatabase();
+		safeEmptyDatabase();
 	}
 
 	public void updateDatabase() throws DatabaseException {

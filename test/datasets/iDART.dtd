@@ -155,7 +155,6 @@
     pawcno CDATA #IMPLIED
     pillcountid CDATA #IMPLIED
     cluser CDATA #IMPLIED
-    invalid CDATA #IMPLIED
 >
 
 <!ELEMENT alerts EMPTY>
@@ -292,7 +291,6 @@
     id CDATA #REQUIRED
     deleteditemid CDATA #IMPLIED
     itemtype CDATA #IMPLIED
-    invalid CDATA #IMPLIED
 >
 
 <!ELEMENT doctor EMPTY>
@@ -409,6 +407,7 @@
     firstbatchinprintjob CDATA #IMPLIED
     numberoflabels CDATA #IMPLIED
     dispensedforlaterpickup CDATA #IMPLIED
+    pickupdate CDATA #IMPLIED
 >
 
 <!ELEMENT patientattribute EMPTY>

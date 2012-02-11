@@ -239,9 +239,7 @@ public class PatientVisitsReport extends GenericReportGui {
 			try {
 				fileName = dlg.open();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
+				getLog().error(e);
 			}
 
 			Boolean runner = true;
@@ -294,9 +292,7 @@ public class PatientVisitsReport extends GenericReportGui {
 			write = new FileWriter(filename);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
+			getLog().error(e);
 		}
 		BufferedWriter bw = new BufferedWriter(write);
 		PrintWriter pw = new PrintWriter(bw);

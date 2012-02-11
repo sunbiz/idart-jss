@@ -20,10 +20,10 @@ import org.quartz.JobExecutionException;
 public class EkapaSubmitJob implements Job {
 
 	private final Logger log = Logger.getLogger(EkapaSubmitJob.class.getName());
-	
+
 	public static final String GROUP_NAME = "ekapa";
 	public static final String JOB_NAME = "ekapaJob";
-	
+
 	private StoredProcs sp;
 
 	@Override
@@ -42,68 +42,21 @@ public class EkapaSubmitJob implements Job {
 
 					tx = hSession.beginTransaction();
 
-					List<PackageDrugInfo> pdiList = TemporaryRecordsManager
-					.getUnsubmittedPackageDrugInfos(hSession);
-					List<AdherenceRecord> adhList = TemporaryRecordsManager
-					.getUnsubmittedAdherenceRecords(hSession);
-					List<DeletedItem> delList = TemporaryRecordsManager
-					.getUnsubmittedDeletedItems(hSession);
+					processPackagedDrugs(hSession);
 
-					List<PackageDrugInfo> submittedPackageDrugInfos = new ArrayList<PackageDrugInfo>();
-					List<AdherenceRecord> submittedAdherenceRecords = new ArrayList<AdherenceRecord>();
-					List<DeletedItem> submittedDeletedItems = new ArrayList<DeletedItem>();
+					processAdherenceRecords(hSession);
 
-					boolean saveSuccessful = false;
+					processDeletedItems(hSession);
 
-					for (PackageDrugInfo pdi : pdiList) {
-
-						saveSuccessful = submitPackageDrugInfo(pdi);
-
-						if (saveSuccessful) {
-							log
-							.info("Successfully saved dispensing record to eKapa. Record id: "
-									+ pdi.getId());
-							submittedPackageDrugInfos.add(pdi);
-						}
-
-					}
-
-					for (AdherenceRecord adh : adhList) {
-						saveSuccessful = submitAdherenceRecord(adh);
-						if (saveSuccessful) {
-							log
-							.info("Successfully saved adherence record to eKapa. Record id: "
-									+ adh.getId());
-							submittedAdherenceRecords.add(adh);
-						}
-
-					}
-
-					for (DeletedItem del : delList) {
-						saveSuccessful = submitDeletedItem(del);
-						if (saveSuccessful) {
-							log
-							.info("Successfully removed deleted item from eKapa. Record id: "
-									+ del.getDeletedItemId());
-							submittedDeletedItems.add(del);
-						}
-					}
-
-					TemporaryRecordsManager.updateSubmittedPackageDrugInfos(
-							hSession, submittedPackageDrugInfos);
-					TemporaryRecordsManager.deleteSubmittedAdherenceRecords(
-							hSession, submittedAdherenceRecords);
-					TemporaryRecordsManager.deleteSubmittedDeletedItems(
-							hSession, submittedDeletedItems);
 					hSession.flush();
 					tx.commit();
 				}
 			}
 		} catch (Exception e) {
+			log.error("Error submitting data to ekapa", e);
 			if (tx != null) {
 				tx.rollback();
 			}
-			log.error("Error submitting data to ekapa", e);
 		} finally {
 			if (hSession != null) {
 				hSession.close();
@@ -115,28 +68,72 @@ public class EkapaSubmitJob implements Job {
 		log.info("ekapa submission job completed");
 	}
 
+	private void processDeletedItems(Session hSession) {
+		List<DeletedItem> delList = TemporaryRecordsManager
+				.getUnsubmittedDeletedItems(hSession);
+		List<DeletedItem> submittedDeletedItems = new ArrayList<DeletedItem>();
+
+		for (DeletedItem del : delList) {
+			if (submitDeletedItem(del)) {
+				log.info("Successfully removed deleted item from eKapa. Record id: "
+						+ del.getDeletedItemId());
+				submittedDeletedItems.add(del);
+			}
+		}
+		TemporaryRecordsManager.deleteSubmittedDeletedItems(hSession,
+				submittedDeletedItems);
+	}
+
+	private void processAdherenceRecords(Session hSession) {
+		List<AdherenceRecord> adhList = TemporaryRecordsManager
+				.getUnsubmittedAdherenceRecords(hSession);
+		List<AdherenceRecord> submittedAdherenceRecords = new ArrayList<AdherenceRecord>();
+		for (AdherenceRecord adh : adhList) {
+			if (submitAdherenceRecord(adh)) {
+				log.info("Successfully saved adherence record to eKapa. Record id: "
+						+ adh.getId());
+				submittedAdherenceRecords.add(adh);
+			}
+		}
+		TemporaryRecordsManager.deleteSubmittedAdherenceRecords(hSession,
+				submittedAdherenceRecords);
+	}
+
+	private void processPackagedDrugs(Session hSession) {
+		List<PackageDrugInfo> pdiList = TemporaryRecordsManager
+				.getUnsubmittedPackageDrugInfos(hSession);
+
+		List<PackageDrugInfo> submittedPackageDrugInfos = new ArrayList<PackageDrugInfo>();
+
+		for (PackageDrugInfo pdi : pdiList) {
+			if (submitPackageDrugInfo(pdi)) {
+				log.info("Successfully saved dispensing record to eKapa. Record id: "
+						+ pdi.getId());
+				submittedPackageDrugInfos.add(pdi);
+			}
+		}
+		TemporaryRecordsManager.updateSubmittedPackageDrugInfos(hSession,
+				submittedPackageDrugInfos);
+	}
+
 	/**
 	 * Method getStoredProcsConnection.
 	 * 
 	 * @return boolean
 	 */
 	private boolean getStoredProcsConnection() {
-
 		try {
 			sp = new StoredProcs();
-			boolean connected = sp.init();
-			if (!connected) {
+			if (!sp.init()) {
 				sp.closeConnection();
 				sp = null;
 				return false;
 			} else
 				return true;
 		} catch (SQLException e) {
-			log.error("Could not create StoredProcs due to SQL Exception : "
-					+ e.getMessage());
+			log.error("Could not create StoredProcs due to SQL Exception", e);
 			sp = null;
 			return false;
-
 		}
 	}
 
@@ -148,7 +145,6 @@ public class EkapaSubmitJob implements Job {
 	 * @return boolean
 	 */
 	private boolean submitAdherenceRecord(AdherenceRecord adh) {
-		boolean saveSuccessful = false;
 		try {
 			log.info("Attempting to submit AdherenceRecordTmp: "
 					+ adh.getPillCountId() + "," + adh.getPawcNo() + ","
@@ -156,28 +152,22 @@ public class EkapaSubmitJob implements Job {
 					+ adh.getDaysSinceVisit() + "," + adh.getDaysCarriedOver()
 					+ "," + adh.getDaysInHand() + "," + adh.getAdherence()
 					+ "," + "Not Available" + "," + adh.getCluser());
-			saveSuccessful = sp.submitPillCount(adh);
+			return sp.submitPillCount(adh);
 
 		} catch (SQLException e) {
-			saveSuccessful = false;
-			log
-			.error("SQLException while trying to submit temp records to eKapa");
-			log.error(e);
+			log.error(
+					"SQLException while trying to submit temp records to eKapa",
+					e);
 
 			if ((e.getSQLState() != null)
-					&& (!e.getSQLState().startsWith("08"))) // not
-				// a
-				// connection
-				// error
-			{
-				adh.setInvalid(true);
+					&& (!e.getSQLState().startsWith("08"))) {
+				// not a connection error
 				log.error("Marking adherence record as invalid. Id:"
 						+ adh.getId());
+				return true;
 			}
-
+			return false;
 		}
-
-		return saveSuccessful;
 	}
 
 	/**
@@ -188,28 +178,21 @@ public class EkapaSubmitJob implements Job {
 	 * @return boolean
 	 */
 	private boolean submitPackageDrugInfo(PackageDrugInfo pdi) {
-		boolean saveSuccessful = false;
 		try {
 
-			saveSuccessful = sp.submitDispensingInfo(pdi);
+			return sp.submitDispensingInfo(pdi);
 		} catch (SQLException e) {
-			saveSuccessful = false;
-			log
-			.error("SQLException while trying to submit temp records to eKapa");
+			log.error("SQLException while trying to submit temp records to eKapa");
 			log.error(e);
 			if ((e.getSQLState() != null)
-					&& (!e.getSQLState().startsWith("08"))) // not
-				// a
-				// connection
-				// error
-			{
+					&& (!e.getSQLState().startsWith("08"))) {
+				// not a connection error
 				pdi.setInvalid(true);
 				log.error("Marking pdi as invalid. Id:" + pdi.getId());
+				return true;
 			}
+			return false;
 		}
-
-		return saveSuccessful;
-
 	}
 
 	/**
@@ -220,35 +203,28 @@ public class EkapaSubmitJob implements Job {
 	 * @return boolean
 	 */
 	private boolean submitDeletedItem(DeletedItem del) {
-		boolean saveSuccessful = false;
 		try {
-
-			if (del.getItemType().equals("AdherenceRecord")) {
-				saveSuccessful = sp.deleteAdherenceRecord(del);
-			} else if (del.getItemType().equals("PackageDrugInfo")) {
-				saveSuccessful = sp.deleteDispensingRecord(del);
+			if (del.getItemType().equals(DeletedItem.ITEM_ADHERANCE)) {
+				return sp.deleteAdherenceRecord(del);
+			} else if (del.getItemType().equals(DeletedItem.ITEM_PACKAGE_DRUG)) {
+				return sp.deleteDispensingRecord(del);
 			}
-
+			return false;
 		} catch (SQLException e) {
-			saveSuccessful = false;
-			log
-			.error("SQLException while trying to submit temp records to eKapa");
-			log.error(e);
+			log.error(
+					"SQLException while trying to submit temp records to eKapa",
+					e);
 
 			if ((e.getSQLState() != null)
-					&& (!e.getSQLState().startsWith("08"))) // not
-				// a
-				// connection
-				// error
-			{
-				del.setInvalid(true);
+					&& (!e.getSQLState().startsWith("08"))) {
+				// not a connection error
 				log.error("Marking deleted item record as invalid. Id:"
 						+ del.getId());
+				return true;
 			}
+			return false;
 
 		}
-
-		return saveSuccessful;
 	}
 
 }

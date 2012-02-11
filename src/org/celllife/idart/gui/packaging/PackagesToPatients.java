@@ -33,7 +33,6 @@ import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.PackageManager;
 import model.manager.PatientManager;
-import model.manager.TemporaryRecordsManager;
 import model.manager.reports.PackageProcessingReport;
 import model.manager.reports.PatientHistoryReport;
 
@@ -51,8 +50,9 @@ import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PatientAttribute;
 import org.celllife.idart.database.hibernate.PillCount;
-import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.events.AdherenceEvent;
+import org.celllife.idart.events.PackageEvent;
 import org.celllife.idart.gui.misc.iDARTChangeListener;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.reportParameters.PatientHistory;
@@ -101,6 +101,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import com.adamtaft.eb.EventBusService;
 
 /**
  * @author Sarah
@@ -186,8 +188,6 @@ iDARTChangeListener {
 	private TableEditor editorTblLastPackage;
 
 	private TableEditor editorTblThisPackage;
-
-	private java.util.List<PillCount> allPillCounts = new ArrayList<PillCount>();
 
 	private Packages previousPack;
 
@@ -1472,7 +1472,6 @@ iDARTChangeListener {
 		btnCaptureDate.setDate(null);
 		btnCollectionDateForNextPackage.setDate(null);
 		previousPack = null;
-		allPillCounts = null;
 
 		// clear tables and table editors
 		tblLastPackage.clearAll();
@@ -1507,10 +1506,10 @@ iDARTChangeListener {
 	 * @return Set<PillCount>
 	 */
 	private Set<PillCount> getPillCountsForLastPackage() {
-
 		if (previousPack == null)
 			return null;
-		java.util.Set<PillCount> pcsToSave = new HashSet<PillCount>();
+		
+		Set<PillCount> pcsToSave = new HashSet<PillCount>();
 		previousPack.getPillCounts().clear();
 		for (int i = 0; i < tblLastPackage.getItemCount(); i++) {
 
@@ -1857,23 +1856,12 @@ iDARTChangeListener {
 	protected boolean submitForm() {
 		if (fieldsOk()) {
 			Transaction tx = null;
-			boolean containsARVDrug = false;
 
 			try {
 				tx = getHSession().beginTransaction();
 
 				Packages pack = PackageManager.getPackage(getHSession(),
 						txtPackageIdScan.getText());
-
-				// Check if package contains ARV
-				// Should be moved to a facade or manager class
-				java.util.List<PackagedDrugs> drugs = pack.getPackagedDrugs();
-				for (PackagedDrugs packs : drugs) {
-					if (packs.getStock().getDrug().getSideTreatment() == 'F') {
-						containsARVDrug = true;
-						break;
-					}
-				}
 
 				// Save dates associated with this package
 				if (AdministrationManager.getDefaultClinicName(getHSession())
@@ -1884,14 +1872,10 @@ iDARTChangeListener {
 
 				// if collection date is today, store the time too, else store
 				// 12am
-				Date today = new Date();
-				Date pickupDate = new Date();
-				pack.setPickupDate(btnCaptureDate.getDate());
-				pickupDate.setTime(pack.getPickupDate().getTime());
-
-				if (DateFieldComparator.compare(today, pickupDate,
-						Calendar.DAY_OF_MONTH) == 0) {
+				if (iDARTUtil.dateIsToday(btnCaptureDate.getDate())) {
 					pack.setPickupDate(new Date());
+				} else {
+					pack.setPickupDate(btnCaptureDate.getDate());
 				}
 
 				Patient aPatient = pack.getPrescription().getPatient();
@@ -1902,19 +1886,7 @@ iDARTChangeListener {
 				Set<PillCount> pcs = getPillCountsForLastPackage();
 				if (pcs != null) {
 					AdherenceManager.save(getHSession(), pcs);
-				}
-				if (iDartProperties.isEkapaVersion) {
-					java.util.List<AdherenceRecord> adhList = new ArrayList<AdherenceRecord>();
-					for (PillCount pct : allPillCounts) {
-						AdherenceRecord ad = AdherenceManager
-						.getAdherenceRecordForPillCount(getHSession(),
-								pct);
-						if (ad != null) {
-							adhList.add(ad);
-						}
-					}
-					TemporaryRecordsManager.saveAdherenceRecordsToDB(
-							getHSession(), adhList);
+					EventBusService.publish(new AdherenceEvent(pcs));
 				}
 				Set<AccumulatedDrugs> accums = pack.getAccumulatedDrugs();
 				if (accums != null) {
@@ -1924,29 +1896,25 @@ iDARTChangeListener {
 					pack.setAccumulatedDrugs(getAccumDrugsToSave(pack));
 				}
 				PackageManager.savePackage(getHSession(), pack);
-
-				aPatient = PatientManager.getPatient(getHSession(), aPatient.getId());
-				if (PackageManager.getMostRecentARVPackage(getHSession(),
-						aPatient).getId() == pack.getId()
-						&& (aPatient
-								.getAttributeByName(PatientAttribute.ARV_START_DATE)) == null
-								&& containsARVDrug) {
+				
+				if (pack.hasARVDrug() 
+					&& aPatient.getAttributeByName(PatientAttribute.ARV_START_DATE) == null) {
 
 					Packages firstArvPacks = PackageManager
-					.getFirstPackageWithARVs(PackageManager
+						.getFirstPackageWithARVs(PackageManager
 							.getAllPackagesForPatient(getHSession(),
 									aPatient));
 					if (firstArvPacks.getId() == pack.getId()) {
 
-						MessageBox mbox = new MessageBox(getShell(), SWT.YES
-								| SWT.NO | SWT.ICON_QUESTION);
-						mbox.setText("ART Start Date Not Set");
 						// If this is the first ARV pack then get
 						// the first episode.
 						Episode firstEpisode = PatientManager
 						.getFirstEpisode(aPatient);
 						String epiStartReason = firstEpisode.getStartReason();
 						if (epiStartReason.equalsIgnoreCase("NEW PATIENT")) {
+							MessageBox mbox = new MessageBox(getShell(), SWT.YES
+									| SWT.NO | SWT.ICON_QUESTION);
+							mbox.setText("ART Start Date Not Set");
 							mbox
 							.setMessage("The ARV start date has not yet been set and this is the first time patient '"
 									+ txtFolderNo.getText()
@@ -1972,6 +1940,8 @@ iDARTChangeListener {
 				getHSession().flush();
 				tx.commit();
 
+				EventBusService.publish(new PackageEvent(PackageEvent.Type.PICKUP_ONLY, pack));
+				
 				updateLists();
 
 				MessageBox m = new MessageBox(getShell(), SWT.ICON_INFORMATION

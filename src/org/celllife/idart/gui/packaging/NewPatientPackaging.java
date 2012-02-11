@@ -32,7 +32,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import model.manager.AdherenceManager;
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.PackageManager;
@@ -64,9 +63,10 @@ import org.celllife.idart.database.hibernate.Prescription;
 import org.celllife.idart.database.hibernate.Stock;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.database.hibernate.StockLevel;
-import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.events.AdherenceEvent;
+import org.celllife.idart.events.PackageEvent;
 import org.celllife.idart.facade.PillCountFacade;
 import org.celllife.idart.gui.composite.PillCountTable;
 import org.celllife.idart.gui.deletions.DeleteStockPrescriptionsPackages;
@@ -132,6 +132,8 @@ import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import com.adamtaft.eb.EventBusService;
 
 /**
  */
@@ -689,9 +691,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 				if (pdi.getDispensedQty() != 0) {
 					pdi.setDispenseDate(newPack.getPackDate());
 					pdi.setWeeksSupply(getSelectedWeekSupply());
-					if (!dispenseNow) {
-						pdi.setDispensedForLaterPickup(true);
-					}
+					pdi.setDispensedForLaterPickup(!dispenseNow);
+					pdi.setPickupDate(dispenseNow ? new Date() : null);
 					allPackagedDrugsList.add(pdi);
 				}
 			}
@@ -1929,16 +1930,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 				pc.setDateOfCount(btnCaptureDate.getDate());
 			}
 			pillFacade.save(pcnts);
-			if (iDartProperties.isEkapaVersion) {
-				java.util.List<AdherenceRecord> adhList = new ArrayList<AdherenceRecord>();
-
-				if (previousPack != null) {
-					adhList = AdherenceManager.getAdherenceRecords(
-							getHSession(), previousPack);
-				}
-				TemporaryRecordsManager.saveAdherenceRecordsToDB(getHSession(),
-						adhList);
-			}
+			EventBusService.publish(new AdherenceEvent(pcnts));
 		}
 
 	}
@@ -3070,7 +3062,14 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 					}
 				}
-
+				tx.commit();
+				
+				EventBusService
+						.publish(new PackageEvent(
+								dispenseNow ? PackageEvent.Type.PACKAGE_AND_PICKUP
+										: PackageEvent.Type.PACKAGE_FOR_LATER,
+								newPack));
+				
 				if (iDartProperties.printDrugLabels) {
 					// Add the qty for the summary label
 					labelQuantities.put(ScriptSummaryLabel.KEY,
@@ -3085,8 +3084,6 @@ public class NewPatientPackaging extends GenericFormGui implements
 							allPackagedDrugsList, labelQuantities);
 				}
 			}
-
-			tx.commit();
 		} catch (HibernateException he) {
 			getLog().error("Problem with Saving this package", he);
 			if (tx != null) {

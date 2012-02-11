@@ -78,5 +78,6 @@
 	<classpathentry kind="lib" path="lib/org.celllife.mobilisr.api-2.4-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/org.celllife.mobilisr.client-2.4-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/sa-data-api-1.0-SNAPSHOT.jar" sourcepath="/org.iedea.sa-data-api/src/main/java"/>
+	<classpathentry kind="lib" path="lib/simpleeventbus-1.2.jar"/>
 	<classpathentry kind="output" path="target"/>
 </classpath>

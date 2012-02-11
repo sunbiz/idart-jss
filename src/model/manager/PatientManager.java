@@ -1104,6 +1104,7 @@ public class PatientManager {
 			+ " and d.atccode_id = atc.id"
 			+ " and d.sidetreatment = 'F'"
 			+ " and sc.patient = :patid"
+			+ " and pickupdate is not null"
 			+ " group by f.form, atc.code");
 		query.setInteger("patid", patient.getId());
 		query.setResultTransformer(new AliasToBeanResultTransformer(ArtDto.class));

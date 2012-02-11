@@ -3,7 +3,7 @@
 	<native type="izpack" name="ShellLink.dll" />
 	<info>
 		<appname>iDART</appname>
-		<appversion>3.5.1</appversion>
+		<appversion>3.8.0</appversion>
 		<authors>
 			<author name="Samir Anand" email="samir@cell-life.org" />
 			<author name="Sarah Brown" email="sarah@cell-life.org" />

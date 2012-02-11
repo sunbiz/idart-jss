@@ -32,6 +32,7 @@ import org.celllife.idart.database.hibernate.AtcCode;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.Doctor;
 import org.celllife.idart.database.hibernate.Form;
+import org.celllife.idart.database.hibernate.IdentifierType;
 import org.celllife.idart.database.hibernate.Logging;
 import org.celllife.idart.database.hibernate.NationalClinics;
 import org.celllife.idart.database.hibernate.Regimen;
@@ -1063,5 +1064,11 @@ public class AdministrationManager {
 	
 	public static List<StudyParticipant> getP() {
 		return null;
+	}
+
+	public static IdentifierType getNationalIdentifierType(Session hSession) {
+		// FIXME: figure out a way to identify the national id type
+		return (IdentifierType) hSession.createQuery(
+				"from IdentifierType where id = 0").uniqueResult();
 	}
 }

@@ -101,10 +101,7 @@ public class TemporaryRecordsManager {
 		long numDel = (Long) s.createQuery(
 		"select count (del.id) from DeletedItem as del").uniqueResult();
 
-		if ((numPdis > 0) || (numAdh > 0) | (numDel > 0))
-			return true;
-		return false;
-
+		return (numPdis > 0) || (numAdh > 0) || (numDel > 0);
 	}
 
 	/**
@@ -120,7 +117,10 @@ public class TemporaryRecordsManager {
 			Session sess) throws HibernateException {
 		 List<PackageDrugInfo> pdiList = sess
 		.createQuery(
-		"from PackageDrugInfo as pd where pd.invalid = false order by pd.id asc")
+		"from PackageDrugInfo as pd where pd.invalid = false " +
+		"and pd.sentToEkapa = false " +
+		"and pd.pickupDate is not null " +
+		"order by pd.id asc")
 		.setMaxResults(10).list();
 
 		return pdiList;
@@ -139,7 +139,7 @@ public class TemporaryRecordsManager {
 			Session sess) throws HibernateException {
 		List<AdherenceRecord> adhList = sess
 		.createQuery(
-		"from AdherenceRecord as ad where ad.invalid = false order by ad.id asc")
+		"from AdherenceRecord as ad where order by ad.id asc")
 		.setMaxResults(10).list();
 
 		return adhList;
@@ -158,7 +158,7 @@ public class TemporaryRecordsManager {
 	throws HibernateException {
 		List<DeletedItem> delList = sess
 		.createQuery(
-		"from DeletedItem as del where del.invalid = false order by del.id asc")
+		"from DeletedItem as del where order by del.id asc")
 		.setMaxResults(10).list();
 
 		return delList;
@@ -175,14 +175,10 @@ public class TemporaryRecordsManager {
 	 */
 	public static void updateSubmittedPackageDrugInfos(Session s,
 			List<PackageDrugInfo> pdList) throws HibernateException {
-		String pdUpdate = "update PackageDrugInfo set sentToEkapa = true where id = :pdId";
-
-		for (int i = 0; i < pdList.size(); i++) {
-
-			s.createQuery(pdUpdate).setInteger("pdId", pdList.get(i).getId())
-			.executeUpdate();
+		for (PackageDrugInfo pdi : pdList) {
+			pdi.setSentToEkapa(true);
+			s.saveOrUpdate(pdi);
 		}
-
 	}
 
 	/**
@@ -294,4 +290,9 @@ public class TemporaryRecordsManager {
 		return adh;
 	}
 
+	public static void deletePackageDrugInfosForPackage(Session session, Packages pack) {
+		session.createQuery("delete PackageDrugInfo where packageId = :id")
+			.setString("id", pack.getPackageId())
+			.executeUpdate();
+	}
 }
